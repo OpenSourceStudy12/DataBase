@@ -1,0 +1,62 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 1 The MySQL C API</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="preface.html" title="Preface and Legal Notices"><link rel="next" href="c-api-implementations.html" title="Chapter 2 MySQL C API Implementations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 1 The MySQL C API</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="preface.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-implementations.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-introduction"></a>Chapter 1 The MySQL C API</h1></div></div></div><a class="indexterm" name="idm46079473485920"></a><a class="indexterm" name="idm46079473484416"></a><p>
+      The C API provides low-level access to the MySQL client/server
+      protocol and enables C programs to access database contents. The C
+      API code is distributed with MySQL and implemented in the
+      <code class="literal">libmysqlclient</code> library. See
+      <a class="xref" href="c-api-implementations.html" title="Chapter 2 MySQL C API Implementations">Chapter 2, <i>MySQL C API Implementations</i></a>.
+    </p><p>
+      Most other client APIs use the <code class="literal">libmysqlclient</code>
+      library to communicate with the MySQL server. (Exceptions are
+      Connector/J and Connector/NET.) This means that, for example, you can
+      take advantage of many of the same environment variables that are
+      used by other client programs because they are referenced from the
+      library. For a list of these variables, see
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/programs-overview.html" target="_top">Overview of MySQL Programs</a>.
+    </p><p>
+      For instructions on building client programs using the C API, see
+      <a class="xref" href="c-api-building-running-clients.html#c-api-building-clients" title="4.1 Building C API Client Programs">Section 4.1, “Building C API Client Programs”</a>. For programming with
+      threads, see <a class="xref" href="c-api-building-running-clients.html#c-api-threaded-clients" title="4.3 Writing C API Threaded Client Programs">Section 4.3, “Writing C API Threaded Client Programs”</a>.
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+        If, after an upgrade, you experience problems with compiled
+        client programs, such as <code class="literal">Commands out of sync</code>
+        or unexpected core dumps, the programs were probably compiled
+        using old header or library files. In this case, check the date
+        of the <code class="filename">mysql.h</code> file and
+        <code class="filename">libmysqlclient.a</code> library used for
+        compilation to verify that they are from the new MySQL
+        distribution. If not, recompile the programs with the new
+        headers and libraries. Recompilation might also be necessary for
+        programs compiled against the shared client library if the
+        library major version number has changed (for example, from
+        <code class="filename">libmysqlclient.so.17</code> to
+        <code class="filename">libmysqlclient.so.18</code>). For additional
+        compatibility information, see
+        <a class="xref" href="c-api-building-running-clients.html#c-api-running-clients" title="4.4 Running C API Client Programs">Section 4.4, “Running C API Client Programs”</a>.
+      </p></div><p>
+      Clients have a maximum communication buffer size. The size of the
+      buffer that is allocated initially (16KB) is automatically
+      increased up to the maximum size (16MB by default). Because buffer
+      sizes are increased only as demand warrants, simply increasing the
+      maximum limit does not in itself cause more resources to be used.
+      This size check is mostly a precaution against erroneous
+      statements and communication packets.
+    </p><p>
+      The communication buffer must be large enough to contain a single
+      SQL statement (for client-to-server traffic) and one row of
+      returned data (for server-to-client traffic). Each session's
+      communication buffer is dynamically enlarged to handle any query
+      or row up to the maximum limit. For example, if you have
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> values that contain up to 16MB
+      of data, you must have a communication buffer limit of at least
+      16MB (in both server and client). The default maximum built into
+      the client library is 1GB, but the default maximum in the server
+      is 1MB. You can increase this by changing the value of the
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_allowed_packet" target="_top"><code class="literal">max_allowed_packet</code></a> parameter at
+      server startup. See <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-configuration.html" target="_top">Configuring the Server</a>.
+    </p><p>
+      The MySQL server shrinks each communication buffer to
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_net_buffer_length" target="_top"><code class="literal">net_buffer_length</code></a> bytes after
+      each query. For clients, the size of the buffer associated with a
+      connection is not decreased until the connection is closed, at
+      which time client memory is reclaimed.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="preface.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-implementations.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Preface and Legal Notices </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 2 MySQL C API Implementations</td></tr></table></div><div class="copyright-footer"></div></body></html>

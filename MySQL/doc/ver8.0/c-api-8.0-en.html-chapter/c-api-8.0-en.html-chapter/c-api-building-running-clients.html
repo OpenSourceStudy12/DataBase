@@ -1,0 +1,475 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 4 Building and Running C API Client Programs</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-example-programs.html" title="Chapter 3 Example C API Client Programs"><link rel="next" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4 Building and Running C API Client Programs</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-example-programs.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-data-structures.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-building-running-clients"></a>Chapter 4 Building and Running C API Client Programs</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-building-running-clients.html#c-api-building-clients">4.1 Building C API Client Programs</a></span></dt><dt><span class="section"><a href="c-api-building-running-clients.html#c-api-building-clients-pkg-config">4.2 Building C API Client Programs Using pkg-config</a></span></dt><dt><span class="section"><a href="c-api-building-running-clients.html#c-api-threaded-clients">4.3 Writing C API Threaded Client Programs</a></span></dt><dt><span class="section"><a href="c-api-building-running-clients.html#c-api-running-clients">4.4 Running C API Client Programs</a></span></dt><dt><span class="section"><a href="c-api-building-running-clients.html#c-api-server-client-versions">4.5 C API Server Version and Client Library Version</a></span></dt></dl></div><p>
+      The following sections provide information on building client
+      programs that use the C API. Topics include compiling and linking
+      clients, writing threaded clients, and troubleshooting runtime
+      problems.
+    </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-building-clients"></a>4.1 Building C API Client Programs</h2></div></div></div><a class="indexterm" name="idm46079472622080"></a><a class="indexterm" name="idm46079472620688"></a><a class="indexterm" name="idm46079472619680"></a><a class="indexterm" name="idm46079472618288"></a><p>
+        This section provides guidelines for compiling C programs that
+        use the MySQL C API.
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="c-api-building-running-clients.html#c-api-building-clients-compiling-mysql-clients-on-unix" title="Compiling MySQL Clients on Unix">Compiling MySQL Clients on Unix</a></p></li><li class="listitem"><p><a class="xref" href="c-api-building-running-clients.html#c-api-building-clients-compiling-mysql-clients-on-microsoft-windows" title="Compiling MySQL Clients on Microsoft Windows">Compiling MySQL Clients on Microsoft Windows</a></p></li><li class="listitem"><p><a class="xref" href="c-api-building-running-clients.html#c-api-building-clients-troubleshooting-problems-linking-to-the-mysql-client-library" title="Troubleshooting Problems Linking to the MySQL Client Library">Troubleshooting Problems Linking to the MySQL Client Library</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="c-api-building-clients-compiling-mysql-clients-on-unix"></a>Compiling MySQL Clients on Unix</h3></div></div></div><a class="indexterm" name="idm46079472612464"></a><a class="indexterm" name="idm46079472611072"></a><p>
+          The examples here use <span class="command"><strong>gcc</strong></span> as the compiler.
+          A different compiler might be appropriate on some systems (for
+          example, <span class="command"><strong>clang</strong></span> on macOS or FreeBSD, or Sun
+          Studio on Solaris). Adjust the examples as necessary.
+        </p><p>
+          You may need to specify an <code class="option">-I</code> option when you
+          compile client programs that use MySQL header files, so that
+          the compiler can find them. For example, if the header files
+          are installed in <code class="literal">/usr/local/mysql/include</code>,
+          use this option in the compile command:
+        </p><pre class="programlisting">-I/usr/local/mysql/include
+</pre><p>
+          You can link your code with either the dynamic or static MySQL
+          C client library. The dynamic library base name is
+          <code class="filename">libmysqlclient</code> and the suffix differs by
+          platform (for example, <code class="filename">.so</code> for Linux,
+          <code class="filename">.dylib</code> for macOS). The static library is
+          named <code class="filename">libmysqlclient.a</code> on all platforms.
+        </p><p>
+          MySQL clients must be linked using the
+          <code class="option">-lmysqlclient</code> option in the link command. You
+          may also need to specify a <code class="option">-L</code> option to tell
+          the linker where to find the library. For example, if the
+          library is installed in
+          <code class="filename">/usr/local/mysql/lib</code>, use these options
+          in the link command:
+        </p><pre class="programlisting">-L/usr/local/mysql/lib -lmysqlclient
+</pre><p>
+          The path names may differ on your system. Adjust the
+          <code class="option">-I</code> and <code class="option">-L</code> options as
+          necessary.
+        </p><p>
+          To make it simpler to compile MySQL programs on Unix, use the
+          <span class="command"><strong>mysql_config</strong></span> script. See
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/mysql-config.html" target="_top"><span class="command"><strong>mysql_config</strong></span> — Display Options for Compiling Clients</a>.
+        </p><p>
+          <span class="command"><strong>mysql_config</strong></span> displays the options needed
+          for compiling or linking:
+        </p><pre class="programlisting">mysql_config --cflags
+mysql_config --libs
+</pre><p>
+          You can invoke those commands at the command line to get the
+          proper options and add them manually to compilation or link
+          commands. Alternatively, include the output from
+          <span class="command"><strong>mysql_config</strong></span> directly within command lines
+          using backticks:
+        </p><pre class="programlisting">gcc -c `mysql_config --cflags` progname.c
+gcc -o progname progname.o `mysql_config --libs`
+</pre><p>
+          On Unix, linking uses dynamic libraries by default. To link to
+          the static client library instead, add its path name to the
+          link command. For example, if the library is located in
+          <code class="filename">/usr/local/mysql/lib</code>, link like this:
+        </p><pre class="programlisting">gcc -o progname progname.o /usr/local/mysql/lib/libmysqlclient.a
+</pre><p>
+          Or use <span class="command"><strong>mysql_config</strong></span> to provide the path to
+          the library:
+        </p><pre class="programlisting">gcc -o progname progname.o `mysql_config --variable=pkglibdir`/libmysqlclient.a
+</pre><p>
+          <span class="command"><strong>mysql_config</strong></span> does not currently provide a
+          way to list all libraries needed for static linking, so it
+          might be necessary to name additional libraries on the link
+          command (for example, <code class="literal">-lnsl -lsocket</code> on
+          Solaris). To get an idea which libraries to add, use
+          <span class="command"><strong>mysql_config --libs</strong></span> and <span class="command"><strong>ldd
+          libmysqlclient.so</strong></span> (or <span class="command"><strong>otool -L
+          libmysqlclient.dylib</strong></span> on macOS).
+        </p><p>
+          <span class="command"><strong>pkg-config</strong></span> can be used as an alternative to
+          <span class="command"><strong>mysql_config</strong></span> for obtaining information such
+          as compiler flags or link libraries required to compile MySQL
+          applications. For example, the following pairs of commands are
+          equivalent:
+        </p><pre class="programlisting">mysql_config --cflags
+pkg-config --cflags mysqlclient
+
+mysql_config --libs
+pkg-config --libs mysqlclient
+</pre><p>
+          To produce flags for static linking, use this command:
+        </p><pre class="programlisting">pkg-config --static --libs mysqlclient
+</pre><p>
+          For more information, see
+          <a class="xref" href="c-api-building-running-clients.html#c-api-building-clients-pkg-config" title="4.2 Building C API Client Programs Using pkg-config">Section 4.2, “Building C API Client Programs Using pkg-config”</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="c-api-building-clients-compiling-mysql-clients-on-microsoft-windows"></a>Compiling MySQL Clients on Microsoft Windows</h3></div></div></div><a class="indexterm" name="idm46079472577088"></a><a class="indexterm" name="idm46079472575696"></a><p>
+          To specify header and library file locations, use the
+          facilities provided by your development environment.
+        </p><p>
+          To build C API clients on Windows, you must link in the C
+          client library, as well as the Windows ws2_32 sockets library
+          and Secur32 security library.
+        </p><p>
+          You can link your code with either the dynamic or static MySQL
+          C client library:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              The dynamic library is named
+              <code class="filename">libmysql.dll</code>. In addition, the
+              <code class="filename">libmysql.lib</code> static import library is
+              needed for using the dynamic library.
+            </p></li><li class="listitem"><p>
+              The static library is named
+              <code class="filename">mysqlclient.lib</code>. To link with the
+              static C client library, the client application must be
+              compiled with the same version of Visual Studio used to
+              compile the C client library (which is Visual Studio 2015
+              for the static C client library built by Oracle).
+            </p></li></ul></div><p>
+          When using the Oracle-built MySQL C client library, follow
+          these rules when it comes to linking the C runtime for your
+          client application:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              For the MySQL C client library from a Community
+              distribution of MySQL:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                  Always link dynamically to the C runtime (use the
+                  <code class="literal">/MD</code> compiler option), whether you
+                  are linking to the static or dynamic C client library.
+                  Also, target hosts running the client application must
+                  have the
+                  <a class="ulink" href="https://www.microsoft.com/en-us/download/details.aspx?id=48145" target="_top">Visual
+                  C++ Redistributable for Visual Studio 2015</a>
+                  installed.
+                </p></li></ul></div></li><li class="listitem"><p>
+              For the MySQL C client library from a Commercial
+              distribution of MySQL:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                  If linking to the static C client library, link
+                  statically to the C runtime (use the<code class="literal">
+                  /MT</code> compiler option).
+                </p></li><li class="listitem"><p>
+                  If linking to the dynamic C client library, link
+                  either statically or dynamically to the C runtime (use
+                  either <code class="literal">/MT</code> or
+                  <code class="literal">/MD</code> compiler option).
+                </p></li></ul></div></li></ul></div><p>
+          In general, when linking to a static MySQL C client library,
+          the client library and the client application must use the
+          same compiler options when it comes to linking the C
+          runtime—that is, if your C client library is compiled
+          with the <code class="literal">/MT</code> option, your client
+          application should also be compiled with the
+          <code class="literal">/MT</code> option, and so on (see
+          <a class="ulink" href="http://msdn.microsoft.com/en-us/library/2kzt1wy3.aspx" target="_top">the
+          MSDN page describing the C library linking options</a> for
+          more details). Follow this rule when you build your own static
+          MySQL C client library from a source distribution of MySQL and
+          link your client application to it.
+
+          </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+              <span class="emphasis"><em>Debug Mode:</em></span> Because of the
+              just-mentioned linking rule, you cannot build your
+              application in debug mode (with the
+              <code class="literal">/MTd</code> or <code class="literal">/MDd</code>
+              compiler option) and link it to a static C client library
+              built by Oracle, which is <span class="emphasis"><em>not</em></span> built
+              with the debug options. Instead, you must build the static
+              client library from source with the debug options.
+            </p></div><p>
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="c-api-building-clients-troubleshooting-problems-linking-to-the-mysql-client-library"></a>Troubleshooting Problems Linking to the MySQL Client Library</h3></div></div></div><a class="indexterm" name="idm46079472550944"></a><a class="indexterm" name="idm46079472549552"></a><a class="indexterm" name="idm46079472548160"></a><a class="indexterm" name="idm46079472546768"></a><a class="indexterm" name="idm46079472545376"></a><p>
+          The MySQL client library includes SSL support built in. It is
+          unnecessary to specify either <code class="literal">-lssl</code> or
+          <code class="literal">-lcrypto</code> at link time. Doing so may in fact
+          result in problems at runtime.
+        </p><p>
+          If the linker cannot find the MySQL client library, you might
+          get undefined-reference errors for symbols that start with
+          <code class="literal">mysql_</code>, such as those shown here:
+        </p><pre class="programlisting">/tmp/ccFKsdPa.o: In function `main':
+/tmp/ccFKsdPa.o(.text+0xb): undefined reference to `mysql_init'
+/tmp/ccFKsdPa.o(.text+0x31): undefined reference to `mysql_real_connect'
+/tmp/ccFKsdPa.o(.text+0x69): undefined reference to `mysql_error'
+/tmp/ccFKsdPa.o(.text+0x9a): undefined reference to `mysql_close'
+</pre><p>
+          You should be able to solve this problem by adding
+          <code class="literal">-L<em class="replaceable"><code>dir_path</code></em>
+          -lmysqlclient</code> at the end of your link command, where
+          <em class="replaceable"><code>dir_path</code></em> represents the path name
+          of the directory where the client library is located. To
+          determine the correct directory, try this command:
+        </p><pre class="programlisting">mysql_config --libs
+</pre><p>
+          The output from <span class="command"><strong>mysql_config</strong></span> might indicate
+          other libraries that should be specified on the link command
+          as well. You can include <span class="command"><strong>mysql_config</strong></span>
+          output directly in your compile or link command using
+          backticks. For example:
+        </p><pre class="programlisting">gcc -o progname progname.o `mysql_config --libs`
+</pre><p>
+          If an error occurs at link time that the
+          <code class="literal">floor</code> symbol is undefined, link to the math
+          library by adding <code class="option">-lm</code> to the end of the
+          compile/link line. Similarly, if you get undefined-reference
+          errors for other functions that should exist on your system,
+          such as <code class="literal">connect()</code>, check the manual page
+          for the function in question to determine which libraries you
+          should add to the link command.
+        </p><p>
+          If you get undefined-reference errors such as the following
+          for functions that do not exist on your system, it usually
+          means that your MySQL client library was compiled on a system
+          that is not 100% compatible with yours:
+        </p><pre class="programlisting">mf_format.o(.text+0x201): undefined reference to `__lxstat'
+</pre><p>
+          In this case, you should download a source distribution for
+          the latest version of MySQL and compile the MySQL client
+          library yourself. See <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/source-installation.html" target="_top">Installing MySQL from Source</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-building-clients-pkg-config"></a>4.2 Building C API Client Programs Using pkg-config</h2></div></div></div><p>
+        MySQL distributions contain a
+        <code class="filename">mysqlclient.pc</code> file that provides
+        information about MySQL configuration for use by the
+        <span class="command"><strong>pkg-config</strong></span> command. This enables
+        <span class="command"><strong>pkg-config</strong></span> to be used as an alternative to
+        <span class="command"><strong>mysql_config</strong></span> for obtaining information such
+        as compiler flags or link libraries required to compile MySQL
+        applications. For example, the following pairs of commands are
+        equivalent:
+      </p><pre class="programlisting">mysql_config --cflags
+pkg-config --cflags mysqlclient
+
+mysql_config --libs
+pkg-config --libs mysqlclient
+</pre><p>
+        The last <span class="command"><strong>pkg-config</strong></span> command produces flags
+        for dynamic linking. To produce flags for static linking, use
+        this command:
+      </p><pre class="programlisting">pkg-config --static --libs mysqlclient
+</pre><p>
+        On some platforms, the output with and without
+        <code class="option">--static</code> might be the same.
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          <a class="indexterm" name="idm46079472520368"></a>
+
+          <a class="indexterm" name="idm46079472519360"></a>
+
+          If <span class="command"><strong>pkg-config</strong></span> does not find MySQL
+          information, it might be necessary to set the
+          <code class="literal">PKG_CONFIG_PATH</code> environment variable to the
+          directory in which the <code class="filename">mysqlclient.pc</code>
+          file is located, which by default is usually the
+          <code class="filename">pkgconfig</code> directory under the MySQL
+          library directory. For example (adjust the location
+          appropriately):
+        </p><pre class="programlisting"># For sh, bash, ...
+export PKG_CONFIG_PATH=/usr/local/mysql/lib/pkgconfig
+# For csh, tcsh, ...
+setenv PKG_CONFIG_PATH /usr/local/mysql/lib/pkgconfig
+</pre><p>
+          The <code class="filename">mysqlconfig.pc</code> installation location
+          can be controlled using the
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/source-configuration-options.html#option_cmake_install_pkgconfigdir" target="_top"><code class="option">INSTALL_PKGCONFIGDIR</code></a>
+          <span class="command"><strong>CMake</strong></span> option. See
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/source-configuration-options.html" target="_top">MySQL Source-Configuration Options</a>.
+        </p></div><p>
+        The <code class="option">--variable</code> option takes a configuration
+        variable name and displays the variable value:
+      </p><pre class="programlisting"># installation prefix directory
+pkg-config --variable=prefix mysqlclient
+# header file directory
+pkg-config --variable=includedir mysqlclient
+# library directory
+pkg-config --variable=libdir mysqlclient
+</pre><p>
+        To see which variable values <span class="command"><strong>pkg-config</strong></span> can
+        display using the <code class="option">--variable</code> option, use this
+        command:
+      </p><pre class="programlisting">pkg-config --print-variables mysqlclient
+</pre><p>
+        You can use <span class="command"><strong>pkg-config</strong></span> within a command line
+        using backticks to include the output that it produces for
+        particular options. For example, to compile and link a MySQL
+        client program, use <span class="command"><strong>pkg-config</strong></span> as follows:
+      </p><pre class="programlisting">gcc -c `pkg-config --cflags mysqlclient` progname.c
+gcc -o progname progname.o `pkg-config --libs mysqlclient`
+</pre></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-threaded-clients"></a>4.3 Writing C API Threaded Client Programs</h2></div></div></div><a class="indexterm" name="idm46079472502416"></a><a class="indexterm" name="idm46079472501024"></a><p>
+        This section provides guidance for writing client programs that
+        use the thread-related functions in the MySQL C API. For further
+        information about these functions, see
+        <a class="xref" href="c-api-thread-functions.html" title="Chapter 16 C API Threaded Function Descriptions">Chapter 16, <i>C API Threaded Function Descriptions</i></a>. For examples of source
+        code that uses them, look in the <code class="filename">client</code>
+        directory of a MySQL source distribution:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            The source for <span class="command"><strong>mysqlimport</strong></span> uses threading
+            in the code associated with the
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/mysqlimport.html#option_mysqlimport_use-threads" target="_top"><code class="option">--use-threads</code></a> option.
+          </p></li><li class="listitem"><p>
+            The source for <span class="command"><strong>mysqlslap</strong></span> uses threads to
+            set up simultaneous workloads, to test server operation
+            under high load.
+          </p></li></ul></div><p>
+        As an alternative to thread programming, applications may find
+        the asynchronous (nonblocking) C API functions useful. These
+        functions enable applications to submit multiple outstanding
+        requests to the server and determine when each has finished
+        using polling. For more information, see
+        <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+      </p><p>
+        If undefined-reference errors occur when linking a threaded
+        program against the MySQL client library, the most likely cause
+        is that you did not include the thread libraries on the
+        link/compile command.
+      </p><a class="indexterm" name="idm46079472492352"></a><p>
+        The client library is almost thread-safe. The biggest problem is
+        that the subroutines in <code class="filename">sql/net_serv.cc</code>
+        that read from sockets are not interrupt-safe. This was done
+        with the thought that you might want to have your own alarm that
+        can break a long read to a server. If you install interrupt
+        handlers for the <code class="literal">SIGPIPE</code> interrupt, socket
+        handling should be thread-safe.
+      </p><p>
+        To avoid aborting the program when a connection terminates,
+        MySQL blocks <code class="literal">SIGPIPE</code> on the first call to
+        <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>,
+        <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>, or
+        <a class="link" href="c-api-functions.html#mysql-connect" title="7.8 mysql_connect()"><code class="literal">mysql_connect()</code></a>. To use your own
+        <code class="literal">SIGPIPE</code> handler, first call
+        <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>, then
+        install your handler.
+      </p><p>
+        The client library is thread-safe per connection. Two threads
+        can share the same connection with the following caveats:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Unless you are using the asynchronous C API functions
+            mentioned previously, multiple threads cannot send a query
+            to the MySQL server at the same time on the same connection.
+            In particular, you must ensure that between calls to
+            <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> and
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> in one
+            thread, no other thread uses the same connection. To do
+            this, use a mutex lock around your pair of
+            <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> and
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> calls.
+            After <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+            returns, the lock can be released and other threads may
+            query the same connection.
+          </p><p>
+            If you use POSIX threads, you can use
+            <code class="literal">pthread_mutex_lock()</code> and
+            <code class="literal">pthread_mutex_unlock()</code> to establish and
+            release a mutex lock.
+          </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+              If you examine programs in a MySQL source distribution,
+              instead of calls to
+              <code class="literal">pthread_mutex_lock()</code> and
+              <code class="literal">pthread_mutex_unlock()</code>, you will see
+              calls to <code class="literal">native_mutex_lock()</code> and
+              <code class="literal">native_mutex_unlock()</code>. The latter
+              functions are defined in the
+              <code class="filename">thr_mutex.h</code> header file and map to
+              platform-specific mutex functions.
+            </p></div></li><li class="listitem"><p>
+            Multiple threads can access different result sets that are
+            retrieved with
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>.
+          </p></li><li class="listitem"><p>
+            To use <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>,
+            you must ensure that no other thread uses the same
+            connection until the result set is closed. However, it
+            really is best for threaded clients that share the same
+            connection to use
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>.
+          </p></li></ul></div><p>
+        If a thread does not create the connection to the MySQL database
+        but calls MySQL functions, take the following into account:
+      </p><p>
+        When you call <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>,
+        MySQL creates a thread-specific variable for the thread that is
+        used by the debug library (among other things). If you call a
+        MySQL function before the thread has called
+        <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>, the thread does
+        not have the necessary thread-specific variables in place and
+        you are likely to end up with a core dump sooner or later. To
+        avoid problems, you must do the following:
+      </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+            Call <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>
+            before any other MySQL functions. It is not thread-safe, so
+            call it before threads are created, or protect the call with
+            a mutex.
+          </p></li><li class="listitem"><p>
+            Arrange for
+            <a class="link" href="c-api-thread-functions.html#mysql-thread-init" title="16.2 mysql_thread_init()"><code class="literal">mysql_thread_init()</code></a> to be
+            called early in the thread handler before calling any MySQL
+            function. (If you call
+            <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>, it calls
+            <a class="link" href="c-api-thread-functions.html#mysql-thread-init" title="16.2 mysql_thread_init()"><code class="literal">mysql_thread_init()</code></a> for
+            you.)
+          </p></li><li class="listitem"><p>
+            In the thread, call
+            <a class="link" href="c-api-thread-functions.html#mysql-thread-end" title="16.1 mysql_thread_end()"><code class="literal">mysql_thread_end()</code></a> before
+            calling <code class="literal">pthread_exit()</code>. This frees the
+            memory used by MySQL thread-specific variables.
+          </p></li></ol></div><p>
+        The preceding notes regarding
+        <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a> also apply to
+        <a class="link" href="c-api-functions.html#mysql-connect" title="7.8 mysql_connect()"><code class="literal">mysql_connect()</code></a>, which calls
+        <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-running-clients"></a>4.4 Running C API Client Programs</h2></div></div></div><p>
+        If, after an upgrade, you experience problems with compiled
+        client programs, such as <code class="literal">Commands out of sync</code>
+        or unexpected core dumps, the programs were probably compiled
+        using old header or library files. In this case, check the date
+        of the <code class="filename">mysql.h</code> header file and
+        <code class="filename">libmysqlclient.a</code> library used for
+        compilation to verify that they are from the new MySQL
+        distribution. If not, recompile the programs with the new
+        headers and libraries. Recompilation might also be necessary for
+        programs compiled against the shared client library if the
+        library major version number has changed (for example, from
+        <code class="filename">libmysqlclient.so.17</code> to
+        <code class="filename">libmysqlclient.so.18</code>).
+      </p><p>
+        The major shared client library version determines
+        compatibility. (For example, for
+        <code class="literal">libmysqlclient.so.18.1.0</code>, the major version
+        is 18.) Libraries shipped with newer versions of MySQL are
+        drop-in replacements for older versions that have the same major
+        number. As long as the major library version is the same, you
+        can upgrade the library and old applications should continue to
+        work with it.
+      </p><p>
+        Undefined-reference errors might occur at runtime when you try
+        to execute a MySQL program. If these errors specify symbols that
+        start with <code class="literal">mysql_</code> or indicate that the
+        <code class="literal">libmysqlclient</code> library cannot be found, it
+        means that your system cannot find the shared
+        <code class="filename">libmysqlclient.so</code> library. The solution to
+        this problem is to tell your system to search for shared
+        libraries in the directory where that library is located. Use
+        whichever of the following methods is appropriate for your
+        system:
+      </p><a class="indexterm" name="idm46079472440640"></a><a class="indexterm" name="idm46079472439632"></a><a class="indexterm" name="idm46079472438240"></a><a class="indexterm" name="idm46079472437232"></a><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Add the path of the directory where
+            <code class="filename">libmysqlclient.so</code> is located to the
+            <code class="literal">LD_LIBRARY_PATH</code> or
+            <code class="literal">LD_LIBRARY</code> environment variable.
+          </p></li><li class="listitem"><p>
+            On macOS, add the path of the directory where
+            <code class="filename">libmysqlclient.dylib</code> is located to the
+            <code class="literal">DYLD_LIBRARY_PATH</code> environment variable.
+          </p></li><li class="listitem"><p>
+            Copy the shared-library files (such as
+            <code class="filename">libmysqlclient.so</code>) to some directory
+            that is searched by your system, such as
+            <code class="filename">/lib</code>, and update the shared library
+            information by executing <code class="literal">ldconfig</code>. Be
+            sure to copy all related files. A shared library might exist
+            under several names, using symlinks to provide the alternate
+            names.
+          </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-server-client-versions"></a>4.5 C API Server Version and Client Library Version</h2></div></div></div><p>
+        The string and numeric forms of the MySQL server version are
+        available at compile time as the values of the
+        <code class="literal">MYSQL_SERVER_VERSION</code> and
+        <code class="literal">MYSQL_VERSION_ID</code> macros, and at runtime as
+        the values of the
+        <a class="link" href="c-api-functions.html#mysql-get-server-info" title="7.33 mysql_get_server_info()"><code class="literal">mysql_get_server_info()</code></a> and
+        <a class="link" href="c-api-functions.html#mysql-get-server-version" title="7.34 mysql_get_server_version()"><code class="literal">mysql_get_server_version()</code></a>
+        functions.
+      </p><p>
+        The client library version is the MySQL version. The string and
+        numeric forms of this version are available at compile time as
+        the values of the <code class="literal">MYSQL_SERVER_VERSION</code> and
+        <code class="literal">MYSQL_VERSION_ID</code> macros, and at runtime as
+        the values of the
+        <a class="link" href="c-api-functions.html#mysql-get-client-info" title="7.28 mysql_get_client_info()"><code class="literal">mysql_get_client_info()</code></a> and
+        <a class="link" href="c-api-functions.html#mysql-get-client-version" title="7.29 mysql_get_client_version()"><code class="literal">mysql_get_client_version()</code></a>
+        functions.
+      </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-example-programs.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-data-structures.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3 Example C API Client Programs </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5 C API Data Structures</td></tr></table></div><div class="copyright-footer"></div></body></html>

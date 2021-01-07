@@ -1,0 +1,594 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 4 Installing Connector/C++ from Source</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="up" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="prev" href="connector-cpp-installation-binary.html" title="Chapter 3 Installing Connector/C++ from a Binary Distribution"><link rel="next" href="connector-cpp-apps.html" title="Chapter 5 Building Connector/C++ Applications"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 4 Installing Connector/C++ from Source</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="connector-cpp-installation-binary.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="connector-cpp-apps.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="connector-cpp-installation-source"></a>Chapter 4 Installing Connector/C++ from Source</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites">4.1 Source Installation System Prerequisites</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-distribution">4.2 Obtaining and Unpacking a Connector/C++ Source Distribution</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-cpp">4.3 Installing Connector/C++ from Source</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options">4.4 Connector/C++ Source-Configuration Options</a></span></dt></dl></div><p>
+    This chapter describes how to install Connector/C++ using a source
+    distribution or a copy of the Git source repository.
+  </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-installation-source-prerequisites"></a>4.1 Source Installation System Prerequisites</h2></div></div></div><p>
+      To install Connector/C++ from source, the following system requirements
+      must be satisfied:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites-build-tools" title="Build Tools">Build Tools</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites-client-library" title="MySQL Client Library">MySQL Client Library</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites-boost" title="Boost C++ Libraries">Boost C++ Libraries</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites-ssl" title="SSL Support">SSL Support</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-prerequisites-build-tools"></a>Build Tools</h3></div></div></div><p>
+        You must have the cross-platform build tool
+        <span class="command"><strong>CMake</strong></span> (3.0 or higher).
+      </p><p>
+        You must have a C++ compiler that supports C++11.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-prerequisites-client-library"></a>MySQL Client Library</h3></div></div></div><p>
+        To build Connector/C++ from source, the MySQL C API client library may
+        be required:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Building the JDBC connector requires a client library from
+            MySQL 8.0 (8.0.11 or higher) or MySQL 5.7 (5.7.9 or higher).
+            This occurs when Connector/C++ is configured with the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a>
+            <span class="command"><strong>CMake</strong></span> option enabled to include the JDBC
+            connector.
+          </p></li><li class="listitem"><p>
+            For Connector/C++ built without the JDBC connector, the client
+            library is not needed.
+          </p></li></ul></div><p>
+        Typically, the MySQL client library is installed when MySQL is
+        installed. However, check your operating system documentation
+        for other installation options.
+      </p><p>
+        To specify where to find the client library, set the
+        <code class="literal">MYSQL_DIR</code>
+        <span class="command"><strong>CMake</strong></span> option appropriately at configuration
+        time as necessary (see
+        <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options" title="4.4 Connector/C++ Source-Configuration Options">Section 4.4, “Connector/C++ Source-Configuration Options”</a>).
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-prerequisites-boost"></a>Boost C++ Libraries</h3></div></div></div><p>
+        To compile Connector/C++ the Boost C++ libraries are needed only if you
+        build the legacy JDBC API or if the version of the C++ standard
+        library on your system does not implement the UTF8 converter
+        (<code class="literal">codecvt_utf8</code>).
+      </p><p>
+        If the Boost C++ libraries are needed, Boost 1.59.0 or newer
+        must be installed. To obtain Boost and its installation
+        instructions, visit <a class="ulink" href="http://www.boost.org" target="_top">the
+        official Boost site</a>.
+      </p><p>
+        After Boost is installed, use the
+        <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_boost"><code class="option">WITH_BOOST</code></a>
+        <span class="command"><strong>CMake</strong></span> option to indicate where the Boost
+        files are located (see
+        <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options" title="4.4 Connector/C++ Source-Configuration Options">Section 4.4, “Connector/C++ Source-Configuration Options”</a>):
+      </p><pre class="programlisting">cmake [<em class="replaceable"><code>other_options</code></em>] -DWITH_BOOST=/usr/local/boost_1_59_0
+</pre><p>
+        Adjust the path as necessary to match your installation.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-prerequisites-ssl"></a>SSL Support</h3></div></div></div><p>
+        Use the <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_ssl"><code class="option">WITH_SSL</code></a>
+        <span class="command"><strong>CMake</strong></span> option to specify which SSL library to
+        use when compiling Connector/C++. OpenSSL 1.0.x or higher is required.
+        As of Connector/C++ 8.0.18, it is possible to compile against OpenSSL
+        1.1.
+      </p><p>
+        For more information about
+        <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_ssl"><code class="option">WITH_SSL</code></a> and SSL libraries, see
+        <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options" title="4.4 Connector/C++ Source-Configuration Options">Section 4.4, “Connector/C++ Source-Configuration Options”</a>.
+      </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-installation-source-distribution"></a>4.2 Obtaining and Unpacking a Connector/C++ Source Distribution</h2></div></div></div><p>
+      To obtain a Connector/C++ source distribution, visit the
+      <a class="ulink" href="https://dev.mysql.com/downloads/connector/cpp/" target="_top">Connector/C++ downloads
+      page</a>. Alternatively, clone the Connector/C++ Git source
+      repository.
+    </p><p>
+      A Connector/C++ source distribution is packaged as a compressed
+      <span class="command"><strong>tar</strong></span> file or Zip archive, denoted here as
+      <code class="filename"><em class="replaceable"><code>PACKAGE</code></em>.tar.gz</code> or
+      <code class="filename"><em class="replaceable"><code>PACKAGE</code></em>.zip</code>. A
+      source distribution in <span class="command"><strong>tar</strong></span> file or Zip archive
+      format can be used on any supported platform.
+    </p><p>
+      The distribution when unpacked includes an
+      <code class="filename">INFO_SRC</code> file that provides information about
+      the product version and the source repository from which the
+      distribution was produced. The distribution also includes other
+      documentation files such as those listed in
+      <a class="xref" href="connector-cpp-installation-binary.html" title="Chapter 3 Installing Connector/C++ from a Binary Distribution">Chapter 3, <i>Installing Connector/C++ from a Binary Distribution</i></a>.
+    </p><p>
+      To unpack a compressed <span class="command"><strong>tar</strong></span> file, use this
+      command in the intended installation directory:
+    </p><pre class="programlisting">tar zxvf <em class="replaceable"><code>PACKAGE</code></em>.tar.gz
+</pre><p>
+      After unpacking the distribution, build it using the appropriate
+      instructions for your platform later in this chapter.
+    </p><p>
+      To install from a Zip archive package (<code class="filename">.zip</code>
+      file), use <span class="command"><strong>WinZip</strong></span> or another tool that can read
+      <code class="filename">.zip</code> files to unpack the file into the
+      location of your choosing. After unpacking the distribution, build
+      it using the appropriate instructions for your platform later in
+      this chapter.
+    </p><p>
+      To clone the Connector/C++ code from the source code repository located
+      on GitHub at
+      <a class="ulink" href="https://github.com/mysql/mysql-connector-cpp" target="_top">https://github.com/mysql/mysql-connector-cpp</a>, use
+      this command:
+    </p><pre class="programlisting">git clone https://github.com/mysql/mysql-connector-cpp.git
+</pre><p>
+      That command should create a
+      <code class="filename">mysql-connector-cpp</code> directory containing a
+      copy of the entire Connector/C++ source tree.
+    </p><p>
+      The <span class="command"><strong>git clone</strong></span> command sets the sources to the
+      <code class="literal">master</code> branch, which is the branch that
+      contains the latest sources. Released code is in the
+      <code class="literal">8.0</code> branche (the <code class="literal">8.0</code> branch
+      contains the same sources as the <code class="literal">master</code>
+      branch). If necessary, use <span class="command"><strong>git checkout</strong></span> in the
+      source directory to select the desired branch. For example, to
+      build Connector/C++ 8.0:
+    </p><pre class="programlisting">cd mysql-connector-cpp
+git checkout 8.0
+</pre><p>
+      After cloning the repository, build it using the appropriate
+      instructions for your platform later in this chapter.
+    </p><p>
+      After the initial checkout operation to get the source tree, run
+      <span class="command"><strong>git pull</strong></span> periodically to update your source to
+      the latest version.
+    </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-installation-source-cpp"></a>4.3 Installing Connector/C++ from Source</h2></div></div></div><p>
+      To install Connector/C++ from source, verify that your system satisfies
+      the requirements outlined in
+      <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites" title="4.1 Source Installation System Prerequisites">Section 4.1, “Source Installation System Prerequisites”</a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-configure" title="Configuring Connector/C++">Configuring Connector/C++</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-build" title="Building Connector/C++">Building Connector/C++</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-install" title="Installing Connector/C++">Installing Connector/C++</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-verification" title="Verifying Connector/C++ Functionality">Verifying Connector/C++ Functionality</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-configure"></a>Configuring Connector/C++</h3></div></div></div><p>
+        Use <span class="command"><strong>CMake</strong></span> to configure and build Connector/C++. Only
+        out-of-source-builds are supported, so create a directory to use
+        for the build and change location into it. Then configure the
+        build using this command, where
+        <em class="replaceable"><code>concpp_source</code></em> is the directory
+        containing the Connector/C++ source code:
+      </p><pre class="programlisting">cmake <em class="replaceable"><code>concpp_source</code></em>
+</pre><p>
+        It may be necessary to specify other options on the
+        configuration command. Some examples:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            By default, these installation locations are used:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="filename">/usr/local/mysql/connector-c++-8.0</code>
+                (Unix and Unix-like systems)
+              </p></li><li class="listitem"><p>
+                <code class="filename"><em class="replaceable"><code>User_home</code></em>/MySQL/"MySQL
+                Connector C++ 8.0"</code> (Windows)
+              </p></li></ul></div><p>
+            To specify the installation location explicitly, use the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a> option:
+          </p><pre class="programlisting">-DCMAKE_INSTALL_PREFIX=<em class="replaceable"><code>path_name</code></em>
+</pre></li><li class="listitem"><p>
+            On Windows, you can use the <code class="option">-G</code> and
+            <code class="option">-A</code> options to select a particular
+            generator:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="option">-G "Visual Studio 16" -A x64</code> (64-bit
+                builds)
+              </p></li><li class="listitem"><p>
+                <code class="option">-G "Visual Studio 16" -A Win32</code> (32-bit
+                builds)
+              </p></li></ul></div><p>
+            Consult the <span class="command"><strong>CMake</strong></span> manual or check
+            <code class="literal">cmake --help</code> to find out which generators
+            are supported by your <span class="command"><strong>CMake</strong></span> version.
+            (However, it may be that your version of
+            <span class="command"><strong>CMake</strong></span> supports more generators than can
+            actually be used to build Connector/C++.)
+          </p></li><li class="listitem"><p>
+            If the Boost C++ libraries are needed, use the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_boost"><code class="option">WITH_BOOST</code></a> option to specify
+            their location:
+          </p><pre class="programlisting">-DWITH_BOOST=<em class="replaceable"><code>path_name</code></em>
+</pre></li><li class="listitem"><p>
+            By default, the build creates dynamic (shared) libraries. To
+            build static libraries, enable the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_build_static"><code class="option">BUILD_STATIC</code></a> option:
+          </p><pre class="programlisting">-DBUILD_STATIC=ON
+</pre></li><li class="listitem"><p>
+            By default, the legacy JDBC connector is not built. If you
+            plan to build this connector, an additional
+            <span class="command"><strong>git</strong></span> command is needed to perform
+            submodule initialization (do this in the top-level source
+            directory):
+          </p><pre class="programlisting">git submodule update --init
+</pre><p>
+            To include the JDBC connector in the build, enable the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a> option:
+          </p><pre class="programlisting">-DWITH_JDBC=ON
+</pre></li></ul></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          If you configure and build the test programs later, use the
+          same <span class="command"><strong>CMake</strong></span> options to configure them as the
+          ones you use to configure Connector/C++ (<code class="option">-G</code>,
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_boost"><code class="option">WITH_BOOST</code></a>,
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_build_static"><code class="option">BUILD_STATIC</code></a>, and so forth).
+          Exceptions: Path name arguments will differ, and you need not
+          specify <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a>.
+        </p></div><p>
+        For information about <span class="command"><strong>CMake</strong></span> configuration
+        options, see
+        <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options" title="4.4 Connector/C++ Source-Configuration Options">Section 4.4, “Connector/C++ Source-Configuration Options”</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-build"></a>Building Connector/C++</h3></div></div></div><p>
+        After configuring the Connector/C++ distribution, build it using this
+        command:
+      </p><pre class="programlisting">cmake --build . --config <em class="replaceable"><code>build_type</code></em>
+</pre><p>
+        The <code class="option">--config</code> option is optional. It specifies
+        the build configuration to use, such as
+        <code class="literal">Release</code> or <code class="literal">Debug</code>. If you
+        omit <code class="option">--config</code>, the default is
+        <code class="literal">Debug</code>.
+      </p><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Important</div><p>
+          If you specify the <code class="option">--config</code> option on the
+          preceding command, specify the same <code class="option">--config</code>
+          option for later steps, such as the steps that install Connector/C++
+          or that build test programs.
+        </p></div><p>
+        If the build is successful, it creates the connector libraries
+        in the build directory. (For Windows, look for the libraries in
+        a subdirectory with the same name as the
+        <em class="replaceable"><code>build_type</code></em> value specified for the
+        <code class="option">--config</code> option.)
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            If you build dynamic libraries, they have these names:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn8.so.1</code> (Unix)
+              </p></li><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn8.1.dylib</code> (macOS)
+              </p></li><li class="listitem"><p>
+                <code class="filename">mysqlcppconn8-1-vs14.dll</code> (Windows)
+              </p></li></ul></div></li><li class="listitem"><p>
+            If you build static libraries, they have these names:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn8-static.a</code> (Unix,
+                macOS)
+              </p></li><li class="listitem"><p>
+                <code class="filename">mysqlcppconn8-static.lib</code> (Windows)
+              </p></li></ul></div></li></ul></div><p>
+        If you enabled the <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a>
+        option to include the legacy JDBC connector in the build, the
+        following additional library files are created.
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            If you build legacy dynamic libraries, they have these
+            names:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn.so.7</code> (Unix)
+              </p></li><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn.7.dylib</code> (macOS)
+              </p></li><li class="listitem"><p>
+                <code class="filename">mysqlcppconn-7-vs14.dll</code> (Windows)
+              </p></li></ul></div></li><li class="listitem"><p>
+            If you build legacy static libraries, they have these names:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                <code class="filename">libmysqlcppconn-static.a</code> (Unix,
+                macOS)
+              </p></li><li class="listitem"><p>
+                <code class="filename">mysqlcppconn-static.lib</code> (Windows)
+              </p></li></ul></div></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-install"></a>Installing Connector/C++</h3></div></div></div><p>
+        To install Connector/C++, use this command:
+      </p><pre class="programlisting">cmake --build . --target install --config <em class="replaceable"><code>build_type</code></em>
+</pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-installation-source-verification"></a>Verifying Connector/C++ Functionality</h3></div></div></div><p>
+        To verify connector functionality, build and run one or more of
+        the test programs included in the <code class="filename">testapp</code>
+        directory of the source distribution. Create a directory to use
+        and change location into it. Then issue the following commands:
+      </p><pre class="programlisting">cmake [<em class="replaceable"><code>other_options</code></em>] -DWITH_CONCPP=<em class="replaceable"><code>concpp_install</code></em> <em class="replaceable"><code>concpp_source</code></em>/testapp
+cmake --build . --config=<em class="replaceable"><code>build_type</code></em>
+</pre><p>
+        <code class="option">WITH_CONCPP</code> is an option used only to configure
+        the test application. <em class="replaceable"><code>other_options</code></em>
+        consists of the options that you used to configure Connector/C++ itself
+        (<code class="option">-G</code>, <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_boost"><code class="option">WITH_BOOST</code></a>,
+        <a class="link" href="connector-cpp-installation-source.html#option_cmake_build_static"><code class="option">BUILD_STATIC</code></a>, and so forth).
+        <em class="replaceable"><code>concpp_source</code></em> is the directory
+        containing the Connector/C++ source code, and
+        <em class="replaceable"><code>concpp_install</code></em> is the directory where
+        Connector/C++ is installed:
+      </p><p>
+        The preceding commands should create the
+        <span class="command"><strong>devapi_test</strong></span> and <span class="command"><strong>xapi_test</strong></span>
+        programs in the <code class="filename">run</code> directory of the build
+        location. If you enable <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a>
+        when configuring the test programs, the build also creates the
+        <span class="command"><strong>jdbc_test</strong></span> program.
+      </p><p>
+        Before running test programs, ensure that a MySQL server
+        instance is running with X Plugin enabled. The easiest way to
+        arrange this is to use the <span class="command"><strong>mysql-test-run.pl</strong></span>
+        script from the MySQL distribution. For MySQL 8.0, X Plugin is
+        enabled by default, so invoke this command in the
+        <code class="filename">mysql-test</code> directory of that distribution:
+      </p><pre class="programlisting">perl mysql-test-run.pl --start-and-exit
+</pre><p>
+        For MySQL 5.7, X Plugin must be enabled explicitly, so add an
+        option to do that:
+      </p><pre class="programlisting">perl mysql-test-run.pl --start-and-exit --mysqld=--plugin-load=mysqlx
+</pre><p>
+        The command should start a test server instance with X Plugin
+        enabled and listening on port 13009 instead of its standard port
+        (33060).
+      </p><p>
+        Now you can run one of the test programs. They accept a
+        connection-string argument, so if the server was started as just
+        described, you can run them like this:
+      </p><pre class="programlisting">run/devapi_test mysqlx://root@127.0.0.1:13009
+run/xapi_test mysqlx://root@127.0.0.1:13009
+</pre><p>
+        The connection string assumes availability of a
+        <code class="literal">root</code> user account without any password and
+        the programs assume that there is a <code class="literal">test</code>
+        schema available (assumptions that hold for a server started
+        using <span class="command"><strong>mysql-test-run.pl</strong></span>).
+      </p><p>
+        To test <span class="command"><strong>jdbc_test</strong></span>, you need a MySQL server,
+        but X Plugin is not required. Also, the connection options must
+        be in the form specified by the JDBC API. Pass the user name as
+        the second argument. For example:
+      </p><pre class="programlisting">run/jdbc_test tcp://127.0.0.1:13009 root
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-source-configuration-options"></a>4.4 Connector/C++ Source-Configuration Options</h2></div></div></div><p>
+      Connector/C++ recognizes the <code class="literal">CMake</code> options described
+      in this section.
+    </p><div class="table"><a name="idm46252352730608"></a><p class="title"><b>Table 4.1 Connector/C++ Source-Configuration Option
+      Reference</b></p><div class="table-contents"><table frame="box" rules="all" summary="CMake options that are available to configure Connector/C++ when building from source."><col width="33%"><col width="33%"><col width="22%"><col width="11%"><thead><tr><th scope="col">Formats</th>
+<th scope="col">Description</th>
+<th scope="col">Default</th>
+<th scope="col">Introduced</th>
+</tr></thead><tbody><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_build_static"><code class="literal">BUILD_STATIC</code></a></th>
+<td>Whether to build a static librarty</td>
+<td><code class="literal">OFF</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_bundle_dependencies"><code class="literal">BUNDLE_DEPENDENCIES</code></a></th>
+<td>Whether to bundle external dependency libraries with the connector</td>
+<td><code class="literal">OFF</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_build_type"><code class="literal">CMAKE_BUILD_TYPE</code></a></th>
+<td>Type of build to produce</td>
+<td><code class="literal">Debug</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_docdir"><code class="literal">CMAKE_INSTALL_DOCDIR</code></a></th>
+<td>Documentation installation directory</td>
+<td></td>
+<td>8.0.14</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_includedir"><code class="literal">CMAKE_INSTALL_INCLUDEDIR</code></a></th>
+<td>Header file installation directory</td>
+<td></td>
+<td>8.0.14</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_libdir"><code class="literal">CMAKE_INSTALL_LIBDIR</code></a></th>
+<td>Library installation directory</td>
+<td></td>
+<td>8.0.14</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="literal">CMAKE_INSTALL_PREFIX</code></a></th>
+<td>Installation base directory</td>
+<td><code class="literal">/usr/local</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_maintainer_mode"><code class="literal">MAINTAINER_MODE</code></a></th>
+<td>For internal use only</td>
+<td><code class="literal">OFF</code></td>
+<td>8.0.12</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_mysqlclient_static_binding"><code class="literal">MYSQLCLIENT_STATIC_BINDING</code></a></th>
+<td>Whether to link to the shared MySQL client library</td>
+<td><code class="literal">ON</code></td>
+<td>8.0.16</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_mysqlclient_static_linking"><code class="literal">MYSQLCLIENT_STATIC_LINKING</code></a></th>
+<td>Whether to statically link to the MySQL client library</td>
+<td><code class="literal">ON</code></td>
+<td>8.0.16</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_mysql_config_executable"><code class="literal">MYSQL_CONFIG_EXECUTABLE</code></a></th>
+<td>Path to the mysql_config program</td>
+<td><code class="literal">${MYSQL_DIR}/bin/mysql_config</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_mysql_dir"><code class="literal">MYSQL_DIR</code></a></th>
+<td>MySQL Server installation directory</td>
+<td></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_static_msvcrt"><code class="literal">STATIC_MSVCRT</code></a></th>
+<td>Use the static runtime library</td>
+<td></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_with_boost"><code class="literal">WITH_BOOST</code></a></th>
+<td>The Boost source directory</td>
+<td></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_with_doc"><code class="literal">WITH_DOC</code></a></th>
+<td>Whether to generate Doxygen documentation</td>
+<td><code class="literal">OFF</code></td>
+<td></td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="literal">WITH_JDBC</code></a></th>
+<td>Whether to build legacy JDBC library</td>
+<td><code class="literal">OFF</code></td>
+<td>8.0.7</td>
+</tr><tr><th scope="row"><a class="link" href="connector-cpp-installation-source.html#option_cmake_with_ssl"><code class="literal">WITH_SSL</code></a></th>
+<td>Type of SSL support</td>
+<td><code class="literal">system</code></td>
+<td>8.0.7</td>
+</tr></tbody></table></div></div><br class="table-break"><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a name="option_cmake_build_static"></a>
+          <code class="literal">-DBUILD_STATIC=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352636640"></a><a class="indexterm" name="idm46252352635248"></a><p>
+          By default, dynamic (shared) libraries are built. If this
+          option is enabled, static libraries are built instead.
+        </p></li><li class="listitem"><p><a name="option_cmake_bundle_dependencies"></a>
+          <code class="literal">-DBUNDLE_DEPENDENCIES=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352631424"></a><a class="indexterm" name="idm46252352630032"></a><p>
+          This is an internal option used for creating Connector/C++
+          distribution packages.
+        </p></li><li class="listitem"><p><a name="option_cmake_cmake_build_type"></a>
+          <code class="literal">-DCMAKE_BUILD_TYPE=<em class="replaceable"><code>type</code></em></code>
+        </p><a class="indexterm" name="idm46252352626240"></a><a class="indexterm" name="idm46252352624848"></a><p>
+          The type of build to produce:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <code class="literal">Debug</code>: Disable optimizations and
+              generate debugging information. This is the default.
+            </p></li><li class="listitem"><p>
+              <code class="literal">Release</code>: Enable optimizations.
+            </p></li><li class="listitem"><p>
+              <code class="literal">RelWithDebInfo</code>: Enable optimizations
+              and generate debugging information.
+            </p></li></ul></div></li><li class="listitem"><p><a name="option_cmake_cmake_install_docdir"></a>
+          <code class="literal">-DCMAKE_INSTALL_DOCDIR=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352616400"></a><a class="indexterm" name="idm46252352615008"></a><p>
+          The documentation installation directory, relative to
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a>. If not
+          specified, the default is to install in
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a>.
+        </p><p>
+          This option requires that
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_doc"><code class="option">WITH_DOC</code></a> be enabled.
+        </p><p>
+          This option was added in Connector/C++ 8.0.14.
+        </p></li><li class="listitem"><p><a name="option_cmake_cmake_install_includedir"></a>
+          <code class="literal">-DCMAKE_INSTALL_INCLUDEDIR=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352608064"></a><a class="indexterm" name="idm46252352606672"></a><p>
+          The header file installation directory, relative to
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a>. If not
+          specified, the default is <code class="filename">include</code>.
+        </p><p>
+          This option was added in Connector/C++ 8.0.14.
+        </p></li><li class="listitem"><p><a name="option_cmake_cmake_install_libdir"></a>
+          <code class="literal">-DCMAKE_INSTALL_LIBDIR=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352601072"></a><a class="indexterm" name="idm46252352599680"></a><p>
+          The library installation directory, relative to
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_cmake_install_prefix"><code class="option">CMAKE_INSTALL_PREFIX</code></a>. If not
+          specified, the default is <code class="filename">lib64</code> or
+          <code class="filename">lib</code>.
+        </p><p>
+          This option was added in Connector/C++ 8.0.14.
+        </p></li><li class="listitem"><p><a name="option_cmake_cmake_install_prefix"></a>
+          <code class="literal">-DCMAKE_INSTALL_PREFIX=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352593472"></a><a class="indexterm" name="idm46252352592080"></a><p>
+          The installation base directory (where to install Connector/C++).
+        </p></li><li class="listitem"><p><a name="option_cmake_maintainer_mode"></a>
+          <code class="literal">-DMAINTAINER_MODE=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352588320"></a><a class="indexterm" name="idm46252352586928"></a><p>
+          This is an internal option used for creating Connector/C++
+          distribution packages. It was added in Connector/C++ 8.0.12.
+        </p></li><li class="listitem"><p><a name="option_cmake_mysqlclient_static_binding"></a>
+          <code class="literal">-DMYSQLCLIENT_STATIC_BINDING=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352583104"></a><a class="indexterm" name="idm46252352581712"></a><p>
+          Whether to link to the shared MySQL client library. This
+          option is used only if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_mysqlclient_static_linking"><code class="option">MYSQLCLIENT_STATIC_LINKING</code></a> is
+          disabled to enable dynamic linking of the MySQL client
+          library. In that case, if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_mysqlclient_static_binding"><code class="option">MYSQLCLIENT_STATIC_BINDING</code></a> is
+          enabled (the default), Connector/C++ is linked to the shared MySQL
+          client library. Otherwise, the shared MySQL client library is
+          loaded and mapped at runtime.
+        </p><p>
+          This option applies only if you are building the legacy JDBC
+          connector (that is, only if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a> is enabled). It was
+          added in Connector/C++ 8.0.16.
+        </p></li><li class="listitem"><p><a name="option_cmake_mysqlclient_static_linking"></a>
+          <code class="literal">-DMYSQLCLIENT_STATIC_LINKING=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352574704"></a><a class="indexterm" name="idm46252352573312"></a><p>
+          Whether to link statically to the MySQL client library. The
+          default is <code class="literal">ON</code> (use static linking to the
+          client library). Disabling this option enables dynamic linking
+          to the client library.
+        </p><p>
+          This option applies only if you are building the legacy JDBC
+          connector (that is, only if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a> is enabled). It was
+          added in Connector/C++ 8.0.16.
+        </p></li><li class="listitem"><p><a name="option_cmake_mysql_config_executable"></a>
+          <code class="literal">-DMYSQL_CONFIG_EXECUTABLE=<em class="replaceable"><code>file_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352567392"></a><a class="indexterm" name="idm46252352566000"></a><p>
+          The path to the <span class="command"><strong>mysql_config</strong></span> program.
+        </p><p>
+          On non-Windows systems, <span class="command"><strong>CMake</strong></span> checks to see
+          whether <a class="link" href="connector-cpp-installation-source.html#option_cmake_mysql_config_executable"><code class="option">MYSQL_CONFIG_EXECUTABLE</code></a>
+          is set. If not, <span class="command"><strong>CMake</strong></span> tries to locate
+          <code class="filename">mysql_config</code> in the default locations.
+        </p><p>
+          This option applies only if you are building the legacy JDBC
+          connector (that is, only if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a> is enabled).
+        </p></li><li class="listitem"><p><a name="option_cmake_mysql_dir"></a>
+          <code class="literal">-DMYSQL_DIR=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352557424"></a><a class="indexterm" name="idm46252352556032"></a><p>
+          The directory where MySQL is installed.
+        </p><p>
+          This option applies only if you are building the legacy JDBC
+          connector (that is, only if
+          <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a> is enabled).
+        </p></li><li class="listitem"><p><a name="option_cmake_static_msvcrt"></a>
+          <code class="literal">-DSTATIC_MSVCRT=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352551008"></a><a class="indexterm" name="idm46252352549616"></a><p>
+          (Windows only) Use the static runtime library (the
+          <code class="literal">/MT*</code> compiler option). This option might be
+          necessary if code that uses Connector/C++ also uses the static
+          runtime library.
+        </p></li><li class="listitem"><p><a name="option_cmake_with_boost"></a>
+          <code class="literal">-DWITH_BOOST=<em class="replaceable"><code>dir_name</code></em></code>
+        </p><a class="indexterm" name="idm46252352545072"></a><a class="indexterm" name="idm46252352543680"></a><p>
+          The directory where the Boost sources are installed.
+        </p></li><li class="listitem"><p><a name="option_cmake_with_doc"></a>
+          <code class="literal">-DWITH_DOC=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352539920"></a><a class="indexterm" name="idm46252352538528"></a><p>
+          Whether to enable generating the Doxygen documentation. As of
+          Connector/C++ 8.0.16, enabling this option also causes the Doxygen
+          documentation to be built by the <code class="literal">all</code>
+          target.
+        </p></li><li class="listitem"><p><a name="option_cmake_with_jdbc"></a>
+          <code class="literal">-DWITH_JDBC=<em class="replaceable"><code>bool</code></em></code>
+        </p><a class="indexterm" name="idm46252352534032"></a><a class="indexterm" name="idm46252352532640"></a><p>
+          Whether to build the legacy JDBC connector. This option is
+          disabled by default. If it is enabled, Connector/C++ 8.0 applications
+          can use the legacy JDBC API, just like Connector/C++ 1.1
+          applications.
+        </p></li><li class="listitem"><p><a name="option_cmake_with_ssl"></a>
+          <code class="literal">-DWITH_SSL={<em class="replaceable"><code>ssl_type</code></em></code>|<em class="replaceable"><code>path_name</code></em>}
+        </p><a class="indexterm" name="idm46252352528320"></a><a class="indexterm" name="idm46252352526928"></a><p>
+          This option specifies which SSL library to use when compiling
+          Connector/C++. The option value indicates the type of SSL support to
+          include or the path name to the SSL installation to use:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <em class="replaceable"><code>ssl_type</code></em> can be one of the
+              following values:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                  <code class="literal">system</code>: Use the system OpenSSL
+                  library.
+                </p><p>
+                  When running an application that is linked to the
+                  connector dynamic library, the OpenSSL libraries on
+                  which the connector depends should be correctly found
+                  if they are placed in the file system next to the
+                  connector library. The application should also work
+                  when the OpenSSL libraries are installed at the
+                  standard system-wide locations. This assumes that the
+                  version of OpenSSL is as expected by Connector/C++.
+                </p><p>
+                  Compressed <span class="command"><strong>tar</strong></span> files or Zip archive
+                  distributions for for Windows, Linux, and macOS should
+                  contain the required OpenSSL libraries in the same
+                  location as the connector library.
+                </p><p>
+                  Except for Windows, it should be possible to run an
+                  application linked to the connector dynamic library
+                  when the connector library and the OpenSSL libraries
+                  are placed in a nonstandard location, provided that
+                  these locations were stored as runtime paths when
+                  building the application (<span class="command"><strong>gcc</strong></span>
+                  <code class="option">-rpath</code> option).
+                </p><p>
+                  For Windows, an application that is linked to the
+                  connector shared library can be run only if the
+                  connector library and the OpenSSL libraries are stored
+                  either:
+                </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+                      In the Windows system folder
+                    </p></li><li class="listitem"><p>
+                      In the same folder as the application
+                    </p></li><li class="listitem"><p>
+                      In a folder listed in the <code class="literal">PATH</code>
+                      environment variable
+                    </p></li></ul></div><p>
+                  If the application is linked to the connector static
+                  library, it remains true that the required OpenSSL
+                  libraries must be found in one of the preceding
+                  locations.
+                </p></li></ul></div></li><li class="listitem"><p>
+              <em class="replaceable"><code>path_name</code></em> is the path name to
+              the SSL installation to use. It should be the path to the
+              installed OpenSSL library, and must point to a directory
+              containing a <code class="filename">lib</code> subdirectory with
+              OpenSSL libraries that are already built.
+            </p><p>
+              Specifying a path name for the OpenSSL installation can be
+              preferable to using the
+              <em class="replaceable"><code>ssl_type</code></em> value of
+              <code class="literal">system</code> because it can prevent
+              <span class="command"><strong>CMake</strong></span> from detecting and using an older
+              or incorrect OpenSSL version installed on the system.
+            </p></li></ul></div></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="connector-cpp-installation-binary.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="connector-cpp-apps.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3 Installing Connector/C++ from a Binary Distribution </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5 Building Connector/C++ Applications</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,179 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 1 Introduction to Connector/C++</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="up" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="prev" href="preface.html" title="Preface and Legal Notices"><link rel="next" href="connector-cpp-downloading.html" title="Chapter 2 Obtaining Connector/C++"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 1 Introduction to Connector/C++</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="preface.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="connector-cpp-downloading.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="connector-cpp-introduction"></a>Chapter 1 Introduction to Connector/C++</h1></div></div></div><a class="indexterm" name="idm46252358708640"></a><p>
+      MySQL Connector/C++ 8.0 is a MySQL database connector for C++ applications
+      that connect to MySQL servers. Connector/C++ can be used to access MySQL
+      servers that implement a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/document-store.html" target="_top">document
+      store</a>, or in a traditional way using SQL statements. The
+      preferred development environment for Connector/C++ 8.0 is to enable
+      development of C++ applications using X DevAPI, or plain C
+      applications using X DevAPI for C, but Connector/C++ 8.0 also enables
+      development of C++ applications that use the legacy JDBC-based API
+      from Connector/C++ 1.1.
+    </p><p>
+      Connector/C++ applications that use X DevAPI or X DevAPI for C require a
+      MySQL server that has <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/x-plugin.html" target="_top">X Plugin</a>
+      enabled. Connector/C++ applications that use the legacy JDBC-based API
+      neither require nor support X Plugin.
+    </p><p>
+      For more detailed requirements about required MySQL versions for
+      Connector/C++ applications, see
+      <a class="xref" href="connector-cpp-introduction.html#connector-cpp-prerequisites" title="Platform Support and Prerequisites">Platform Support and Prerequisites</a>.
+    </p><p>
+      For notes detailing the changes in each release of Connector/C++, see
+      <a class="ulink" href="https://dev.mysql.com/doc/relnotes/connector-cpp/en/" target="_top">MySQL Connector/C++ Release
+      Notes</a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="connector-cpp-introduction.html#connector-cpp-benefits" title="Connector/C++ Benefits">Connector/C++ Benefits</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-introduction.html#connector-cpp-x-devapi-connector" title="X DevAPI and X DevAPI for C">X DevAPI and X DevAPI for C</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-introduction.html#connector-cpp-legacy-jdbc-connector" title="Legacy JDBC API and JDBC Compatibility">Legacy JDBC API and JDBC Compatibility</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-introduction.html#connector-cpp-prerequisites" title="Platform Support and Prerequisites">Platform Support and Prerequisites</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-benefits"></a>Connector/C++ Benefits</h2></div></div></div><p>
+        MySQL Connector/C++ offers the following benefits for C++ users compared to
+        the MySQL C API provided by the MySQL client library:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Convenience of pure C++.
+          </p></li><li class="listitem"><p>
+            Support for these application programming interfaces:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                X DevAPI
+              </p></li><li class="listitem"><p>
+                X DevAPI for C
+              </p></li><li class="listitem"><p>
+                Legacy JDBC 4.0-based API
+              </p></li></ul></div></li><li class="listitem"><p>
+            Support for the object-oriented programming paradigm.
+          </p></li><li class="listitem"><p>
+            Reduced development time.
+          </p></li><li class="listitem"><p>
+            Licensed under the GPL with the FLOSS License Exception.
+          </p></li><li class="listitem"><p>
+            Available under a commercial license upon request.
+          </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-x-devapi-connector"></a>X DevAPI and X DevAPI for C</h2></div></div></div><p>
+        Connector/C++ implements X DevAPI, which enables connecting to MySQL
+        servers that implement a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/document-store.html" target="_top">document
+        store</a> with <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/x-plugin.html" target="_top">X Plugin</a>.
+        X DevAPI also enables applications to execute SQL statements.
+      </p><p>
+        Connector/C++ also implements a similar interface called X DevAPI for C for
+        use by applications written in plain C.
+      </p><p>
+        For general information about X DevAPI, see
+        <a class="ulink" href="https://dev.mysql.com/doc/x-devapi-userguide/en/" target="_top">X DevAPI User Guide</a>. For reference information
+        specific to the Connector/C++ implementation of X DevAPI and
+        X DevAPI for C, see <em class="citetitle">MySQL Connector/C++ X DevAPI
+        Reference</em> in the <em class="citetitle">X DevAPI</em>
+        section of <a class="ulink" href="https://dev.mysql.com/doc/" target="_top">MySQL
+        Documentation</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-legacy-jdbc-connector"></a>Legacy JDBC API and JDBC Compatibility</h2></div></div></div><p>
+        Connector/C++ implements the JDBC 4.0 API, if built to include the
+        legacy JDBC connector:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Connector/C++ binary distributions include the JDBC connector.
+          </p></li><li class="listitem"><p>
+            If you build Connector/C++ from source, the JDBC connector is not
+            built by default, but can be included by enabling the
+            <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a>
+            <span class="command"><strong>CMake</strong></span> option. See
+            <a class="xref" href="connector-cpp-installation-source.html" title="Chapter 4 Installing Connector/C++ from Source">Chapter 4, <i>Installing Connector/C++ from Source</i></a>.
+          </p></li></ul></div><p>
+        The Connector/C++ JDBC API is compatible with the JDBC 4.0 API. Connector/C++
+        does not implement the entire JDBC 4.0 API, but does feature
+        these classes: <code class="classname">Connection</code>,
+        <code class="classname">DatabaseMetaData</code>,
+        <code class="classname">Driver</code>,
+        <code class="classname">PreparedStatement</code>,
+        <code class="classname">ResultSet</code>,
+        <code class="classname">ResultSetMetaData</code>,
+        <code class="classname">Savepoint</code>,
+        <code class="classname">Statement</code>.
+      </p><p>
+        The JDBC 4.0 API defines approximately 450 methods for the
+        classes just mentioned. Connector/C++ implements approximately 80% of
+        these.
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          The legacy JDBC connector in Connector/C++ 8.0 is based on the
+          connector provided by Connector/C++ 1.1. For more information about
+          using the JDBC API in Connector/C++ 8.0, see
+          <a class="ulink" href="https://dev.mysql.com/doc/connector-cpp/1.1/en/" target="_top">MySQL Connector/C++ 1.1 Developer Guide</a>.
+        </p></div></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-prerequisites"></a>Platform Support and Prerequisites</h2></div></div></div><p>
+        To see which platforms are supported, visit the
+        <a class="ulink" href="https://dev.mysql.com/downloads/connector/cpp/" target="_top">Connector/C++ downloads
+        page</a>.
+      </p><p>
+        On Windows platforms, Commercial and Community Connector/C++
+        distributions require the Visual C++ Redistributable for Visual
+        Studio. The Redistributable is available at the
+        <a class="ulink" href="https://visualstudio.microsoft.com/downloads/" target="_top">Visual Studio Download
+        Center</a>; install it before installing Connector/C++. The
+        acceptable Redistributable versions depend on your Connector/C++
+        version:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Connector/C++ 8.0.19 and higher: VC++ Redistributable 2017 or
+            higher.
+          </p></li><li class="listitem"><p>
+            Connector/C++ 8.0.14 to 8.0.18: VC++ Redistributable 2015 or
+            higher.
+          </p></li></ul></div><p>
+        The following requirements apply to building and running Connector/C++
+        applications, and to building Connector/C++ itself if you build it from
+        source:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            To run Connector/C++ applications, the MySQL server requirements
+            depend on the API the application uses:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                Connector/C++ applications that use X DevAPI or X DevAPI for C
+                require a server from MySQL 8.0 (8.0.11 or higher) or
+                MySQL 5.7 (5.7.12 or higher), with
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/x-plugin.html" target="_top">X Plugin</a> enabled. For
+                MySQL 8.0, X Plugin is enabled by default. For MySQL
+                5.7, X Plugin must be enabled explicitly. (Some X
+                Protocol features may not work with MySQL 5.7.)
+              </p></li><li class="listitem"><p>
+                Applications that use the JDBC API can use a server from
+                MySQL 5.6 or higher. X Plugin is neither required nor
+                supported.
+              </p></li></ul></div></li><li class="listitem"><p>
+            To build Connector/C++ applications:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                The MySQL version does not apply.
+              </p></li><li class="listitem"><p>
+                On Windows, Microsoft Visual Studio is required. The
+                acceptable MSVC versions depend on your Connector/C++ version
+                and the type of linking you use:
+              </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                    Connector/C++ 8.0.20 and higher: Same as Connector/C++ 8.0.19,
+                    with the addition that binary distributions are also
+                    compatible with MSVC 2017 using the static X DevAPI
+                    connector library. This means that binary
+                    distributions are fully compatible with MSVC 2019,
+                    and fully compatible with MSVC 2017 with the
+                    exception of the static legacy (JDBC) connector
+                    library.
+                  </p></li><li class="listitem"><p>
+                    Connector/C++ 8.0.19: Connector/C++ binary distributions are
+                    compatible with projects built using MSVC 2019
+                    (using either dynamic or static connector libraries)
+                    or MSVC 2017 (using dynamic connector libraries).
+                  </p></li><li class="listitem"><p>
+                    Connector/C++ 8.0.14 to 8.0.18: MSVC 2017 or 2015.
+                  </p></li><li class="listitem"><p>
+                    Connector/C++ prior to 8.0.14: MSVC 2015.
+                  </p></li></ul></div></li></ul></div></li><li class="listitem"><p>
+            To build Connector/C++ from source:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                The MySQL C API client library may be required:
+              </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                    For Connector/C++ built without the JDBC connector (which
+                    is the default), the client library is not needed.
+                  </p></li><li class="listitem"><p>
+                    To build Connector/C++ with the JDBC connector, configure
+                    Connector/C++ with the
+                    <a class="link" href="connector-cpp-installation-source.html#option_cmake_with_jdbc"><code class="option">WITH_JDBC</code></a>
+                    <span class="command"><strong>CMake</strong></span> option enabled. In this
+                    case, the JDBC connector requires a client library
+                    from MySQL 8.0 (8.0.11 or higher) or MySQL 5.7
+                    (5.7.9 or higher).
+                  </p></li></ul></div></li><li class="listitem"><p>
+                On Windows, Microsoft Visual Studio is required. The
+                acceptable MSVC versions depend on your Connector/C++ version:
+              </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                    Connector/C++ 8.0.19 and higher: MSVC 2019 or 2017.
+                  </p></li><li class="listitem"><p>
+                    Connector/C++ 8.0.14 to 8.0.18: MSVC 2017 or 2015.
+                  </p></li><li class="listitem"><p>
+                    Connector/C++ prior to 8.0.14: MSVC 2015.
+                  </p></li></ul></div></li></ul></div></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="preface.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="connector-cpp-downloading.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Preface and Legal Notices </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 2 Obtaining Connector/C++</td></tr></table></div><div class="copyright-footer"></div></body></html>

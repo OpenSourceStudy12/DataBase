@@ -1,0 +1,143 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 19 C API Binary Log Data Structures</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-binary-log-interface.html" title="Chapter 18 C API Binary Log Interface"><link rel="next" href="c-api-binary-log-function-overview.html" title="Chapter 20 C API Binary Log Function Overview"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 19 C API Binary Log Data Structures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-binary-log-interface.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-binary-log-function-overview.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-binary-log-data-structures"></a>Chapter 19 C API Binary Log Data Structures</h1></div></div></div><a class="indexterm" name="idm46079466774656"></a><a class="indexterm" name="idm46079466773168"></a><p>
+      C API functions for processing a replication event stream from a
+      server require a connection handler (a <code class="literal">MYSQL *</code>
+      pointer) and a pointer to a <code class="literal">MYSQL_RPL</code> structure
+      that describes the steam of replication events to read from the
+      server binary log. For example:
+    </p><pre class="programlisting">MYSQL *mysql = mysql_real_connect(...);
+
+MYSQL_RPL rpl;
+
+# ... initialize MYSQL_RPL members ...
+
+int result = mysql_binlog_open(mysql, &amp;rpl);
+</pre><p>
+      This section describes the <code class="literal">MYSQL_RPL</code> structure
+      members. Connection handlers are described in
+      <a class="xref" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures">Chapter 5, <i>C API Data Structures</i></a>.
+    </p><p>
+      The applicable <code class="literal">MYSQL_RPL</code> members depend on the
+      binary log operation to be performed:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          Before calling
+          <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-open" title="21.3 mysql_binlog_open()"><code class="literal">mysql_binlog_open()</code></a>, the
+          caller must set the <code class="literal">MYSQL_RPL</code> members from
+          <code class="literal">file_name_length</code> through
+          <code class="literal">flags</code>. In addition, if
+          <code class="literal">flags</code> has the
+          <code class="literal">MYSQL_RPL_GTID</code> flag set, the caller must
+          set the members from <code class="literal">gtid_set_encoded_size</code>
+          through <code class="literal">gtid_set_arg</code>.
+        </p></li><li class="listitem"><p>
+          After a successful
+          <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-fetch" title="21.2 mysql_binlog_fetch()"><code class="literal">mysql_binlog_fetch()</code></a> call, the
+          caller examines the <code class="literal">size</code> and
+          <code class="literal">buffer</code> members.
+        </p></li></ul></div><p>
+      <code class="literal">MYSQL_RPL</code> structure member descriptions:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <code class="literal">file_name_length</code>
+        </p><p>
+          The length of the name of the binary log file to read. This
+          member is used in conjunction with
+          <code class="literal">file_name</code>; see the
+          <code class="literal">file_name</code> description.
+        </p></li><li class="listitem"><p>
+          <code class="literal">file_name</code>
+        </p><p>
+          The name of the binary log file to read:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              If <code class="literal">file_name</code> is
+              <code class="literal">NULL</code>, the client library sets it to the
+              empty string and sets <code class="literal">file_name_length</code>
+              to 0.
+            </p></li><li class="listitem"><p>
+              If <code class="literal">file_name</code> is not
+              <code class="literal">NULL</code>,
+              <code class="literal">file_name_length</code> must either be the
+              length of the name or 0. If
+              <code class="literal">file_name_length</code> is 0, the client
+              library sets it to the length of the name, in which case,
+              <code class="literal">file_name</code> must be given as a
+              null-terminated string.
+            </p></li></ul></div><p>
+          To read from the beginning of the binary log without having to
+          know the name of the oldest binary log file, set
+          <code class="filename">file_name</code> to <code class="literal">NULL</code> or
+          the empty string, and <code class="literal">start_position</code> to 4.
+        </p></li><li class="listitem"><p>
+          <code class="literal">start_position</code>
+        </p><p>
+          The position at which to start reading the binary log. The
+          position of the first event in any given binary log file is 4.
+        </p></li><li class="listitem"><p>
+          <code class="literal">server_id</code>
+        </p><p>
+          The server ID to use for identifying to the server from which
+          the binary log is read.
+        </p></li><li class="listitem"><p>
+          <code class="literal">flags</code>
+        </p><p>
+          The union of flags that affect binary log reading, or 0 if no
+          flags are set. These flag values are permitted:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <code class="literal">MYSQL_RPL_SKIP_HEARTBEAT</code>
+            </p><p>
+              Set this flag to cause
+              <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-fetch" title="21.2 mysql_binlog_fetch()"><code class="literal">mysql_binlog_fetch()</code></a> to
+              skip heartbeat events.
+            </p></li><li class="listitem"><p>
+              <code class="literal">MYSQL_RPL_GTID</code>
+            </p><p>
+              Set this flag to read GTID (global transaction ID) data.
+              If set, you must initialize the
+              <code class="literal">MYSQL_RPL</code> structure GTID-related
+              members from <code class="literal">gtid_set_encoded_size</code> to
+              <code class="literal">gtid_set_arg</code> before calling
+              <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-open" title="21.3 mysql_binlog_open()"><code class="literal">mysql_binlog_open()</code></a>.
+            </p><p>
+              It is beyond the scope of this documentation to describe
+              in detail how client programs use those GTID-related
+              members. For more information, examine the
+              <code class="filename">mysqlbinlog.cc</code> source file. For
+              information about GTID-based replication, see
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/replication-gtids.html" target="_top">Replication with Global Transaction Identifiers</a>.
+            </p></li></ul></div></li><li class="listitem"><p>
+          <code class="literal">gtid_set_encoded_size</code>
+        </p><p>
+          The size of GTID set data, or 0.
+        </p></li><li class="listitem"><p>
+          <code class="literal">fix_gtid_set</code>
+        </p><p>
+          The address of a callback function for
+          <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-open" title="21.3 mysql_binlog_open()"><code class="literal">mysql_binlog_open()</code></a> to call to
+          fill the command packet GTID set, or <code class="literal">NULL</code>
+          if there is no such function. The callback function, if used,
+          should have this calling signature:
+        </p><pre class="programlisting">void <em class="replaceable"><code>my_callback</code></em>(MYSQL_RPL *rpl, unsigned char *packet_gtid_set);
+</pre></li><li class="listitem"><p>
+          <code class="literal">gtid_set_arg</code>
+        </p><p>
+          Either a pointer to GTID set data (if
+          <code class="literal">fix_gtid_set</code> is <code class="literal">NULL</code>),
+          or a pointer to a value to be made available for use within
+          the callback function (if <code class="literal">fix_gtid_set</code> is
+          not <code class="literal">NULL</code>). <code class="literal">gtid_set_arg</code>
+          is a generic pointer, so it can point to any kind of value
+          (for example, a string, a structure, or a function). Its
+          interpretation within the callback depends on how the callback
+          intends to use it.
+        </p></li><li class="listitem"><p>
+          <code class="literal">size</code>
+        </p><p>
+          After a successful
+          <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-fetch" title="21.2 mysql_binlog_fetch()"><code class="literal">mysql_binlog_fetch()</code></a> call, the
+          size of the returned binary log event. The value is 0 for an
+          EOF event, greater than 0 for a non-EOF event.
+        </p></li><li class="listitem"><p>
+          <code class="literal">buffer</code>
+        </p><p>
+          After a successful
+          <a class="link" href="c-api-binary-log-functions.html#mysql-binlog-fetch" title="21.2 mysql_binlog_fetch()"><code class="literal">mysql_binlog_fetch()</code></a> call, a
+          pointer to the binary log event contents.
+        </p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-binary-log-interface.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-binary-log-function-overview.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 18 C API Binary Log Interface </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 20 C API Binary Log Function Overview</td></tr></table></div><div class="copyright-footer"></div></body></html>

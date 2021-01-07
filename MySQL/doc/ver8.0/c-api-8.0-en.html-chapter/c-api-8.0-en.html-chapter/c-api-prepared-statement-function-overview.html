@@ -1,0 +1,261 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 10 C API Prepared Statement Function Overview</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures"><link rel="next" href="c-api-prepared-statement-functions.html" title="Chapter 11 C API Prepared Statement Function Descriptions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 10 C API Prepared Statement Function Overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-prepared-statement-data-structures.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-prepared-statement-functions.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-prepared-statement-function-overview"></a>Chapter 10 C API Prepared Statement Function Overview</h1></div></div></div><a class="indexterm" name="idm46079468314448"></a><a class="indexterm" name="idm46079468312944"></a><p>
+      The following list summarizes the functions available for prepared
+      statement processing. For greater detail, see the descriptions in
+      <a class="xref" href="c-api-prepared-statement-functions.html" title="Chapter 11 C API Prepared Statement Function Descriptions">Chapter 11, <i>C API Prepared Statement Function Descriptions</i></a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a>:
+          Returns the number of rows changed, deleted, or inserted by
+          prepared <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>, or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-get" title="11.2 mysql_stmt_attr_get()"><code class="literal">mysql_stmt_attr_get()</code></a>: Gets
+          the value of an attribute for a prepared statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set()</code></a>: Sets an
+          attribute for a prepared statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>:
+          Associates application data buffers with the parameter markers
+          in a prepared SQL statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>:
+          Associates application data buffers with columns in a result
+          set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>: Frees
+          memory used by a prepared statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-data-seek" title="11.7 mysql_stmt_data_seek()"><code class="literal">mysql_stmt_data_seek()</code></a>: Seeks
+          to an arbitrary row number in a statement result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a>: Returns
+          the error number for the last statement execution.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a>: Returns
+          the error message for the last statement execution.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>: Executes
+          a prepared statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>: Fetches
+          the next row of data from a result set and returns data for
+          all bound columns.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch-column" title="11.12 mysql_stmt_fetch_column()"><code class="literal">mysql_stmt_fetch_column()</code></a>:
+          Fetches data for one column of the current row of a result
+          set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-field-count" title="11.13 mysql_stmt_field_count()"><code class="literal">mysql_stmt_field_count()</code></a>:
+          Returns the number of result columns for the most recent
+          statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-free-result" title="11.14 mysql_stmt_free_result()"><code class="literal">mysql_stmt_free_result()</code></a>:
+          Frees the resources allocated to a statement handler.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>: Allocates
+          memory for a <code class="literal">MYSQL_STMT</code> structure and
+          initializes it.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-insert-id" title="11.16 mysql_stmt_insert_id()"><code class="literal">mysql_stmt_insert_id()</code></a>:
+          Returns the ID generated for an
+          <code class="literal">AUTO_INCREMENT</code> column by a prepared
+          statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a>:
+          Returns/initiates the next result in a multiple-result
+          execution.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows" title="11.18 mysql_stmt_num_rows()"><code class="literal">mysql_stmt_num_rows()</code></a>: Returns
+          the row count from a buffered statement result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-param-count" title="11.19 mysql_stmt_param_count()"><code class="literal">mysql_stmt_param_count()</code></a>:
+          Returns the number of parameters in a prepared statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-param-metadata" title="11.20 mysql_stmt_param_metadata()"><code class="literal">mysql_stmt_param_metadata()</code></a>:
+          Returns parameter metadata in the form of a result set. (This
+          function actually does nothing.)
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>: Prepares
+          an SQL statement string for execution.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-reset" title="11.22 mysql_stmt_reset()"><code class="literal">mysql_stmt_reset()</code></a>: Resets the
+          statement buffers in the server.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>:
+          Returns prepared statement metadata in the form of a result
+          set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a>: Seeks
+          to a row offset in a statement result set, using value
+          returned from
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell" title="11.25 mysql_stmt_row_tell()"><code class="literal">mysql_stmt_row_tell()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell" title="11.25 mysql_stmt_row_tell()"><code class="literal">mysql_stmt_row_tell()</code></a>: Returns
+          the statement row cursor position.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()"><code class="literal">mysql_stmt_send_long_data()</code></a>:
+          Sends long data in chunks to server.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate" title="11.27 mysql_stmt_sqlstate()"><code class="literal">mysql_stmt_sqlstate()</code></a>: Returns
+          the SQLSTATE error code for the last statement execution.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>:
+          Retrieves a complete result set to the client.
+        </p></li></ul></div><p>
+      Call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a> to create a
+      statement handler, then
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> to prepare
+      the statement string,
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a> to supply
+      the parameter data, and
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> to execute
+      the statement. You can repeat the
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> by changing
+      parameter values in the respective buffers supplied through
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>.
+    </p><p>
+      You can send text or binary data in chunks to server using
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()"><code class="literal">mysql_stmt_send_long_data()</code></a>. See
+      <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()">Section 11.26, “mysql_stmt_send_long_data()”</a>.
+    </p><p>
+      If the statement is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> or any
+      other statement that produces a result set,
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> also returns
+      the result set metadata information in the form of a
+      <code class="literal">MYSQL_RES</code> result set through
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>.
+    </p><p>
+      You can supply the result buffers using
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>, so that
+      the <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>
+      automatically returns data to these buffers. This is row-by-row
+      fetching.
+    </p><p>
+      When statement execution has been completed, close the statement
+      handler using <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>
+      so that all resources associated with it can be freed. At that
+      point the handler becomes invalid and should no longer be used.
+    </p><p>
+      If you obtained a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>
+      statement's result set metadata by calling
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>, you
+      should also free the metadata using
+      <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>.
+    </p><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-prepared-statement-function-overview-execution-steps"></a>Execution Steps</h2></div></div></div><p>
+        To prepare and execute a statement, an application follows these
+        steps:
+      </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+            Create a prepared statement handler with
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>. To
+            prepare the statement on the server, call
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> and
+            pass it a string containing the SQL statement.
+          </p></li><li class="listitem"><p>
+            Set the values of any parameters using
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>. All
+            parameters must be set. Otherwise, statement execution
+            returns an error or produces unexpected results.
+          </p></li><li class="listitem"><p>
+            Call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> to
+            execute the statement.
+          </p></li><li class="listitem"><p>
+            If the statement will produce a result set, call
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+            if it is desired to obtain the result set metadata. This
+            metadata is itself in the form of result set, albeit a
+            separate one from the one that contains the rows returned by
+            the query. The metadata result set indicates the number of
+            columns in the result and contains information about each
+            one.
+          </p></li><li class="listitem"><p>
+            If the statement produces a result set, bind the data
+            buffers to use for retrieving the row values by calling
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>.
+          </p></li><li class="listitem"><p>
+            Fetch the data into the buffers row by row by calling
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>
+            repeatedly until no more rows are found.
+          </p></li><li class="listitem"><p>
+            Repeat steps 3 through 6 as necessary, by changing the
+            parameter values and re-executing the statement.
+          </p></li></ol></div><p>
+        When <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> is
+        called, the MySQL client/server protocol performs these actions:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            The server parses the statement and sends the okay status
+            back to the client by assigning a statement ID. It also
+            sends total number of parameters, a column count, and its
+            metadata if it is a result set oriented statement. All
+            syntax and semantics of the statement are checked by the
+            server during this call.
+          </p></li><li class="listitem"><p>
+            The client uses this statement ID for the further
+            operations, so that the server can identify the statement
+            from among its pool of statements.
+          </p></li></ul></div><p>
+        When <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> is
+        called, the MySQL client/server protocol performs these actions:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            The client uses the statement handler and sends the
+            parameter data to the server.
+          </p></li><li class="listitem"><p>
+            The server identifies the statement using the ID provided by
+            the client, replaces the parameter markers with the newly
+            supplied data, and executes the statement. If the statement
+            produces a result set, the server sends the data back to the
+            client. Otherwise, it sends an okay status and the number of
+            rows changed, deleted, or inserted.
+          </p></li></ul></div><p>
+        When <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> is
+        called, the MySQL client/server protocol performs these actions:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            The client reads the data from the current row of the result
+            set and places it into the application data buffers by doing
+            the necessary conversions. If the application buffer type is
+            same as that of the field type returned from the server, the
+            conversions are straightforward.
+          </p></li></ul></div><p>
+        If an error occurs, you can get the statement error number,
+        error message, and SQLSTATE code using
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a>,
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a>, and
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate" title="11.27 mysql_stmt_sqlstate()"><code class="literal">mysql_stmt_sqlstate()</code></a>,
+        respectively.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-prepared-statement-function-overview-prepared-statement-logging"></a>Prepared Statement Logging</h2></div></div></div><p>
+        For prepared statements that are executed with the
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> and
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> C API
+        functions, the server writes <code class="literal">Prepare</code> and
+        <code class="literal">Execute</code> lines to the general query log so
+        that you can tell when statements are prepared and executed.
+      </p><p>
+        Suppose that you prepare and execute a statement as follows:
+      </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+            Call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> to
+            prepare the statement string <code class="literal">"SELECT ?"</code>.
+          </p></li><li class="listitem"><p>
+            Call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>
+            to bind the value <code class="literal">3</code> to the parameter in
+            the prepared statement.
+          </p></li><li class="listitem"><p>
+            Call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> to
+            execute the prepared statement.
+          </p></li></ol></div><p>
+        As a result of the preceding calls, the server writes the
+        following lines to the general query log:
+      </p><pre class="programlisting">Prepare  [1] SELECT ?
+Execute  [1] SELECT 3
+</pre><p>
+        Each <code class="literal">Prepare</code> and <code class="literal">Execute</code>
+        line in the log is tagged with a
+        <code class="literal">[<em class="replaceable"><code>N</code></em>]</code> statement
+        identifier so that you can keep track of which prepared
+        statement is being logged. <em class="replaceable"><code>N</code></em> is a
+        positive integer. If there are multiple prepared statements
+        active simultaneously for the client,
+        <em class="replaceable"><code>N</code></em> may be greater than 1. Each
+        <code class="literal">Execute</code> lines shows a prepared statement
+        after substitution of data values for <code class="literal">?</code>
+        parameters.
+      </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-prepared-statement-data-structures.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-prepared-statement-functions.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 9 C API Prepared Statement Data Structures </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 11 C API Prepared Statement Function Descriptions</td></tr></table></div><div class="copyright-footer"></div></body></html>

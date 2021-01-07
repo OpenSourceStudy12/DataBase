@@ -1,0 +1,30 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 13 C API Asynchronous Interface Data Structures</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface"><link rel="next" href="c-api-asynchronous-function-overview.html" title="Chapter 14 C API Asynchronous Function Overview"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 13 C API Asynchronous Interface Data Structures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-asynchronous-interface.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-asynchronous-function-overview.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-asynchronous-data-structures"></a>Chapter 13 C API Asynchronous Interface Data Structures</h1></div></div></div><a class="indexterm" name="idm46079467190720"></a><a class="indexterm" name="idm46079467189232"></a><p>
+      This section describes data structures specific to asynchronous C
+      API functions. For information about general-purpose C API data
+      structures, see <a class="xref" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures">Chapter 5, <i>C API Data Structures</i></a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <code class="literal">enum net_async_status</code>
+        </p><p>
+          The enumeration type used to express the return status of
+          asynchronous C API functions. The following table shows the
+          permitted status values.
+        </p><div class="informaltable"><table summary="enum net_async_status values and a description of each value."><col width="40%"><col width="60%"><thead><tr>
+              <th>Enumeration Status Value</th>
+              <th>Description</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">NET_ASYNC_COMPLETE</code></td>
+              <td>Asynchronous operation is complete</td>
+            </tr><tr>
+              <td><code class="literal">NET_ASYNC_NOT_READY</code></td>
+              <td>Asynchronous operation is still in progress</td>
+            </tr><tr>
+              <td><code class="literal">NET_ASYNC_ERROR</code></td>
+              <td>Asynchronous operation terminated in error</td>
+            </tr><tr>
+              <td><code class="literal">NET_ASYNC_COMPLETE_NO_MORE_RESULTS</code></td>
+              <td>For <a class="link" href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking" title="15.3 mysql_next_result_nonblocking()"><code class="literal">mysql_next_result_nonblocking()</code></a>;
+                indicates no more results available</td>
+            </tr></tbody></table></div><p>
+          For more information, see
+          <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-asynchronous-interface.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-asynchronous-function-overview.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 12 C API Asynchronous Interface </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 14 C API Asynchronous Function Overview</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,65 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 27 C API Optional Result Set Metadata</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-prepared-statement-problems.html" title="Chapter 26 C API Prepared Statement Problems"><link rel="next" href="c-api-auto-reconnect.html" title="Chapter 28 C API Automatic Reconnection Control"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 27 C API Optional Result Set Metadata</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-prepared-statement-problems.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-auto-reconnect.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-optional-metadata"></a>Chapter 27 C API Optional Result Set Metadata</h1></div></div></div><a class="indexterm" name="idm46079466347728"></a><p>
+      When a client executes a statement that produces a result set,
+      MySQL makes available the data the result set contains, and by
+      default also result set metadata that provides information about
+      the result set data. Metadata is contained in the
+      <code class="literal">MYSQL_FIELD</code> structure (see
+      <a class="xref" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures">Chapter 5, <i>C API Data Structures</i></a>), which is returned by the
+      <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>,
+      <a class="link" href="c-api-functions.html#mysql-fetch-field-direct" title="7.19 mysql_fetch_field_direct()"><code class="literal">mysql_fetch_field_direct()</code></a>, and
+      <a class="link" href="c-api-functions.html#mysql-fetch-fields" title="7.20 mysql_fetch_fields()"><code class="literal">mysql_fetch_fields()</code></a> functions.
+    </p><p>
+      Clients can indicate on a per-connection basis that result set
+      metadata is optional and that the client will indicate to the
+      server whether to return it. Suppression of metadata transfer by
+      the client can improve performance, particularly for sessions that
+      execute many queries that return few rows each.
+    </p><p>
+      There are two ways for a client to indicate that result set
+      metadata is optional for a connection. They are equivalent, so
+      either one suffices:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          Prior to connect time, enable the
+          <code class="literal">MYSQL_OPT_OPTIONAL_RESULTSET_METADATA</code>
+          option for <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a>.
+        </p></li><li class="listitem"><p>
+          At connect time, enable the
+          <code class="literal">CLIENT_OPTIONAL_RESULTSET_METADATA</code> flag for
+          the <code class="literal">client_flag</code> argument of
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>.
+        </p></li></ul></div><p>
+      For metadata-optional connections, the client sets the
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_resultset_metadata" target="_top"><code class="literal">resultset_metadata</code></a> system
+      variable to control whether the server returns result set
+      metadata. Permitted values are <code class="literal">FULL</code> (return all
+      metadata) and <code class="literal">NONE</code> (return no metadata). The
+      default is <code class="literal">FULL</code>, so even for metadata-optional
+      connections, the server by default returns metadata.
+    </p><p>
+      For metadata-optional connections, the
+      <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>,
+      <a class="link" href="c-api-functions.html#mysql-fetch-field-direct" title="7.19 mysql_fetch_field_direct()"><code class="literal">mysql_fetch_field_direct()</code></a>, and
+      <a class="link" href="c-api-functions.html#mysql-fetch-fields" title="7.20 mysql_fetch_fields()"><code class="literal">mysql_fetch_fields()</code></a> functions
+      return <code class="literal">NULL</code> when
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_resultset_metadata" target="_top"><code class="literal">resultset_metadata</code></a> is set to
+      <code class="literal">NONE</code>.
+    </p><p>
+      For connections that are not metadata-optional, setting
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_resultset_metadata" target="_top"><code class="literal">resultset_metadata</code></a> to
+      <code class="literal">NONE</code> produces an error.
+    </p><p>
+      To check whether a result set has metadata, the client calls the
+      <a class="link" href="c-api-functions.html#mysql-result-metadata" title="7.64 mysql_result_metadata()"><code class="literal">mysql_result_metadata()</code></a> function.
+      This function returns <code class="literal">RESULTSET_METADATA_FULL</code>
+      or <code class="literal">RESULTSET_METADATA_NONE</code> to indicate that the
+      result set has full metadata or no metadata, respectively.
+    </p><p>
+      <a class="link" href="c-api-functions.html#mysql-result-metadata" title="7.64 mysql_result_metadata()"><code class="literal">mysql_result_metadata()</code></a> is useful
+      if the client does not know in advance whether a result set has
+      metadata. For example, if a client executes a stored procedure
+      that returns multiple result sets and might change the
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_resultset_metadata" target="_top"><code class="literal">resultset_metadata</code></a> system
+      variable, the client can invoke
+      <a class="link" href="c-api-functions.html#mysql-result-metadata" title="7.64 mysql_result_metadata()"><code class="literal">mysql_result_metadata()</code></a> for each
+      result set to determine whether it has metadata.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-prepared-statement-problems.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-auto-reconnect.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 26 C API Prepared Statement Problems </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 28 C API Automatic Reconnection Control</td></tr></table></div><div class="copyright-footer"></div></body></html>

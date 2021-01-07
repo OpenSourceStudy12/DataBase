@@ -1,0 +1,523 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 5 C API Data Structures</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-building-running-clients.html" title="Chapter 4 Building and Running C API Client Programs"><link rel="next" href="c-api-function-overview.html" title="Chapter 6 C API Function Overview"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 5 C API Data Structures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-building-running-clients.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-function-overview.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-data-structures"></a>Chapter 5 C API Data Structures</h1></div></div></div><a class="indexterm" name="idm46079472417680"></a><a class="indexterm" name="idm46079472416288"></a><p>
+      This section describes C API data structures other than those used
+      for prepared statements, the asynchronous interface, or the
+      replication stream interface. For information about those, see
+      <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>,
+      <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>, and
+      <a class="xref" href="c-api-binary-log-data-structures.html" title="Chapter 19 C API Binary Log Data Structures">Chapter 19, <i>C API Binary Log Data Structures</i></a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472412032"></a>
+
+          <code class="literal">MYSQL</code>
+        </p><p>
+          This structure represents the handler for one database
+          connection. It is used for almost all MySQL functions. Do not
+          try to make a copy of a <code class="literal">MYSQL</code> structure.
+          There is no guarantee that such a copy will be usable.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472408336"></a>
+
+          <code class="literal">MYSQL_RES</code>
+        </p><p>
+          This structure represents the result of a query that returns
+          rows (<a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/show.html" target="_top"><code class="literal">SHOW</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/describe.html" target="_top"><code class="literal">DESCRIBE</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/explain.html" target="_top"><code class="literal">EXPLAIN</code></a>). The information
+          returned from a query is called the <span class="emphasis"><em>result
+          set</em></span> in the remainder of this section.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472401008"></a>
+
+          <code class="literal">MYSQL_ROW</code>
+        </p><p>
+          This is a type-safe representation of one row of data. It is
+          currently implemented as an array of counted byte strings.
+          (You cannot treat these as null-terminated strings if field
+          values may contain binary data, because such values may
+          contain null bytes internally.) Rows are obtained by calling
+          <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472397232"></a>
+
+          <code class="literal">MYSQL_FIELD</code>
+        </p><p>
+          This structure contains metadata: information about a field,
+          such as the field's name, type, and size. Its members are
+          described in more detail later in this section. You may obtain
+          the <code class="literal">MYSQL_FIELD</code> structures for each field
+          by calling <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>
+          repeatedly. Field values are not part of this structure; they
+          are contained in a <code class="literal">MYSQL_ROW</code> structure.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472391856"></a>
+
+          <code class="literal">MYSQL_FIELD_OFFSET</code>
+        </p><p>
+          This is a type-safe representation of an offset into a MySQL
+          field list. (Used by
+          <a class="link" href="c-api-functions.html#mysql-field-seek" title="7.24 mysql_field_seek()"><code class="literal">mysql_field_seek()</code></a>.) Offsets
+          are field numbers within a row, beginning at zero.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472387856"></a>
+
+          <code class="literal">my_ulonglong</code>
+        </p><p>
+          A type used for 64-bit unsigned integers. The
+          <code class="literal">my_ulonglong</code> type was used before MySQL
+          8.0.18. As of MySQL 8.0.18, use the
+          <code class="literal">uint64_t</code> C type instead.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079472383648"></a>
+
+          <code class="literal">my_bool</code>
+        </p><p>
+          A boolean type, for values that are true (nonzero) or false
+          (zero). The <code class="literal">my_bool</code> type was used before
+          MySQL 8.0. As of MySQL 8.0, use the <code class="literal">bool</code> or
+          <code class="literal">int</code> C type instead.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            The change from <code class="literal">my_bool</code> to
+            <code class="literal">bool</code> means that the
+            <code class="filename">mysql.h</code> header file requires a C++ or
+            C99 compiler to compile.
+          </p></div></li></ul></div><p>
+      The <code class="literal">MYSQL_FIELD</code> structure contains the members
+      described in the following list. The definitions apply primarily
+      for columns of result sets such as those produced by
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> statements.
+      <code class="literal">MYSQL_FIELD</code> structures are also used to provide
+      metadata for <code class="literal">OUT</code> and <code class="literal">INOUT</code>
+      parameters returned from stored procedures executed using prepared
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements. For such
+      parameters, some of the structure members have a meaning different
+      from the meaning for column values.
+    </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Tip</div><p>
+        To interactively view the <code class="literal">MYSQL_FIELD</code> member
+        values for result sets, invoke the <span class="command"><strong>mysql</strong></span>
+        command with the
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/mysql-command-options.html#option_mysql_column-type-info" target="_top"><code class="option">--column-type-info</code></a> option and
+        execute some sample queries.
+      </p></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <code class="literal">char * name</code>
+        </p><p>
+          The name of the field, as a null-terminated string. If the
+          field was given an alias with an <code class="literal">AS</code> clause,
+          the value of <code class="literal">name</code> is the alias. For a
+          procedure parameter, the parameter name.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * org_name</code>
+        </p><p>
+          The name of the field, as a null-terminated string. Aliases
+          are ignored. For expressions, the value is an empty string.
+          For a procedure parameter, the parameter name.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * table</code>
+        </p><p>
+          The name of the table containing this field, if it is not a
+          calculated field. For calculated fields, the
+          <code class="literal">table</code> value is an empty string. If the
+          column is selected from a view, <code class="literal">table</code> names
+          the view. If the table or view was given an alias with an
+          <code class="literal">AS</code> clause, the value of
+          <code class="literal">table</code> is the alias. For a
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/union.html" target="_top"><code class="literal">UNION</code></a>, the value is the empty
+          string. For a procedure parameter, the procedure name.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * org_table</code>
+        </p><p>
+          The name of the table, as a null-terminated string. Aliases
+          are ignored. If the column is selected from a view,
+          <code class="literal">org_table</code> names the view. If the column is
+          selected from a derived table, <code class="literal">org_table</code>
+          names the base table. If a derived table wraps a view,
+          <code class="literal">org_table</code> still names the base table. If
+          the column is an expression, <code class="literal">org_table</code> is
+          the empty string. For a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/union.html" target="_top"><code class="literal">UNION</code></a>,
+          the value is the empty string. For a procedure parameter, the
+          value is the procedure name.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * db</code>
+        </p><p>
+          The name of the database that the field comes from, as a
+          null-terminated string. If the field is a calculated field,
+          <code class="literal">db</code> is an empty string. For a
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/union.html" target="_top"><code class="literal">UNION</code></a>, the value is the empty
+          string. For a procedure parameter, the name of the database
+          containing the procedure.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * catalog</code>
+        </p><p>
+          The catalog name. This value is always
+          <code class="literal">"def"</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">char * def</code>
+        </p><p>
+          The default value of this field, as a null-terminated string.
+          This is set only if you use
+          <a class="link" href="c-api-functions.html#mysql-list-fields" title="7.44 mysql_list_fields()"><code class="literal">mysql_list_fields()</code></a>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned long length</code>
+        </p><p>
+          The width of the field. This corresponds to the display
+          length, in bytes.
+        </p><p>
+          The server determines the <code class="literal">length</code> value
+          before it generates the result set, so this is the minimum
+          length required for a data type capable of holding the largest
+          possible value from the result column, without knowing in
+          advance the actual values that will be produced by the query
+          for the result set.
+        </p><p>
+          For string columns, the <code class="literal">length</code> value varies
+          on the connection character set. For example, if the character
+          set is <code class="literal">latin1</code>, a single-byte character set,
+          the <code class="literal">length</code> value for a <code class="literal">SELECT
+          'abc'</code> query is 3. If the character set is
+          <code class="literal">utf8mb4</code>, a multibyte character set in which
+          characters take up to 4 bytes, the <code class="literal">length</code>
+          value is 12.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned long max_length</code>
+        </p><p>
+          The maximum width of the field for the result set (the length
+          in bytes of the longest field value for the rows actually in
+          the result set). If you use
+          <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-list-fields" title="7.44 mysql_list_fields()"><code class="literal">mysql_list_fields()</code></a>, this
+          contains the maximum length for the field. If you use
+          <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>, the value
+          of this variable is zero.
+        </p><p>
+          The value of <code class="literal">max_length</code> is the length of
+          the string representation of the values in the result set. For
+          example, if you retrieve a
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">FLOAT</code></a> column and the
+          <span class="quote">“<span class="quote">widest</span>”</span> value is <code class="literal">-12.345</code>,
+          <code class="literal">max_length</code> is 7 (the length of
+          <code class="literal">'-12.345'</code>).
+        </p><p>
+          If you are using prepared statements,
+          <code class="literal">max_length</code> is not set by default because
+          for the binary protocol the lengths of the values depend on
+          the types of the values in the result set. (See
+          <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>.)
+          If you want the <code class="literal">max_length</code> values anyway,
+          enable the <code class="literal">STMT_ATTR_UPDATE_MAX_LENGTH</code>
+          option with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set()</code></a> and the
+          lengths will be set when you call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>.
+          (See <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()">Section 11.3, “mysql_stmt_attr_set()”</a>, and
+          <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()">Section 11.28, “mysql_stmt_store_result()”</a>.)
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int name_length</code>
+        </p><p>
+          The length of <code class="literal">name</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int org_name_length</code>
+        </p><p>
+          The length of <code class="literal">org_name</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int table_length</code>
+        </p><p>
+          The length of <code class="literal">table</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int org_table_length</code>
+        </p><p>
+          The length of <code class="literal">org_table</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int db_length</code>
+        </p><p>
+          The length of <code class="literal">db</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int catalog_length</code>
+        </p><p>
+          The length of <code class="literal">catalog</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int def_length</code>
+        </p><p>
+          The length of <code class="literal">def</code>.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int flags</code>
+        </p><p>
+          Bit-flags that describe the field. The
+          <code class="literal">flags</code> value may have zero or more of the
+          bits set that are shown in the following table.
+        </p><div class="informaltable"><table summary="Bit-flag values and a description of each flag."><col width="40%"><col width="60%"><thead><tr>
+              <th>Flag Value</th>
+              <th>Flag Description</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">NOT_NULL_FLAG</code></td>
+              <td>Field cannot be <code class="literal">NULL</code></td>
+            </tr><tr>
+              <td><code class="literal">PRI_KEY_FLAG</code></td>
+              <td>Field is part of a primary key</td>
+            </tr><tr>
+              <td><code class="literal">UNIQUE_KEY_FLAG</code></td>
+              <td>Field is part of a unique key</td>
+            </tr><tr>
+              <td><code class="literal">MULTIPLE_KEY_FLAG</code></td>
+              <td>Field is part of a nonunique key</td>
+            </tr><tr>
+              <td><code class="literal">UNSIGNED_FLAG</code></td>
+              <td>Field has the <code class="literal">UNSIGNED</code> attribute</td>
+            </tr><tr>
+              <td><code class="literal">ZEROFILL_FLAG</code></td>
+              <td>Field has the <code class="literal">ZEROFILL</code> attribute</td>
+            </tr><tr>
+              <td><code class="literal">BINARY_FLAG</code></td>
+              <td>Field has the <code class="literal">BINARY</code> attribute</td>
+            </tr><tr>
+              <td><code class="literal">AUTO_INCREMENT_FLAG</code></td>
+              <td>Field has the <code class="literal">AUTO_INCREMENT</code> attribute</td>
+            </tr><tr>
+              <td><code class="literal">ENUM_FLAG</code></td>
+              <td>Field is an <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/enum.html" target="_top"><code class="literal">ENUM</code></a></td>
+            </tr><tr>
+              <td><code class="literal">SET_FLAG</code></td>
+              <td>Field is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/set.html" target="_top"><code class="literal">SET</code></a></td>
+            </tr><tr>
+              <td><code class="literal">BLOB_FLAG</code></td>
+              <td>Field is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> (deprecated)</td>
+            </tr><tr>
+              <td><code class="literal">TIMESTAMP_FLAG</code></td>
+              <td>Field is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> (deprecated)</td>
+            </tr><tr>
+              <td><code class="literal">NUM_FLAG</code></td>
+              <td>Field is numeric; see additional notes following table</td>
+            </tr><tr>
+              <td><code class="literal">NO_DEFAULT_VALUE_FLAG</code></td>
+              <td>Field has no default value; see additional notes following table</td>
+            </tr></tbody></table></div><p>
+          Some of these flags indicate data type information and are
+          superseded by or used in conjunction with the
+          <code class="literal">MYSQL_TYPE_<em class="replaceable"><code>xxx</code></em></code>
+          value in the <code class="literal">field-&gt;type</code> member
+          described later:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              To check for <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> or
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> values, check
+              whether <code class="literal">type</code> is
+              <code class="literal">MYSQL_TYPE_BLOB</code> or
+              <code class="literal">MYSQL_TYPE_TIMESTAMP</code>. (The
+              <code class="literal">BLOB_FLAG</code> and
+              <code class="literal">TIMESTAMP_FLAG</code> flags are unneeded.)
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/enum.html" target="_top"><code class="literal">ENUM</code></a> and
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/set.html" target="_top"><code class="literal">SET</code></a> values are returned as
+              strings. For these, check that the <code class="literal">type</code>
+              value is <code class="literal">MYSQL_TYPE_STRING</code> and that the
+              <code class="literal">ENUM_FLAG</code> or
+              <code class="literal">SET_FLAG</code> flag is set in the
+              <code class="literal">flags</code> value.
+            </p></li></ul></div><p>
+          <code class="literal">NUM_FLAG</code> indicates that a column is
+          numeric. This includes columns with a type of
+          <code class="literal">MYSQL_TYPE_DECIMAL</code>,
+          <code class="literal">MYSQL_TYPE_NEWDECIMAL</code>,
+          <code class="literal">MYSQL_TYPE_TINY</code>,
+          <code class="literal">MYSQL_TYPE_SHORT</code>,
+          <code class="literal">MYSQL_TYPE_LONG</code>,
+          <code class="literal">MYSQL_TYPE_FLOAT</code>,
+          <code class="literal">MYSQL_TYPE_DOUBLE</code>,
+          <code class="literal">MYSQL_TYPE_NULL</code>,
+          <code class="literal">MYSQL_TYPE_LONGLONG</code>,
+          <code class="literal">MYSQL_TYPE_INT24</code>, and
+          <code class="literal">MYSQL_TYPE_YEAR</code>.
+        </p><p>
+          <code class="literal">NO_DEFAULT_VALUE_FLAG</code> indicates that a
+          column has no <code class="literal">DEFAULT</code> clause in its
+          definition. This does not apply to <code class="literal">NULL</code>
+          columns (because such columns have a default of
+          <code class="literal">NULL</code>), or to
+          <code class="literal">AUTO_INCREMENT</code> columns (which have an
+          implied default value).
+        </p><p>
+          The following example illustrates a typical use of the
+          <code class="literal">flags</code> value:
+        </p><pre class="programlisting">if (field-&gt;flags &amp; NOT_NULL_FLAG)
+    printf("Field cannot be null\n");
+</pre><p>
+          You may use the convenience macros shown in the following
+          table to determine the boolean status of the
+          <code class="literal">flags</code> value.
+        </p><div class="informaltable"><table summary="Flag status values and a description of each flag."><col width="40%"><col width="60%"><thead><tr>
+              <th>Flag Status</th>
+              <th>Description</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">IS_NOT_NULL(flags)</code></td>
+              <td>True if this field is defined as <code class="literal">NOT NULL</code></td>
+            </tr><tr>
+              <td><code class="literal">IS_PRI_KEY(flags)</code></td>
+              <td>True if this field is a primary key</td>
+            </tr><tr>
+              <td><code class="literal">IS_BLOB(flags)</code></td>
+              <td>True if this field is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> (deprecated; test
+                <code class="literal">field-&gt;type</code> instead)</td>
+            </tr></tbody></table></div></li><li class="listitem"><p>
+          <code class="literal">unsigned int decimals</code>
+        </p><p>
+          The number of decimals for numeric fields, and the fractional
+          seconds precision for temporal fields.
+        </p></li><li class="listitem"><p>
+          <code class="literal">unsigned int charsetnr</code>
+        </p><p>
+          An ID number that indicates the character set/collation pair
+          for the field.
+        </p><p>
+          Normally, character values in result sets are converted to the
+          character set indicated by the
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_character_set_results" target="_top"><code class="literal">character_set_results</code></a> system
+          variable. In this case, <code class="literal">charsetnr</code>
+          corresponds to the character set indicated by that variable.
+          Character set conversion can be suppressed by setting
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_character_set_results" target="_top"><code class="literal">character_set_results</code></a> to
+          <code class="literal">NULL</code>. In this case,
+          <code class="literal">charsetnr</code> corresponds to the character set
+          of the original table column or expression. See also
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/charset-connection.html" target="_top">Connection Character Sets and Collations</a>.
+        </p><p>
+          To distinguish between binary and nonbinary data for string
+          data types, check whether the <code class="literal">charsetnr</code>
+          value is 63. If so, the character set is
+          <code class="literal">binary</code>, which indicates binary rather than
+          nonbinary data. This enables you to distinguish
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">BINARY</code></a> from
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">CHAR</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">VARBINARY</code></a> from
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">VARCHAR</code></a>, and the
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> types from the
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> types.
+        </p><p>
+          <code class="literal">charsetnr</code> values are the same as those
+          displayed in the <code class="literal">Id</code> column of the
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/show-collation.html" target="_top"><code class="literal">SHOW COLLATION</code></a> statement or the
+          <code class="literal">ID</code> column of the
+          <code class="literal">INFORMATION_SCHEMA</code>
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-schema-collations-table.html" target="_top"><code class="literal">COLLATIONS</code></a> table. You can use
+          those information sources to see which character set and
+          collation specific <code class="literal">charsetnr</code> values
+          indicate:
+        </p><pre class="programlisting">mysql&gt; <strong class="userinput"><code>SHOW COLLATION WHERE Id = 63;</code></strong>
++-----------+---------+----+---------+----------+---------+
+| Collation | Charset | Id | Default | Compiled | Sortlen |
++-----------+---------+----+---------+----------+---------+
+| binary    | binary  | 63 | Yes     | Yes      |       1 |
++-----------+---------+----+---------+----------+---------+
+
+mysql&gt; <strong class="userinput"><code>SELECT COLLATION_NAME, CHARACTER_SET_NAME</code></strong>
+       <strong class="userinput"><code>FROM INFORMATION_SCHEMA.COLLATIONS WHERE ID = 33;</code></strong>
++-----------------+--------------------+
+| COLLATION_NAME  | CHARACTER_SET_NAME |
++-----------------+--------------------+
+| utf8_general_ci | utf8               |
++-----------------+--------------------+
+</pre></li><li class="listitem"><p>
+          <code class="literal">enum enum_field_types type</code>
+        </p><p>
+          The type of the field. The <code class="literal">type</code> value may
+          be one of the <code class="literal">MYSQL_TYPE_</code> symbols shown in
+          the following table.
+        </p><div class="informaltable"><table summary="MYSQL_TYPE_ values and a description of each type."><col width="35%"><col width="65%"><thead><tr>
+              <th>Type Value</th>
+              <th>Type Description</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">MYSQL_TYPE_TINY</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">TINYINT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_SHORT</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">SMALLINT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_LONG</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">INTEGER</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_INT24</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">MEDIUMINT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_LONGLONG</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">BIGINT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DECIMAL</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">DECIMAL</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">NUMERIC</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_NEWDECIMAL</code></td>
+              <td>Precision math <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">DECIMAL</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">NUMERIC</code></a></td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_FLOAT</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">FLOAT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DOUBLE</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">DOUBLE</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">REAL</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_BIT</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/bit-type.html" target="_top"><code class="literal">BIT</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_TIMESTAMP</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DATE</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_TIME</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DATETIME</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_YEAR</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/year.html" target="_top"><code class="literal">YEAR</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_STRING</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">CHAR</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">BINARY</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_VAR_STRING</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">VARCHAR</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">VARBINARY</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_BLOB</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> or
+                <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> field (use
+                <code class="literal">max_length</code> to determine the maximum
+                length)</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_SET</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/set.html" target="_top"><code class="literal">SET</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_ENUM</code></td>
+              <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/enum.html" target="_top"><code class="literal">ENUM</code></a> field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_GEOMETRY</code></td>
+              <td>Spatial field</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_NULL</code></td>
+              <td><code class="literal">NULL</code>-type field</td>
+            </tr></tbody></table></div><p>
+          The <code class="literal">MYSQL_TYPE_TIME2</code>,
+          <code class="literal">MYSQL_TYPE_DATETIME2</code>, and
+          <code class="literal">MYSQL_TYPE_TIMESTAMP2</code>) type codes are used
+          only on the server side. Clients see the
+          <code class="literal">MYSQL_TYPE_TIME</code>,
+          <code class="literal">MYSQL_TYPE_DATETIME</code>, and
+          <code class="literal">MYSQL_TYPE_TIMESTAMP</code> codes.
+        </p><p>
+          You can use the <code class="literal">IS_NUM()</code> macro to test
+          whether a field has a numeric type. Pass the
+          <code class="literal">type</code> value to <code class="literal">IS_NUM()</code>
+          and it evaluates to TRUE if the field is numeric:
+        </p><pre class="programlisting">if (IS_NUM(field-&gt;type))
+    printf("Field is numeric\n");
+</pre><p>
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/enum.html" target="_top"><code class="literal">ENUM</code></a> and
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/set.html" target="_top"><code class="literal">SET</code></a> values are returned as
+          strings. For these, check that the <code class="literal">type</code>
+          value is <code class="literal">MYSQL_TYPE_STRING</code> and that the
+          <code class="literal">ENUM_FLAG</code> or <code class="literal">SET_FLAG</code>
+          flag is set in the <code class="literal">flags</code> value.
+        </p></li></ul></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-building-running-clients.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-function-overview.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 4 Building and Running C API Client Programs </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 6 C API Function Overview</td></tr></table></div><div class="copyright-footer"></div></body></html>

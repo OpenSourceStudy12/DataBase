@@ -1,0 +1,1655 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 11 C API Prepared Statement Function Descriptions</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-prepared-statement-function-overview.html" title="Chapter 10 C API Prepared Statement Function Overview"><link rel="next" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 11 C API Prepared Statement Function Descriptions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-prepared-statement-function-overview.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-asynchronous-interface.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-prepared-statement-functions"></a>Chapter 11 C API Prepared Statement Function Descriptions</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows">11.1 mysql_stmt_affected_rows()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-attr-get">11.2 mysql_stmt_attr_get()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set">11.3 mysql_stmt_attr_set()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param">11.4 mysql_stmt_bind_param()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result">11.5 mysql_stmt_bind_result()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-close">11.6 mysql_stmt_close()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-data-seek">11.7 mysql_stmt_data_seek()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-errno">11.8 mysql_stmt_errno()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-error">11.9 mysql_stmt_error()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-execute">11.10 mysql_stmt_execute()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-fetch">11.11 mysql_stmt_fetch()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-fetch-column">11.12 mysql_stmt_fetch_column()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-field-count">11.13 mysql_stmt_field_count()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-free-result">11.14 mysql_stmt_free_result()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-init">11.15 mysql_stmt_init()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-insert-id">11.16 mysql_stmt_insert_id()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-next-result">11.17 mysql_stmt_next_result()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows">11.18 mysql_stmt_num_rows()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-param-count">11.19 mysql_stmt_param_count()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-param-metadata">11.20 mysql_stmt_param_metadata()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-prepare">11.21 mysql_stmt_prepare()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-reset">11.22 mysql_stmt_reset()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata">11.23 mysql_stmt_result_metadata()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek">11.24 mysql_stmt_row_seek()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell">11.25 mysql_stmt_row_tell()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data">11.26 mysql_stmt_send_long_data()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate">11.27 mysql_stmt_sqlstate()</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-functions.html#mysql-stmt-store-result">11.28 mysql_stmt_store_result()</a></span></dt></dl></div><p>
+      To prepare and execute queries, use the functions described in
+      detail in the following sections.
+    </p><p>
+      All functions that operate with a <code class="literal">MYSQL_STMT</code>
+      structure begin with the prefix <code class="literal">mysql_stmt_</code>.
+    </p><p>
+      To create a <code class="literal">MYSQL_STMT</code> handler, use the
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a> function.
+    </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-affected-rows"></a>11.1 mysql_stmt_affected_rows()</h2></div></div></div><a class="indexterm" name="idm46079468156400"></a><pre class="programlisting">uint64_t
+mysql_stmt_affected_rows(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-affected-rows-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a> may
+          be called immediately after executing a statement with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>. It is
+          like <a class="link" href="c-api-functions.html#mysql-affected-rows" title="7.1 mysql_affected_rows()"><code class="literal">mysql_affected_rows()</code></a> but
+          for prepared statements. For a description of what the
+          affected-rows value returned by this function means, See
+          <a class="xref" href="c-api-functions.html#mysql-affected-rows" title="7.1 mysql_affected_rows()">Section 7.1, “mysql_affected_rows()”</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-affected-rows-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-affected-rows-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-attr-get"></a>11.2 mysql_stmt_attr_get()</h2></div></div></div><a class="indexterm" name="idm46079468142704"></a><pre class="programlisting">bool
+mysql_stmt_attr_get(MYSQL_STMT *stmt,
+                    enum enum_stmt_attr_type option,
+                    void *arg)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-get-description"></a>Description</h3></div></div></div><p>
+          Can be used to get the current value for a statement
+          attribute.
+        </p><p>
+          The <code class="literal">option</code> argument is the option that you
+          want to get; the <code class="literal">arg</code> should point to a
+          variable that should contain the option value. If the option
+          is an integer, <code class="literal">arg</code> should point to the
+          value of the integer.
+        </p><p>
+          See <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()">Section 11.3, “mysql_stmt_attr_set()”</a>, for a list of
+          options and option types.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-get-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if <code class="literal">option</code> is
+          unknown.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-get-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-attr-set"></a>11.3 mysql_stmt_attr_set()</h2></div></div></div><a class="indexterm" name="idm46079468129536"></a><pre class="programlisting">bool
+mysql_stmt_attr_set(MYSQL_STMT *stmt,
+                    enum enum_stmt_attr_type option,
+                    const void *arg)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-set-description"></a>Description</h3></div></div></div><p>
+          Can be used to affect behavior for a prepared statement. This
+          function may be called multiple times to set several options.
+        </p><p>
+          The <code class="literal">option</code> argument is the option that you
+          want to set. The <code class="literal">arg</code> argument is the value
+          for the option. <code class="literal">arg</code> should point to a
+          variable that is set to the desired attribute value. The
+          variable type is as indicated in the following table.
+        </p><p>
+          The following table shows the possible
+          <code class="literal">option</code> values.
+        </p><div class="informaltable"><table summary="Lists mysql_stmt_attr_set() option values and the argument type and function of each option."><col width="42%"><col width="20%"><col width="38%"><thead><tr>
+              <th scope="col">Option</th>
+              <th scope="col">Argument Type</th>
+              <th scope="col">Function</th>
+            </tr></thead><tbody><tr>
+              <th scope="row"><code class="literal">STMT_ATTR_UPDATE_MAX_LENGTH</code></th>
+              <td><code class="literal">bool *</code></td>
+              <td>If set to 1, causes
+                <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+                to update the metadata
+                <code class="literal">MYSQL_FIELD-&gt;max_length</code> value.</td>
+            </tr><tr>
+              <th scope="row"><code class="literal">STMT_ATTR_CURSOR_TYPE</code></th>
+              <td><code class="literal">unsigned long *</code></td>
+              <td>Type of cursor to open for statement when
+                <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> is
+                invoked. <code class="literal">*arg</code> can be
+                <code class="literal">CURSOR_TYPE_NO_CURSOR</code> (the default)
+                or <code class="literal">CURSOR_TYPE_READ_ONLY</code>.</td>
+            </tr><tr>
+              <th scope="row"><code class="literal">STMT_ATTR_PREFETCH_ROWS</code></th>
+              <td><code class="literal">unsigned long *</code></td>
+              <td>Number of rows to fetch from server at a time when using a cursor.
+                <code class="literal">*arg</code> can be in the range from 1 to
+                the maximum value of <code class="literal">unsigned long</code>.
+                The default is 1.</td>
+            </tr></tbody></table></div><p>
+          If you use the <code class="literal">STMT_ATTR_CURSOR_TYPE</code> option
+          with <code class="literal">CURSOR_TYPE_READ_ONLY</code>, a cursor is
+          opened for the statement when you invoke
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>. If there
+          is already an open cursor from a previous
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> call, it
+          closes the cursor before opening a new one.
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-reset" title="11.22 mysql_stmt_reset()"><code class="literal">mysql_stmt_reset()</code></a> also closes
+          any open cursor before preparing the statement for
+          re-execution.
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-free-result" title="11.14 mysql_stmt_free_result()"><code class="literal">mysql_stmt_free_result()</code></a>
+          closes any open cursor.
+        </p><p>
+          If you open a cursor for a prepared statement,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a> is
+          unnecessary, because that function causes the result set to be
+          buffered on the client side.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-set-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if <code class="literal">option</code> is
+          unknown.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-set-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-attr-set-example"></a>Example</h3></div></div></div><p>
+          The following example opens a cursor for a prepared statement
+          and sets the number of rows to fetch at a time to 5:
+        </p><pre class="programlisting">MYSQL_STMT *stmt;
+int rc;
+unsigned long type;
+unsigned long prefetch_rows = 5;
+
+stmt = mysql_stmt_init(mysql);
+type = (unsigned long) CURSOR_TYPE_READ_ONLY;
+rc = mysql_stmt_attr_set(stmt, STMT_ATTR_CURSOR_TYPE, (void*) &amp;type);
+/* ... check return value ... */
+rc = mysql_stmt_attr_set(stmt, STMT_ATTR_PREFETCH_ROWS,
+                         (void*) &amp;prefetch_rows);
+/* ... check return value ... */
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-bind-param"></a>11.4 mysql_stmt_bind_param()</h2></div></div></div><a class="indexterm" name="idm46079468077088"></a><pre class="programlisting">bool
+mysql_stmt_bind_param(MYSQL_STMT *stmt,
+                      MYSQL_BIND *bind)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-param-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a> is
+          used to bind input data for the parameter markers in the SQL
+          statement that was passed to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>. It uses
+          <code class="literal">MYSQL_BIND</code> structures to supply the data.
+          <code class="literal">bind</code> is the address of an array of
+          <code class="literal">MYSQL_BIND</code> structures. The client library
+          expects the array to contain one element for each
+          <code class="literal">?</code> parameter marker that is present in the
+          query.
+        </p><p>
+          Suppose that you prepare the following statement:
+        </p><pre class="programlisting">INSERT INTO mytbl VALUES(?,?,?)
+</pre><p>
+          When you bind the parameters, the array of
+          <code class="literal">MYSQL_BIND</code> structures must contain three
+          elements, and can be declared like this:
+        </p><pre class="programlisting">MYSQL_BIND bind[3];
+</pre><p>
+          For a description of the members of the
+          <code class="literal">MYSQL_BIND</code> structure and how they should be
+          set to provide input values, see
+          <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-param-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-param-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unsupported_param_type" target="_top"><code class="literal">CR_UNSUPPORTED_PARAM_TYPE</code></a>
+            </p><p>
+              The conversion is not supported. Possibly the
+              <code class="literal">buffer_type</code> value is invalid or is not
+              one of the supported types.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-param-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-bind-result"></a>11.5 mysql_stmt_bind_result()</h2></div></div></div><a class="indexterm" name="idm46079468047232"></a><pre class="programlisting">bool
+mysql_stmt_bind_result(MYSQL_STMT *stmt,
+                       MYSQL_BIND *bind)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-result-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a> is
+          used to associate (that is, bind) output columns in the result
+          set to data buffers and length buffers. When
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> is called
+          to fetch data, the MySQL client/server protocol places the
+          data for the bound columns into the specified buffers.
+        </p><p>
+          All columns must be bound to buffers prior to calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>.
+          <code class="literal">bind</code> is the address of an array of
+          <code class="literal">MYSQL_BIND</code> structures. The client library
+          expects the array to contain one element for each column of
+          the result set. If you do not bind columns to
+          <code class="literal">MYSQL_BIND</code> structures,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> simply
+          ignores the data fetch. The buffers should be large enough to
+          hold the data values, because the protocol does not return
+          data values in chunks.
+        </p><p>
+          A column can be bound or rebound at any time, even after a
+          result set has been partially retrieved. The new binding takes
+          effect the next time
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> is called.
+          Suppose that an application binds the columns in a result set
+          and calls <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>.
+          The client/server protocol returns data in the bound buffers.
+          Then suppose that the application binds the columns to a
+          different set of buffers. The protocol places data into the
+          newly bound buffers when the next call to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> occurs.
+        </p><p>
+          To bind a column, an application calls
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a> and
+          passes the type, address, and length of the output buffer into
+          which the value should be stored.
+          <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>,
+          describes the members of each <code class="literal">MYSQL_BIND</code>
+          element and how they should be set to receive output values.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-result-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-result-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unsupported_param_type" target="_top"><code class="literal">CR_UNSUPPORTED_PARAM_TYPE</code></a>
+            </p><p>
+              The conversion is not supported. Possibly the
+              <code class="literal">buffer_type</code> value is invalid or is not
+              one of the supported types.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-bind-result-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-close"></a>11.6 mysql_stmt_close()</h2></div></div></div><a class="indexterm" name="idm46079468012304"></a><pre class="programlisting">bool
+mysql_stmt_close(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-close-description"></a>Description</h3></div></div></div><p>
+          Closes the prepared statement.
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> also
+          deallocates the statement handler pointed to by
+          <code class="literal">stmt</code>, which at that point becomes invalid
+          and should no longer be used. For a failed
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> call, do
+          not call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a>,
+          or <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a>, or
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate" title="11.27 mysql_stmt_sqlstate()"><code class="literal">mysql_stmt_sqlstate()</code></a> to
+          obtain error information because
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> makes the
+          statement handler invalid. Call
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a>,
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a>, or
+          <a class="link" href="c-api-functions.html#mysql-sqlstate" title="7.78 mysql_sqlstate()"><code class="literal">mysql_sqlstate()</code></a> instead.
+        </p><p>
+          If the current statement has pending or unread results, this
+          function cancels them so that the next query can be executed.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-close-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-close-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-close-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-data-seek"></a>11.7 mysql_stmt_data_seek()</h2></div></div></div><a class="indexterm" name="idm46079467984064"></a><pre class="programlisting">void
+mysql_stmt_data_seek(MYSQL_STMT *stmt,
+                     uint64_t offset)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-data-seek-description"></a>Description</h3></div></div></div><p>
+          Seeks to an arbitrary row in a statement result set. The
+          <code class="literal">offset</code> value is a row number and should be
+          in the range from <code class="literal">0</code> to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows" title="11.18 mysql_stmt_num_rows()"><code class="literal">mysql_stmt_num_rows(stmt)-1</code></a>.
+        </p><p>
+          This function requires that the statement result set structure
+          contains the entire result of the last executed query, so
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-data-seek" title="11.7 mysql_stmt_data_seek()"><code class="literal">mysql_stmt_data_seek()</code></a> may be
+          used only in conjunction with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-data-seek-return-values"></a>Return Values</h3></div></div></div><p>
+          None.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-data-seek-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-errno"></a>11.8 mysql_stmt_errno()</h2></div></div></div><a class="indexterm" name="idm46079467969808"></a><pre class="programlisting">unsigned int
+mysql_stmt_errno(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-errno-description"></a>Description</h3></div></div></div><p>
+          For the statement specified by <code class="literal">stmt</code>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a> returns the
+          error code for the most recently invoked statement API
+          function that can succeed or fail. A return value of zero
+          means that no error occurred. Client error message numbers are
+          listed in the MySQL <code class="filename">errmsg.h</code> header file.
+          Server error message numbers are listed in
+          <code class="filename">mysqld_error.h</code>. Errors also are listed at
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/error-handling.html" target="_top">Error Messages and Common Problems</a>.
+        </p><p>
+          If the failed statement API function was
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>, do not
+          call or <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a> to
+          obtain error information because
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> makes the
+          statement handler invalid. Call
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> instead.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-errno-return-values"></a>Return Values</h3></div></div></div><p>
+          An error code value. Zero if no error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-errno-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-error"></a>11.9 mysql_stmt_error()</h2></div></div></div><a class="indexterm" name="idm46079467951408"></a><pre class="programlisting">const char *
+mysql_stmt_error(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-error-description"></a>Description</h3></div></div></div><p>
+          For the statement specified by <code class="literal">stmt</code>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a> returns a
+          null-terminated string containing the error message for the
+          most recently invoked statement API function that can succeed
+          or fail. An empty string (<code class="literal">""</code>) is returned
+          if no error occurred. Either of these two tests can be used to
+          check for an error:
+        </p><pre class="programlisting">if(*mysql_stmt_errno(stmt))
+{
+  // an error occurred
+}
+
+if (mysql_stmt_error(stmt)[0])
+{
+  // an error occurred
+}
+</pre><p>
+          If the failed statement API function was
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>, do not
+          call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a> to
+          obtain error information because
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> makes the
+          statement handler invalid. Call
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> instead.
+        </p><p>
+          The language of the client error messages may be changed by
+          recompiling the MySQL client library. You can choose error
+          messages in several different languages.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-error-return-values"></a>Return Values</h3></div></div></div><p>
+          A character string that describes the error. An empty string
+          if no error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-error-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-execute"></a>11.10 mysql_stmt_execute()</h2></div></div></div><a class="indexterm" name="idm46079467932848"></a><pre class="programlisting">int
+mysql_stmt_execute(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-execute-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> executes
+          the prepared query associated with the statement handler. The
+          currently bound parameter marker values are sent to server
+          during this call, and the server replaces the markers with
+          this newly supplied data.
+        </p><p>
+          Statement processing following
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> depends
+          on the type of statement:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              For an <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>, or
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>, the number of
+              changed, deleted, or inserted rows can be found by calling
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a>.
+            </p></li><li class="listitem"><p>
+              For a statement such as
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> that generates a
+              result set, you must call
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> to
+              fetch the data prior to calling any other functions that
+              result in query processing. For more information on how to
+              fetch the results, refer to
+              <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.
+            </p><p>
+              Do not follow invocation of
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> with
+              a call to
+              <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> or
+              <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>. Those
+              functions are not intended for processing results from
+              prepared statements.
+            </p></li></ul></div><p>
+          For statements that generate a result set, you can request
+          that <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> open
+          a cursor for the statement by calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set()</code></a> before
+          executing the statement. If you execute a statement multiple
+          times, <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>
+          closes any open cursor before opening a new one.
+        </p><p>
+          Metadata changes to tables or views referred to by prepared
+          statements are detected and cause automatic repreparation of
+          the statement when it is next executed. For more information,
+          see <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/statement-caching.html" target="_top">Caching of Prepared Statements and Stored Programs</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-execute-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-execute-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-execute-example"></a>Example</h3></div></div></div><p>
+          The following example demonstrates how to create and populate
+          a table using
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-param-count" title="11.19 mysql_stmt_param_count()"><code class="literal">mysql_stmt_param_count()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>, and
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a>.
+          The <code class="literal">mysql</code> variable is assumed to be a valid
+          connection handler. For an example that shows how to retrieve
+          data, see <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.
+        </p><pre class="programlisting">#define STRING_SIZE 50
+
+#define DROP_SAMPLE_TABLE "DROP TABLE IF EXISTS test_table"
+#define CREATE_SAMPLE_TABLE "CREATE TABLE test_table(col1 INT,\
+                                                 col2 VARCHAR(40),\
+                                                 col3 SMALLINT,\
+                                                 col4 TIMESTAMP)"
+#define INSERT_SAMPLE "INSERT INTO \
+                       test_table(col1,col2,col3) \
+                       VALUES(?,?,?)"
+
+MYSQL_STMT    *stmt;
+MYSQL_BIND    bind[3];
+uint64_t      affected_rows;
+int           param_count;
+short         small_data;
+int           int_data;
+char          str_data[STRING_SIZE];
+unsigned long str_length;
+bool          is_null;
+
+if (mysql_query(mysql, DROP_SAMPLE_TABLE))
+{
+  fprintf(stderr, " DROP TABLE failed\n");
+  fprintf(stderr, " %s\n", mysql_error(mysql));
+  exit(0);
+}
+
+if (mysql_query(mysql, CREATE_SAMPLE_TABLE))
+{
+  fprintf(stderr, " CREATE TABLE failed\n");
+  fprintf(stderr, " %s\n", mysql_error(mysql));
+  exit(0);
+}
+
+/* Prepare an INSERT query with 3 parameters */
+/* (the TIMESTAMP column is not named; the server */
+/*  sets it to the current date and time) */
+stmt = mysql_stmt_init(mysql);
+if (!stmt)
+{
+  fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+  exit(0);
+}
+if (mysql_stmt_prepare(stmt, INSERT_SAMPLE, strlen(INSERT_SAMPLE)))
+{
+  fprintf(stderr, " mysql_stmt_prepare(), INSERT failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+fprintf(stdout, " prepare, INSERT successful\n");
+
+/* Get the parameter count from the statement */
+param_count= mysql_stmt_param_count(stmt);
+fprintf(stdout, " total parameters in INSERT: %d\n", param_count);
+
+if (param_count != 3) /* validate parameter count */
+{
+  fprintf(stderr, " invalid parameter count returned by MySQL\n");
+  exit(0);
+}
+
+/* Bind the data for all 3 parameters */
+
+memset(bind, 0, sizeof(bind));
+
+/* INTEGER PARAM */
+/* This is a number type, so there is no need
+   to specify buffer_length */
+bind[0].buffer_type= MYSQL_TYPE_LONG;
+bind[0].buffer= (char *)&amp;int_data;
+bind[0].is_null= 0;
+bind[0].length= 0;
+
+/* STRING PARAM */
+bind[1].buffer_type= MYSQL_TYPE_STRING;
+bind[1].buffer= (char *)str_data;
+bind[1].buffer_length= STRING_SIZE;
+bind[1].is_null= 0;
+bind[1].length= &amp;str_length;
+
+/* SMALLINT PARAM */
+bind[2].buffer_type= MYSQL_TYPE_SHORT;
+bind[2].buffer= (char *)&amp;small_data;
+bind[2].is_null= &amp;is_null;
+bind[2].length= 0;
+
+/* Bind the buffers */
+if (mysql_stmt_bind_param(stmt, bind))
+{
+  fprintf(stderr, " mysql_stmt_bind_param() failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Specify the data values for the first row */
+int_data= 10;             /* integer */
+strncpy(str_data, "MySQL", STRING_SIZE); /* string  */
+str_length= strlen(str_data);
+
+/* INSERT SMALLINT data as NULL */
+is_null= 1;
+
+/* Execute the INSERT statement - 1*/
+if (mysql_stmt_execute(stmt))
+{
+  fprintf(stderr, " mysql_stmt_execute(), 1 failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Get the number of affected rows */
+affected_rows= mysql_stmt_affected_rows(stmt);
+fprintf(stdout, " total affected rows(insert 1): %lu\n",
+                (unsigned long) affected_rows);
+
+if (affected_rows != 1) /* validate affected rows */
+{
+  fprintf(stderr, " invalid affected rows by MySQL\n");
+  exit(0);
+}
+
+/* Specify data values for second row,
+   then re-execute the statement */
+int_data= 1000;
+strncpy(str_data, "
+        The most popular Open Source database",
+        STRING_SIZE);
+str_length= strlen(str_data);
+small_data= 1000;         /* smallint */
+is_null= 0;               /* reset */
+
+/* Execute the INSERT statement - 2*/
+if (mysql_stmt_execute(stmt))
+{
+  fprintf(stderr, " mysql_stmt_execute, 2 failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Get the total rows affected */
+affected_rows= mysql_stmt_affected_rows(stmt);
+fprintf(stdout, " total affected rows(insert 2): %lu\n",
+                (unsigned long) affected_rows);
+
+if (affected_rows != 1) /* validate affected rows */
+{
+  fprintf(stderr, " invalid affected rows by MySQL\n");
+  exit(0);
+}
+
+/* Close the statement */
+if (mysql_stmt_close(stmt))
+{
+  /* mysql_stmt_close() invalidates stmt, so call          */
+  /* mysql_error(mysql) rather than mysql_stmt_error(stmt) */
+  fprintf(stderr, " failed while closing the statement\n");
+  fprintf(stderr, " %s\n", mysql_error(mysql));
+  exit(0);
+}
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            For complete examples on the use of prepared statement
+            functions, refer to the file
+            <code class="filename">tests/mysql_client_test.c</code>. This file
+            can be obtained from a MySQL source distribution or from the
+            source repository (see
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/source-installation.html" target="_top">Installing MySQL from Source</a>).
+          </p></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-fetch"></a>11.11 mysql_stmt_fetch()</h2></div></div></div><a class="indexterm" name="idm46079467865600"></a><pre class="programlisting">int
+mysql_stmt_fetch(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> returns the
+          next row in the result set. It can be called only while the
+          result set exists; that is, after a call to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> for a
+          statement such as <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> that
+          produces a result set.
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> returns row
+          data using the buffers bound by
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>. It
+          returns the data in those buffers for all the columns in the
+          current row set and the lengths are returned to the
+          <code class="literal">length</code> pointer. All columns must be bound
+          by the application before it calls
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>.
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> typically
+          occurs within a loop, to ensure that all result set rows are
+          fetched. For example:
+        </p><pre class="programlisting">int status;
+
+while (1)
+{
+  status = mysql_stmt_fetch(stmt);
+
+  if (status == 1 || status == MYSQL_NO_DATA)
+    break;
+
+  /* handle current row here */
+}
+
+/* if desired, handle status == 1 case and display error here */
+</pre><p>
+          By default, result sets are fetched unbuffered a row at a time
+          from the server. To buffer the entire result set on the
+          client, call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+          after binding the data buffers and before calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>.
+        </p><p>
+          If a fetched data value is a <code class="literal">NULL</code> value,
+          the <code class="literal">*is_null</code> value of the corresponding
+          <code class="literal">MYSQL_BIND</code> structure contains TRUE (1).
+          Otherwise, the data and its length are returned in the
+          <code class="literal">*buffer</code> and <code class="literal">*length</code>
+          elements based on the buffer type specified by the
+          application. Each numeric and temporal type has a fixed
+          length, as listed in the following table. The length of the
+          string types depends on the length of the actual data value,
+          as indicated by <code class="literal">data_length</code>.
+        </p><div class="informaltable"><table summary="Numeric and temporal MySQL types and the fixed length of each type."><col width="50%"><col width="50%"><thead><tr>
+              <th>Type</th>
+              <th>Length</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">MYSQL_TYPE_TINY</code></td>
+              <td>1</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_SHORT</code></td>
+              <td>2</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_LONG</code></td>
+              <td>4</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_LONGLONG</code></td>
+              <td>8</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_FLOAT</code></td>
+              <td>4</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DOUBLE</code></td>
+              <td>8</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_TIME</code></td>
+              <td><code class="literal">sizeof(MYSQL_TIME)</code></td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DATE</code></td>
+              <td><code class="literal">sizeof(MYSQL_TIME)</code></td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_DATETIME</code></td>
+              <td><code class="literal">sizeof(MYSQL_TIME)</code></td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_STRING</code></td>
+              <td><code class="literal">data length</code></td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_TYPE_BLOB</code></td>
+              <td><code class="literal">data_length</code></td>
+            </tr></tbody></table></div><p>
+          In some cases, you might want to determine the length of a
+          column value before fetching it with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>. For
+          example, the value might be a long string or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> value for which you want
+          to know how much space must be allocated. To accomplish this,
+          use one of these strategies:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              Before invoking
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> to
+              retrieve individual rows, pass
+              <code class="literal">STMT_ATTR_UPDATE_MAX_LENGTH</code> to
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set()</code></a>,
+              then invoke
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+              to buffer the entire result on the client side. Setting
+              the <code class="literal">STMT_ATTR_UPDATE_MAX_LENGTH</code>
+              attribute causes the maximal length of column values to be
+              indicated by the <code class="literal">max_length</code> member of
+              the result set metadata returned by
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>.
+            </p></li><li class="listitem"><p>
+              Invoke <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>
+              with a zero-length buffer for the column in question and a
+              pointer in which the real length can be stored. Then use
+              the real length with
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch-column" title="11.12 mysql_stmt_fetch_column()"><code class="literal">mysql_stmt_fetch_column()</code></a>.
+            </p><pre class="programlisting">real_length= 0;
+
+bind[0].buffer= 0;
+bind[0].buffer_length= 0;
+bind[0].length= &amp;real_length
+mysql_stmt_bind_result(stmt, bind);
+
+mysql_stmt_fetch(stmt);
+if (real_length &gt; 0)
+{
+  data= malloc(real_length);
+  bind[0].buffer= data;
+  bind[0].buffer_length= real_length;
+  mysql_stmt_fetch_column(stmt, bind, 0, 0);
+}
+</pre></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-return-values"></a>Return Values</h3></div></div></div><div class="informaltable"><table summary="Return values for mysql_stmt_fetch() and a description of each value."><col width="35%"><col width="65%"><thead><tr>
+              <th>Return Value</th>
+              <th>Description</th>
+            </tr></thead><tbody><tr>
+              <td>0</td>
+              <td>Success, the data has been fetched to application data buffers.</td>
+            </tr><tr>
+              <td>1</td>
+              <td>Error occurred. Error code and message can be obtained by calling
+                <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-errno" title="11.8 mysql_stmt_errno()"><code class="literal">mysql_stmt_errno()</code></a> and
+                <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a>.</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_NO_DATA</code></td>
+              <td>Success, no more data exists</td>
+            </tr><tr>
+              <td><code class="literal">MYSQL_DATA_TRUNCATED</code></td>
+              <td>Data truncation occurred</td>
+            </tr></tbody></table></div><p>
+          <code class="literal">MYSQL_DATA_TRUNCATED</code> is returned when
+          truncation reporting is enabled. To determine which column
+          values were truncated when this value is returned, check the
+          <code class="literal">error</code> members of the
+          <code class="literal">MYSQL_BIND</code> structures used for fetching
+          values. Truncation reporting is enabled by default, but can be
+          controlled by calling
+          <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> with the
+          <code class="literal">MYSQL_REPORT_DATA_TRUNCATION</code> option.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p><p>
+              Although
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> can
+              produce this error, it is more likely to occur for the
+              <span class="emphasis"><em>following</em></span> C API call if
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> is not
+              called enough times to read the entire result set (that
+              is, enough times to return
+              <code class="literal">MYSQL_NO_DATA</code>).
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unsupported_param_type" target="_top"><code class="literal">CR_UNSUPPORTED_PARAM_TYPE</code></a>
+            </p><p>
+              The buffer type is <code class="literal">MYSQL_TYPE_DATE</code>,
+              <code class="literal">MYSQL_TYPE_TIME</code>,
+              <code class="literal">MYSQL_TYPE_DATETIME</code>, or
+              <code class="literal">MYSQL_TYPE_TIMESTAMP</code>, but the data type
+              is not <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a>, or
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a>.
+            </p></li><li class="listitem"><p>
+              All other unsupported conversion errors are returned from
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-example"></a>Example</h3></div></div></div><p>
+          The following example demonstrates how to fetch data from a
+          table using
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>, and
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>. (This
+          example expects to retrieve the two rows inserted by the
+          example shown in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.) The
+          <code class="literal">mysql</code> variable is assumed to be a valid
+          connection handler.
+        </p><pre class="programlisting">#define STRING_SIZE 50
+
+#define SELECT_SAMPLE "SELECT col1, col2, col3, col4 \
+                       FROM test_table"
+
+MYSQL_STMT    *stmt;
+MYSQL_BIND    bind[4];
+MYSQL_RES     *prepare_meta_result;
+MYSQL_TIME    ts;
+unsigned long length[4];
+int           param_count, column_count, row_count;
+short         small_data;
+int           int_data;
+char          str_data[STRING_SIZE];
+bool          is_null[4];
+bool          error[4];
+
+/* Prepare a SELECT query to fetch data from test_table */
+stmt = mysql_stmt_init(mysql);
+if (!stmt)
+{
+  fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+  exit(0);
+}
+if (mysql_stmt_prepare(stmt, SELECT_SAMPLE, strlen(SELECT_SAMPLE)))
+{
+  fprintf(stderr, " mysql_stmt_prepare(), SELECT failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+fprintf(stdout, " prepare, SELECT successful\n");
+
+/* Get the parameter count from the statement */
+param_count= mysql_stmt_param_count(stmt);
+fprintf(stdout, " total parameters in SELECT: %d\n", param_count);
+
+if (param_count != 0) /* validate parameter count */
+{
+  fprintf(stderr, " invalid parameter count returned by MySQL\n");
+  exit(0);
+}
+
+/* Execute the SELECT query */
+if (mysql_stmt_execute(stmt))
+{
+  fprintf(stderr, " mysql_stmt_execute(), failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Fetch result set meta information */
+prepare_meta_result = mysql_stmt_result_metadata(stmt);
+if (!prepare_meta_result)
+{
+  fprintf(stderr,
+         " mysql_stmt_result_metadata(), \
+           returned no meta information\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Get total columns in the query */
+column_count= mysql_num_fields(prepare_meta_result);
+fprintf(stdout,
+        " total columns in SELECT statement: %d\n",
+        column_count);
+
+if (column_count != 4) /* validate column count */
+{
+  fprintf(stderr, " invalid column count returned by MySQL\n");
+  exit(0);
+}
+
+/* Bind the result buffers for all 4 columns before fetching them */
+
+memset(bind, 0, sizeof(bind));
+
+/* INTEGER COLUMN */
+bind[0].buffer_type= MYSQL_TYPE_LONG;
+bind[0].buffer= (char *)&amp;int_data;
+bind[0].is_null= &amp;is_null[0];
+bind[0].length= &amp;length[0];
+bind[0].error= &amp;error[0];
+
+/* STRING COLUMN */
+bind[1].buffer_type= MYSQL_TYPE_STRING;
+bind[1].buffer= (char *)str_data;
+bind[1].buffer_length= STRING_SIZE;
+bind[1].is_null= &amp;is_null[1];
+bind[1].length= &amp;length[1];
+bind[1].error= &amp;error[1];
+
+/* SMALLINT COLUMN */
+bind[2].buffer_type= MYSQL_TYPE_SHORT;
+bind[2].buffer= (char *)&amp;small_data;
+bind[2].is_null= &amp;is_null[2];
+bind[2].length= &amp;length[2];
+bind[2].error= &amp;error[2];
+
+/* TIMESTAMP COLUMN */
+bind[3].buffer_type= MYSQL_TYPE_TIMESTAMP;
+bind[3].buffer= (char *)&amp;ts;
+bind[3].is_null= &amp;is_null[3];
+bind[3].length= &amp;length[3];
+bind[3].error= &amp;error[3];
+
+/* Bind the result buffers */
+if (mysql_stmt_bind_result(stmt, bind))
+{
+  fprintf(stderr, " mysql_stmt_bind_result() failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Now buffer all results to client (optional step) */
+if (mysql_stmt_store_result(stmt))
+{
+  fprintf(stderr, " mysql_stmt_store_result() failed\n");
+  fprintf(stderr, " %s\n", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+/* Fetch all rows */
+row_count= 0;
+fprintf(stdout, "Fetching results ...\n");
+while (!mysql_stmt_fetch(stmt))
+{
+  row_count++;
+  fprintf(stdout, "  row %d\n", row_count);
+
+  /* column 1 */
+  fprintf(stdout, "   column1 (integer)  : ");
+  if (is_null[0])
+    fprintf(stdout, " NULL\n");
+  else
+    fprintf(stdout, " %d(%ld)\n", int_data, length[0]);
+
+  /* column 2 */
+  fprintf(stdout, "   column2 (string)   : ");
+  if (is_null[1])
+    fprintf(stdout, " NULL\n");
+  else
+    fprintf(stdout, " %s(%ld)\n", str_data, length[1]);
+
+  /* column 3 */
+  fprintf(stdout, "   column3 (smallint) : ");
+  if (is_null[2])
+    fprintf(stdout, " NULL\n");
+  else
+    fprintf(stdout, " %d(%ld)\n", small_data, length[2]);
+
+  /* column 4 */
+  fprintf(stdout, "   column4 (timestamp): ");
+  if (is_null[3])
+    fprintf(stdout, " NULL\n");
+  else
+    fprintf(stdout, " %04d-%02d-%02d %02d:%02d:%02d (%ld)\n",
+                     ts.year, ts.month, ts.day,
+                     ts.hour, ts.minute, ts.second,
+                     length[3]);
+  fprintf(stdout, "\n");
+}
+
+/* Validate rows fetched */
+fprintf(stdout, " total rows fetched: %d\n", row_count);
+if (row_count != 2)
+{
+  fprintf(stderr, " MySQL failed to return all rows\n");
+  exit(0);
+}
+
+/* Free the prepared result metadata */
+mysql_free_result(prepare_meta_result);
+
+
+/* Close the statement */
+if (mysql_stmt_close(stmt))
+{
+  /* mysql_stmt_close() invalidates stmt, so call          */
+  /* mysql_error(mysql) rather than mysql_stmt_error(stmt) */
+  fprintf(stderr, " failed while closing the statement\n");
+  fprintf(stderr, " %s\n", mysql_error(mysql));
+  exit(0);
+}
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-fetch-column"></a>11.12 mysql_stmt_fetch_column()</h2></div></div></div><a class="indexterm" name="idm46079467716400"></a><pre class="programlisting">int
+mysql_stmt_fetch_column(MYSQL_STMT *stmt,
+                        MYSQL_BIND *bind,
+                        unsigned int column,
+                        unsigned long offset)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-column-description"></a>Description</h3></div></div></div><p>
+          Fetches one column from the current result set row.
+          <code class="literal">bind</code> provides the buffer where data should
+          be placed. It should be set up the same way as for
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>.
+          <code class="literal">column</code> indicates which column to fetch. The
+          first column is numbered 0. <code class="literal">offset</code> is the
+          offset within the data value at which to begin retrieving
+          data. This can be used for fetching the data value in pieces.
+          The beginning of the value is offset 0.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-column-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-fetch-column-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_invalid_parameter_no" target="_top"><code class="literal">CR_INVALID_PARAMETER_NO</code></a>
+            </p><p>
+              Invalid column number.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_no_data" target="_top"><code class="literal">CR_NO_DATA</code></a>
+            </p><p>
+              The end of the result set has already been reached.
+            </p></li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-field-count"></a>11.13 mysql_stmt_field_count()</h2></div></div></div><a class="indexterm" name="idm46079467699152"></a><pre class="programlisting">unsigned int
+mysql_stmt_field_count(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-field-count-description"></a>Description</h3></div></div></div><p>
+          Returns the number of columns for the most recent statement
+          for the statement handler. This value is zero for statements
+          such as <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a> that do not produce
+          result sets.
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-field-count" title="11.13 mysql_stmt_field_count()"><code class="literal">mysql_stmt_field_count()</code></a> can
+          be called after you have prepared a statement by invoking
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-field-count-return-values"></a>Return Values</h3></div></div></div><p>
+          An unsigned integer representing the number of columns in a
+          result set.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-field-count-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-free-result"></a>11.14 mysql_stmt_free_result()</h2></div></div></div><a class="indexterm" name="idm46079467685280"></a><pre class="programlisting">bool
+mysql_stmt_free_result(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-free-result-description"></a>Description</h3></div></div></div><p>
+          Releases memory associated with the result set produced by
+          execution of the prepared statement. If there is a cursor open
+          for the statement,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-free-result" title="11.14 mysql_stmt_free_result()"><code class="literal">mysql_stmt_free_result()</code></a>
+          closes it.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-free-result-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-init"></a>11.15 mysql_stmt_init()</h2></div></div></div><a class="indexterm" name="idm46079467677104"></a><pre class="programlisting">MYSQL_STMT *
+mysql_stmt_init(MYSQL *mysql)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-init-description"></a>Description</h3></div></div></div><p>
+          Creates and returns a <code class="literal">MYSQL_STMT</code> handler.
+          The handler should be freed with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>, at which
+          point the handler becomes invalid and should no longer be
+          used.
+        </p><p>
+          See also
+          <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>,
+          for more information.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-init-return-values"></a>Return Values</h3></div></div></div><p>
+          A pointer to a <code class="literal">MYSQL_STMT</code> structure in case
+          of success. <code class="literal">NULL</code> if out of memory.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-init-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-insert-id"></a>11.16 mysql_stmt_insert_id()</h2></div></div></div><a class="indexterm" name="idm46079467661632"></a><pre class="programlisting">uint64_t
+mysql_stmt_insert_id(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-insert-id-description"></a>Description</h3></div></div></div><p>
+          Returns the value generated for an
+          <code class="literal">AUTO_INCREMENT</code> column by the prepared
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a> statement. Use this
+          function after you have executed a prepared
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> statement on a table
+          which contains an <code class="literal">AUTO_INCREMENT</code> field.
+        </p><p>
+          See <a class="xref" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()">Section 7.39, “mysql_insert_id()”</a>, for more information.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-insert-id-return-values"></a>Return Values</h3></div></div></div><p>
+          Value for <code class="literal">AUTO_INCREMENT</code> column which was
+          automatically generated or explicitly set during execution of
+          prepared statement, or value generated by
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID(<em class="replaceable"><code>expr</code></em>)</code></a>
+          function. Return value is undefined if statement does not set
+          <code class="literal">AUTO_INCREMENT</code> value.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-insert-id-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-next-result"></a>11.17 mysql_stmt_next_result()</h2></div></div></div><a class="indexterm" name="idm46079467642912"></a><pre class="programlisting">int
+mysql_stmt_next_result(MYSQL_STMT *mysql)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-next-result-description"></a>Description</h3></div></div></div><p>
+          This function is used when you use prepared
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements to execute
+          stored procedures, which can return multiple result sets. Use
+          a loop that calls
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a> to
+          determine whether there are more results. If a procedure has
+          <code class="literal">OUT</code> or <code class="literal">INOUT</code> parameters,
+          their values will be returned as a single-row result set
+          following any other result sets. The values will appear in the
+          order in which they are declared in the procedure parameter
+          list.
+        </p><p>
+          For information about the effect of unhandled conditions on
+          procedure parameters, see
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/conditions-and-parameters.html" target="_top">Condition Handling and OUT or INOUT Parameters</a>.
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a>
+          returns a status to indicate whether more results exist. If
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a>
+          returns an error, there are no more results.
+        </p><p>
+          Before each call to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a>, you
+          must call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-free-result" title="11.14 mysql_stmt_free_result()"><code class="literal">mysql_stmt_free_result()</code></a> for
+          the current result if it produced a result set (rather than
+          just a result status).
+        </p><p>
+          After calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a> the
+          state of the connection is as if you had called
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>. This
+          means that you can call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a>,
+          and so forth.
+        </p><p>
+          It is also possible to test whether there are more results by
+          calling <a class="link" href="c-api-functions.html#mysql-more-results" title="7.47 mysql_more_results()"><code class="literal">mysql_more_results()</code></a>.
+          However, this function does not change the connection state,
+          so if it returns true, you must still call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a> to
+          advance to the next result.
+        </p><p>
+          For an example that shows how to use
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a>, see
+          <a class="xref" href="c-api-prepared-call-statements.html" title="Chapter 25 C API Prepared CALL Statement Support">Chapter 25, <i>C API Prepared CALL Statement Support</i></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-next-result-return-values"></a>Return Values</h3></div></div></div><div class="informaltable"><table summary="Return values for mysql_stmt_next_result() and a description of each value."><col width="35%"><col width="65%"><thead><tr>
+              <th>Return Value</th>
+              <th>Description</th>
+            </tr></thead><tbody><tr>
+              <td>0</td>
+              <td>Successful and there are more results</td>
+            </tr><tr>
+              <td>-1</td>
+              <td>Successful and there are no more results</td>
+            </tr><tr>
+              <td>&gt;0</td>
+              <td>An error occurred</td>
+            </tr></tbody></table></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-next-result-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-num-rows"></a>11.18 mysql_stmt_num_rows()</h2></div></div></div><a class="indexterm" name="idm46079467590896"></a><pre class="programlisting">uint64_t
+mysql_stmt_num_rows(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-num-rows-description"></a>Description</h3></div></div></div><p>
+          Returns the number of rows in the result set.
+        </p><p>
+          The use of
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows" title="11.18 mysql_stmt_num_rows()"><code class="literal">mysql_stmt_num_rows()</code></a> depends
+          on whether you used
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a> to
+          buffer the entire result set in the statement handler. If you
+          use <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows" title="11.18 mysql_stmt_num_rows()"><code class="literal">mysql_stmt_num_rows()</code></a> may be
+          called immediately. Otherwise, the row count is unavailable
+          unless you count the rows as you fetch them.
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-num-rows" title="11.18 mysql_stmt_num_rows()"><code class="literal">mysql_stmt_num_rows()</code></a> is
+          intended for use with statements that return a result set,
+          such as <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>. For statements
+          such as <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>, or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>, the number of affected
+          rows can be obtained with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-affected-rows" title="11.1 mysql_stmt_affected_rows()"><code class="literal">mysql_stmt_affected_rows()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-num-rows-return-values"></a>Return Values</h3></div></div></div><p>
+          The number of rows in the result set.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-num-rows-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-param-count"></a>11.19 mysql_stmt_param_count()</h2></div></div></div><a class="indexterm" name="idm46079467569056"></a><pre class="programlisting">unsigned long
+mysql_stmt_param_count(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-param-count-description"></a>Description</h3></div></div></div><p>
+          Returns the number of parameter markers present in the
+          prepared statement.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-param-count-return-values"></a>Return Values</h3></div></div></div><p>
+          An unsigned long integer representing the number of parameters
+          in a statement.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-param-count-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-param-count-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-param-metadata"></a>11.20 mysql_stmt_param_metadata()</h2></div></div></div><a class="indexterm" name="idm46079467558112"></a><pre class="programlisting">MYSQL_RES *
+mysql_stmt_param_metadata(MYSQL_STMT *stmt)
+</pre><p>
+        This function currently does nothing.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-prepare"></a>11.21 mysql_stmt_prepare()</h2></div></div></div><a class="indexterm" name="idm46079467554368"></a><pre class="programlisting">int
+mysql_stmt_prepare(MYSQL_STMT *stmt,
+                   const char *stmt_str,
+                   unsigned long length)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-prepare-description"></a>Description</h3></div></div></div><p>
+          Given the statement handler returned by
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>, prepares
+          the SQL statement pointed to by the string
+          <code class="literal">stmt_str</code> and returns a status value. The
+          string length should be given by the <code class="literal">length</code>
+          argument. The string must consist of a single SQL statement.
+          You should not add a terminating semicolon
+          (<code class="literal">;</code>) or <code class="literal">\g</code> to the
+          statement.
+        </p><p>
+          The application can include one or more parameter markers in
+          the SQL statement by embedding question mark
+          (<code class="literal">?</code>) characters into the SQL string at the
+          appropriate positions.
+        </p><p>
+          The markers are legal only in certain places in SQL
+          statements. For example, they are permitted in the
+          <code class="literal">VALUES()</code> list of an
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> statement (to specify
+          column values for a row), or in a comparison with a column in
+          a <code class="literal">WHERE</code> clause to specify a comparison
+          value. However, they are not permitted for identifiers (such
+          as table or column names), or to specify both operands of a
+          binary operator such as the <code class="literal">=</code> equal sign.
+          The latter restriction is necessary because it would be
+          impossible to determine the parameter type. In general,
+          parameters are legal only in Data Manipulation Language (DML)
+          statements, and not in Data Definition Language (DDL)
+          statements.
+        </p><p>
+          The parameter markers must be bound to application variables
+          using <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>
+          before executing the statement.
+        </p><p>
+          Metadata changes to tables or views referred to by prepared
+          statements are detected and cause automatic repreparation of
+          the statement when it is next executed. For more information,
+          see <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/statement-caching.html" target="_top">Caching of Prepared Statements and Stored Programs</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-prepare-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-prepare-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div><p>
+          If the prepare operation was unsuccessful (that is,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> returns
+          nonzero), the error message can be obtained by calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-error" title="11.9 mysql_stmt_error()"><code class="literal">mysql_stmt_error()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-prepare-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-reset"></a>11.22 mysql_stmt_reset()</h2></div></div></div><a class="indexterm" name="idm46079467515216"></a><pre class="programlisting">bool
+mysql_stmt_reset(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-reset-description"></a>Description</h3></div></div></div><p>
+          Resets a prepared statement on client and server to state
+          after prepare. It resets the statement on the server, data
+          sent using
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()"><code class="literal">mysql_stmt_send_long_data()</code></a>,
+          unbuffered result sets and current errors. It does not clear
+          bindings or stored result sets. Stored result sets will be
+          cleared when executing the prepared statement (or closing it).
+        </p><p>
+          To re-prepare the statement with another query, use
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-reset-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-reset-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-result-metadata"></a>11.23 mysql_stmt_result_metadata()</h2></div></div></div><a class="indexterm" name="idm46079467493872"></a><pre class="programlisting">MYSQL_RES *
+mysql_stmt_result_metadata(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-result-metadata-description"></a>Description</h3></div></div></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          is used to obtain result set metadata for a prepared
+          statement. Its use requires that these conditions be
+          satisified:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              The statement when executed by
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> does
+              produce a result set.
+            </p></li><li class="listitem"><p>
+              The client has not suppressed metadata as described in
+              <a class="xref" href="c-api-optional-metadata.html" title="Chapter 27 C API Optional Result Set Metadata">Chapter 27, <i>C API Optional Result Set Metadata</i></a>.
+            </p></li><li class="listitem"><p></p></li></ul></div><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          may be called after preparing the statement with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a> and
+          before closing the statement handler. The result set metadata
+          returned by
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          is in the form of a pointer to a <code class="literal">MYSQL_RES</code>
+          structure that can be used to process the meta information
+          such as number of fields and individual field information.
+          This result set pointer can be passed as an argument to any of
+          the field-based API functions that process result set
+          metadata, such as:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-num-fields" title="7.49 mysql_num_fields()"><code class="literal">mysql_num_fields()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-fetch-field-direct" title="7.19 mysql_fetch_field_direct()"><code class="literal">mysql_fetch_field_direct()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-fetch-fields" title="7.20 mysql_fetch_fields()"><code class="literal">mysql_fetch_fields()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-field-seek" title="7.24 mysql_field_seek()"><code class="literal">mysql_field_seek()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-field-tell" title="7.25 mysql_field_tell()"><code class="literal">mysql_field_tell()</code></a>
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>
+            </p></li></ul></div><p>
+          When you are done with the metadata result set structure, free
+          it by passing it to
+          <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>. This is
+          similar to the way you free a result set structure obtained
+          from a call to
+          <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>.
+        </p><p>
+          If the executed statement is a <code class="literal">CALL</code>
+          statement, it may produce multiple result sets. In this case,
+          do not call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          immediately after
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>. Instead,
+          check the metadata for each result set separately after
+          calling <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>.
+          For an example of this technique, see
+          <a class="xref" href="c-api-prepared-call-statements.html" title="Chapter 25 C API Prepared CALL Statement Support">Chapter 25, <i>C API Prepared CALL Statement Support</i></a>.
+        </p><p>
+          The result set returned by
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          contains only metadata. It does not contain any row results.
+          To obtain the row results, use the statement handler with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> after
+          executing the statement with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>, as
+          usual.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-result-metadata-return-values"></a>Return Values</h3></div></div></div><p>
+          A <code class="literal">MYSQL_RES</code> result structure.
+          <code class="literal">NULL</code> if no meta information exists for the
+          prepared statement.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-result-metadata-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-result-metadata-example"></a>Example</h3></div></div></div><p>
+          See the Example in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-row-seek"></a>11.24 mysql_stmt_row_seek()</h2></div></div></div><a class="indexterm" name="idm46079467435824"></a><pre class="programlisting">MYSQL_ROW_OFFSET
+mysql_stmt_row_seek(MYSQL_STMT *stmt,
+                    MYSQL_ROW_OFFSET offset)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-seek-description"></a>Description</h3></div></div></div><p>
+          Sets the row cursor to an arbitrary row in a statement result
+          set. The <code class="literal">offset</code> value is a row offset that
+          should be a value returned from
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell" title="11.25 mysql_stmt_row_tell()"><code class="literal">mysql_stmt_row_tell()</code></a> or from
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a>. This
+          value is not a row number; if you want to seek to a row within
+          a result set by number, use
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-data-seek" title="11.7 mysql_stmt_data_seek()"><code class="literal">mysql_stmt_data_seek()</code></a>
+          instead.
+        </p><p>
+          This function requires that the result set structure contains
+          the entire result of the query, so
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a> may be
+          used only in conjunction with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-seek-return-values"></a>Return Values</h3></div></div></div><p>
+          The previous value of the row cursor. This value may be passed
+          to a subsequent call to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-seek-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-row-tell"></a>11.25 mysql_stmt_row_tell()</h2></div></div></div><a class="indexterm" name="idm46079467418352"></a><pre class="programlisting">MYSQL_ROW_OFFSET
+mysql_stmt_row_tell(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-tell-description"></a>Description</h3></div></div></div><p>
+          Returns the current position of the row cursor for the last
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>. This value
+          can be used as an argument to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a>.
+        </p><p>
+          You should use
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell" title="11.25 mysql_stmt_row_tell()"><code class="literal">mysql_stmt_row_tell()</code></a> only
+          after
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-tell-return-values"></a>Return Values</h3></div></div></div><p>
+          The current offset of the row cursor.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-row-tell-errors"></a>Errors</h3></div></div></div><p>
+          None.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-send-long-data"></a>11.26 mysql_stmt_send_long_data()</h2></div></div></div><a class="indexterm" name="idm46079467404288"></a><pre class="programlisting">bool
+mysql_stmt_send_long_data(MYSQL_STMT *stmt,
+                          unsigned int parameter_number,
+                          const char *data,
+                          unsigned long length)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-send-long-data-description"></a>Description</h3></div></div></div><p>
+          Enables an application to send parameter data to the server in
+          pieces (or <span class="quote">“<span class="quote">chunks</span>”</span>). Call this function after
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a> and
+          before <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>.
+          It can be called multiple times to send the parts of a
+          character or binary data value for a column, which must be one
+          of the <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> data types.
+        </p><p>
+          <code class="literal">parameter_number</code> indicates which parameter
+          to associate the data with. Parameters are numbered beginning
+          with 0. <code class="literal">data</code> is a pointer to a buffer
+          containing data to be sent, and <code class="literal">length</code>
+          indicates the number of bytes in the buffer.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            The next
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> call
+            ignores the bind buffer for all parameters that have been
+            used with
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()"><code class="literal">mysql_stmt_send_long_data()</code></a>
+            since last
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> or
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-reset" title="11.22 mysql_stmt_reset()"><code class="literal">mysql_stmt_reset()</code></a>.
+          </p></div><p>
+          To reset/forget the sent data, call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-reset" title="11.22 mysql_stmt_reset()"><code class="literal">mysql_stmt_reset()</code></a>. See
+          <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-reset" title="11.22 mysql_stmt_reset()">Section 11.22, “mysql_stmt_reset()”</a>.
+        </p><p>
+          The <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_max_allowed_packet" target="_top"><code class="literal">max_allowed_packet</code></a> system
+          variable controls the maximum size of parameter values that
+          can be sent with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-send-long-data" title="11.26 mysql_stmt_send_long_data()"><code class="literal">mysql_stmt_send_long_data()</code></a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-send-long-data-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-send-long-data-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_invalid_buffer_use" target="_top"><code class="literal">CR_INVALID_BUFFER_USE</code></a>
+            </p><p>
+              The parameter does not have a string or binary type.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_invalid_parameter_no" target="_top"><code class="literal">CR_INVALID_PARAMETER_NO</code></a>
+            </p><p>
+              Invalid parameter number.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-send-long-data-example"></a>Example</h3></div></div></div><p>
+          The following example demonstrates how to send the data for a
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> column in chunks. It
+          inserts the data value <code class="literal">'MySQL - The most popular Open
+          Source database'</code> into the
+          <code class="literal">text_column</code> column. The
+          <code class="literal">mysql</code> variable is assumed to be a valid
+          connection handler.
+        </p><pre class="programlisting">#define INSERT_QUERY "INSERT INTO \
+                      test_long_data(text_column) VALUES(?)"
+
+MYSQL_BIND bind[1];
+long       length;
+
+stmt = mysql_stmt_init(mysql);
+if (!stmt)
+{
+  fprintf(stderr, " mysql_stmt_init(), out of memory\n");
+  exit(0);
+}
+if (mysql_stmt_prepare(stmt, INSERT_QUERY, strlen(INSERT_QUERY)))
+{
+  fprintf(stderr, "\n mysql_stmt_prepare(), INSERT failed");
+  fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+  exit(0);
+}
+ memset(bind, 0, sizeof(bind));
+ bind[0].buffer_type= MYSQL_TYPE_STRING;
+ bind[0].length= &amp;length;
+ bind[0].is_null= 0;
+
+/* Bind the buffers */
+if (mysql_stmt_bind_param(stmt, bind))
+{
+  fprintf(stderr, "\n param bind failed");
+  fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+ /* Supply data in chunks to server */
+ if (mysql_stmt_send_long_data(stmt,0,"MySQL",5))
+{
+  fprintf(stderr, "\n send_long_data failed");
+  fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+ /* Supply the next piece of data */
+ if (mysql_stmt_send_long_data(stmt,0,
+           " - The most popular Open Source database",40))
+{
+  fprintf(stderr, "\n send_long_data failed");
+  fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+  exit(0);
+}
+
+ /* Now, execute the query */
+ if (mysql_stmt_execute(stmt))
+{
+  fprintf(stderr, "\n mysql_stmt_execute failed");
+  fprintf(stderr, "\n %s", mysql_stmt_error(stmt));
+  exit(0);
+}
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-sqlstate"></a>11.27 mysql_stmt_sqlstate()</h2></div></div></div><a class="indexterm" name="idm46079467352032"></a><pre class="programlisting">const char *
+mysql_stmt_sqlstate(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-sqlstate-description"></a>Description</h3></div></div></div><p>
+          For the statement specified by <code class="literal">stmt</code>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate" title="11.27 mysql_stmt_sqlstate()"><code class="literal">mysql_stmt_sqlstate()</code></a> returns
+          a null-terminated string containing the SQLSTATE error code
+          for the most recently invoked prepared statement API function
+          that can succeed or fail. The error code consists of five
+          characters. <code class="literal">"00000"</code> means <span class="quote">“<span class="quote">no
+          error.</span>”</span> The values are specified by ANSI SQL and ODBC.
+          For a list of possible values, see
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/error-handling.html" target="_top">Error Messages and Common Problems</a>.
+        </p><p>
+          Not all MySQL errors are mapped to SQLSTATE codes. The value
+          <code class="literal">"HY000"</code> (general error) is used for
+          unmapped errors.
+        </p><p>
+          If the failed statement API function was
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>, do not
+          call <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-sqlstate" title="11.27 mysql_stmt_sqlstate()"><code class="literal">mysql_stmt_sqlstate()</code></a> to
+          obtain error information because
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a> makes the
+          statement handler invalid. Call
+          <a class="link" href="c-api-functions.html#mysql-sqlstate" title="7.78 mysql_sqlstate()"><code class="literal">mysql_sqlstate()</code></a> instead.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-sqlstate-return-values"></a>Return Values</h3></div></div></div><p>
+          A null-terminated character string containing the SQLSTATE
+          error code.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-stmt-store-result"></a>11.28 mysql_stmt_store_result()</h2></div></div></div><a class="indexterm" name="idm46079467334288"></a><pre class="programlisting">int
+mysql_stmt_store_result(MYSQL_STMT *stmt)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-store-result-description"></a>Description</h3></div></div></div><p>
+          Result sets are produced by calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a> to
+          executed prepared statements for SQL statements such as
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/show.html" target="_top"><code class="literal">SHOW</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/describe.html" target="_top"><code class="literal">DESCRIBE</code></a>, and
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/explain.html" target="_top"><code class="literal">EXPLAIN</code></a>. By default, result
+          sets for successfully executed prepared statements are not
+          buffered on the client and
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> fetches
+          them one at a time from the server. To cause the complete
+          result set to be buffered on the client, call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+          after binding data buffers with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a> and
+          before calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> to fetch
+          rows. (For an example, see
+          <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.)
+        </p><p>
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a> is
+          optional for result set processing, unless you will call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-data-seek" title="11.7 mysql_stmt_data_seek()"><code class="literal">mysql_stmt_data_seek()</code></a>,
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-seek" title="11.24 mysql_stmt_row_seek()"><code class="literal">mysql_stmt_row_seek()</code></a>, or
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-row-tell" title="11.25 mysql_stmt_row_tell()"><code class="literal">mysql_stmt_row_tell()</code></a>. Those
+          functions require a seekable result set.
+        </p><p>
+          It is unnecessary to call
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+          after executing an SQL statement that does not produce a
+          result set, but if you do, it does not harm or cause any
+          notable performance problem. You can detect whether the
+          statement produced a result set by checking if
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+          returns <code class="literal">NULL</code>. For more information, refer
+          to <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()">Section 11.23, “mysql_stmt_result_metadata()”</a>.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            MySQL does not by default calculate
+            <code class="literal">MYSQL_FIELD-&gt;max_length</code> for all
+            columns in
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+            because calculating this would slow down
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-store-result" title="11.28 mysql_stmt_store_result()"><code class="literal">mysql_stmt_store_result()</code></a>
+            considerably and most applications do not need
+            <code class="literal">max_length</code>. If you want
+            <code class="literal">max_length</code> to be updated, you can call
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set(MYSQL_STMT,
+            STMT_ATTR_UPDATE_MAX_LENGTH, &amp;flag)</code></a> to enable
+            this. See <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()">Section 11.3, “mysql_stmt_attr_set()”</a>.
+          </p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-store-result-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success. Nonzero if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-stmt-store-result-errors"></a>Errors</h3></div></div></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_commands_out_of_sync" target="_top"><code class="literal">CR_COMMANDS_OUT_OF_SYNC</code></a>
+            </p><p>
+              Commands were executed in an improper order.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_out_of_memory" target="_top"><code class="literal">CR_OUT_OF_MEMORY</code></a>
+            </p><p>
+              Out of memory.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_gone_error" target="_top"><code class="literal">CR_SERVER_GONE_ERROR</code></a>
+            </p><p>
+              The MySQL server has gone away.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_server_lost" target="_top"><code class="literal">CR_SERVER_LOST</code></a>
+            </p><p>
+              The connection to the server was lost during the query.
+            </p></li><li class="listitem"><p>
+              <a class="ulink" href="https://dev.mysql.com/doc/mysql-errors/8.0/en/client-error-reference.html#error_cr_unknown_error" target="_top"><code class="literal">CR_UNKNOWN_ERROR</code></a>
+            </p><p>
+              An unknown error occurred.
+            </p></li></ul></div></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-prepared-statement-function-overview.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-asynchronous-interface.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 10 C API Prepared Statement Function Overview </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 12 C API Asynchronous Interface</td></tr></table></div><div class="copyright-footer"></div></body></html>

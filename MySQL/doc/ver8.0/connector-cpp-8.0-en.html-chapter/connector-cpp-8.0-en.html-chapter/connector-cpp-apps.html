@@ -1,0 +1,901 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 5 Building Connector/C++ Applications</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="up" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="prev" href="connector-cpp-installation-source.html" title="Chapter 4 Installing Connector/C++ from Source"><link rel="next" href="connector-cpp-issues.html" title="Chapter 6 Connector/C++ Known Issues"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 5 Building Connector/C++ Applications</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="connector-cpp-installation-source.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="connector-cpp-issues.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="connector-cpp-apps"></a>Chapter 5 Building Connector/C++ Applications</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-general-considerations">5.1 Building Connector/C++ Applications: General Considerations</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-platform-considerations">5.2 Building Connector/C++ Applications: Platform-Specific Considerations</a></span></dt><dd><dl><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-windows-notes">5.2.1 Windows Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-macos-notes">5.2.2 macOS Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-solaris-notes">5.2.3 Solaris Notes</a></span></dt></dl></dd></dl></div><p>
+    This chapter provides guidance on building Connector/C++ applications:
+  </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+        General considerations for building Connector/C++ applications
+        successfully. See
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.
+      </p></li><li class="listitem"><p>
+        Information about building Connector/C++ applications that applies to
+        specific platforms such as Windows, macOS, and Solaris. See
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-platform-considerations" title="5.2 Building Connector/C++ Applications: Platform-Specific Considerations">Section 5.2, “Building Connector/C++ Applications: Platform-Specific Considerations”</a>.
+      </p></li></ul></div><p>
+    For discussion of the programming interfaces available to Connector/C++
+    applications, see <a class="xref" href="connector-cpp-introduction.html" title="Chapter 1 Introduction to Connector/C++">Chapter 1, <i>Introduction to Connector/C++</i></a>.
+  </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-apps-general-considerations"></a>5.1 Building Connector/C++ Applications: General Considerations</h2></div></div></div><p>
+      This section discusses general considerations to keep in mind when
+      building Connector/C++ applications. For information that applies to
+      particular platforms, see the section that applies to your
+      platform in
+      <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-platform-considerations" title="5.2 Building Connector/C++ Applications: Platform-Specific Considerations">Section 5.2, “Building Connector/C++ Applications: Platform-Specific Considerations”</a>.
+    </p><p>
+      Commands shown here are as given from the command line (for
+      example, as invoked from a <code class="filename">Makefile</code>). The
+      commands apply to any platform that supports
+      <span class="command"><strong>make</strong></span> and command-line build tools such as
+      <span class="command"><strong>g++</strong></span>, <span class="command"><strong>cc</strong></span>, or
+      <span class="command"><strong>clang</strong></span>, but may need adjustment for your build
+      environment.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-tools" title="Build Tools and Configuration Settings">Build Tools and Configuration Settings</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-cpp11" title="C++11 Support">C++11 Support</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-header-files" title="Connector/C++ Header Files">Connector/C++ Header Files</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-boost" title="Boost Header Files">Boost Header Files</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-link-libraries" title="Link Libraries">Link Libraries</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-runtime-libraries" title="Runtime Libraries">Runtime Libraries</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-dynamic-library" title="Using the Connector/C++ Dynamic Library">Using the Connector/C++ Dynamic Library</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-static-library" title="Using the Connector/C++ Static Library">Using the Connector/C++ Static Library</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-tools"></a>Build Tools and Configuration Settings</h3></div></div></div><p>
+        It is important that the tools you use to build your Connector/C++
+        applications are compatible with the tools used to build Connector/C++
+        itself. Ideally, build your applications with the same tools
+        that were used to build the Connector/C++ binaries.
+      </p><p>
+        To avoid issues, ensure that these factors are the same for your
+        applications and Connector/C++ itself:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Compiler version.
+          </p></li><li class="listitem"><p>
+            Runtime library.
+          </p></li><li class="listitem"><p>
+            Runtime linker configuration settings.
+          </p></li></ul></div><p>
+        To avoid potential crashes, the build configuration of Connector/C++ should match the build configuration of the application using it. For example, do not use a release build of Connector/C++ with a debug build of the client application.
+      </p><p>
+        To use a different compiler version, release configuration, or
+        runtime library, first build Connector/C++ from source using your
+        desired settings (see
+        <a class="xref" href="connector-cpp-installation-source.html" title="Chapter 4 Installing Connector/C++ from Source">Chapter 4, <i>Installing Connector/C++ from Source</i></a>), then build
+        your applications using those same settings.
+      </p><p>
+        Connector/C++ binary distributions include an
+        <code class="filename">INFO_BIN</code> file that describes the
+        environment and configuration options used to build the
+        distribution. If you installed Connector/C++ from a binary distribution
+        and experience build-related issues on a platform, it may help
+        to check the settings that were used to build the distribution
+        on that platform. Binary distributions also include an
+        <code class="filename">INFO_SRC</code> file that provides information
+        about the product version and the source repository from which
+        the distribution was produced. (Prior to Connector/C++ 8.0.14, look for
+        <code class="filename">BUILDINFO.txt</code> rather than
+        <code class="filename">INFO_BIN</code> and
+        <code class="filename">INFO_SRC</code>.)
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-cpp11"></a>C++11 Support</h3></div></div></div><p>
+        X DevAPI uses C++11 language features. To compile Connector/C++
+        applications that use X DevAPI, enable C++11 support in the
+        compiler using the <code class="option">-std=c++11</code> option. This
+        option is not needed for applications that use X DevAPI for C (which
+        is a plain C API) or the legacy JDBC API (which is based on
+        plain C++), unless the application code uses C++11.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-header-files"></a>Connector/C++ Header Files</h3></div></div></div><p>
+        The API an application uses determines which Connector/C++ header files
+        it should include. The following include directives work under
+        the assumption that the include path contains
+        <code class="literal">$MYSQL_CPPCONN_DIR/include</code>, where
+        <code class="literal">$MYSQL_CPPCONN_DIR</code> is the Connector/C++ installation
+        location. Pass an <code class="option">-I $MYSQL_CPPCONN_DIR/include</code>
+        option on the compiler invocation command to ensure this.
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            For applications that use X DevAPI:
+          </p><pre class="programlisting">#include &lt;mysqlx/xdevapi.h&gt;
+</pre></li><li class="listitem"><p>
+            For applications that use X DevAPI for C:
+          </p><pre class="programlisting">#include &lt;mysqlx/xapi.h&gt;
+</pre></li><li class="listitem"><p>
+            For applications that use the legacy JDBC API, the header
+            files are version dependent:
+          </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                As of Connector/C++ 8.0.16, a single
+                <code class="literal">#include</code> directive suffices:
+              </p><pre class="programlisting">#include &lt;mysql/jdbc.h&gt;
+</pre></li><li class="listitem"><p>
+                Prior to Connector/C++ 8.0.16, use this set of
+                <code class="literal">#include</code> directives:
+              </p><pre class="programlisting">#include &lt;jdbc/mysql_driver.h&gt;
+#include &lt;jdbc/mysql_connection.h&gt;
+#include &lt;jdbc/cppconn/*.h&gt;
+</pre><p>
+                The notation <code class="literal">&lt;jdbc/cppconn/*.h&gt;</code>
+                means that you should include all header files from the
+                <code class="filename">jdbc/cppconn</code> directory that are
+                needed by your application. The particular files needed
+                depend on the application.
+              </p></li><li class="listitem"><p>
+                Legacy code that uses Connector/C++ 1.1 has
+                <code class="literal">#include</code> directives of this form:
+              </p><pre class="programlisting">#include &lt;mysql_driver.h&gt;
+#include &lt;mysql_connection.h&gt;
+#include &lt;cppconn/*.h&gt;
+</pre><p>
+                To build such code with Connector/C++ 8.0 without modifying it,
+                add <code class="literal">$MYSQL_CPPCONN_DIR/include/jdbc</code>
+                to the include path.
+              </p></li></ul></div></li></ul></div><p>
+        To compile code that you intend to link statically against
+        Connector/C++, define a macro that adjusts API declarations in the
+        header files for usage with the static library. For details, see
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-static-library" title="Using the Connector/C++ Static Library">Using the Connector/C++ Static Library</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-boost"></a>Boost Header Files</h3></div></div></div><p>
+        The Boost header files are needed under these circumstances:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            Prior to Connector/C++ 8.0.16, on Unix and Unix-like platforms for
+            applications that use X DevAPI or X DevAPI for C, if you build
+            using <span class="command"><strong>gcc</strong></span> and the version of the C++
+            standard library on your system does not implement the UTF8
+            converter (<code class="literal">codecvt_utf8</code>).
+          </p></li><li class="listitem"><p>
+            Prior to Connector/C++ 8.0.23, to compile Connector/C++ applications that
+            use the legacy JDBC API.
+          </p></li></ul></div><p>
+        If the Boost header files are needed, Boost 1.59.0 or newer must
+        be installed, and the location of the headers must be added to
+        the include path. To obtain Boost and its installation
+        instructions, visit <a class="ulink" href="https://www.boost.org" target="_top">the
+        official Boost site</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-link-libraries"></a>Link Libraries</h3></div></div></div><p>
+        Building Connector/C++ using OpenSSL makes the connector library
+        dependent on OpenSSL dynamic libraries. In that case:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            When linking an application to Connector/C++ dynamically, this
+            dependency is relevant only at runtime.
+          </p></li><li class="listitem"><p>
+            When linking an application to Connector/C++ statically, link to
+            the OpenSSL libraries as well. On Linux, this means adding
+            <code class="option">-lssl -lcrypto</code> explicitly to the
+            compile/link command. On Windows, this is handled
+            automatically.
+          </p></li></ul></div><p>
+        On Windows, link to the dynamic version of the C++ Runtime
+        Library.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-runtime-libraries"></a>Runtime Libraries</h3></div></div></div><p>
+        X DevAPI for C applications need <code class="literal">libstdc++</code> at
+        runtime. Depending on your platform or build tools, a different
+        library may apply. For example, the library is
+        <code class="literal">libc++</code> on macOS; see
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-macos-notes" title="5.2.2 macOS Notes">Section 5.2.2, “macOS Notes”</a>.
+      </p><p>
+        If an application is built using dynamic link libraries, those
+        libraries must be present not just on the build host, but on
+        target hosts where the application runs. The dynamic linker must
+        be properly configured to find those libraries and their runtime
+        dependencies, as well as to find Connector/C++ libraries and their
+        runtime dependencies.
+      </p><p>
+        Connector/C++ libraries built by Oracle depend on the OpenSSL
+        libraries. The latter must be installed on the system in order
+        to run code that links against Connector/C++ libraries. Another option
+        is to put the OpenSSL libraries in the same location as Connector/C++,
+        in which case, the dynamic linker should find them next to the
+        connector library. See also
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-windows-notes" title="5.2.1 Windows Notes">Section 5.2.1, “Windows Notes”</a>, and
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-macos-notes" title="5.2.2 macOS Notes">Section 5.2.2, “macOS Notes”</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-dynamic-library"></a>Using the Connector/C++ Dynamic Library</h3></div></div></div><p>
+        The Connector/C++ dynamic library name depends on the platform. These
+        libraries implement X DevAPI and X DevAPI for C, where
+        <em class="replaceable"><code>A</code></em> in the library name represents the
+        ABI version:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn8.so.<em class="replaceable"><code>A</code></em></code>
+            (Unix)
+          </p></li><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn8.<em class="replaceable"><code>A</code></em>.dylib</code>
+            (macOS)
+          </p></li><li class="listitem"><p>
+            <code class="filename">mysqlcppconn8-<em class="replaceable"><code>A</code></em>-vs<em class="replaceable"><code>NN</code></em>.dll</code>,
+            with import library
+            <code class="filename">vs<em class="replaceable"><code>NN</code></em>/mysqlcppconn8.lib</code>
+            (Windows)
+          </p></li></ul></div><p>
+        For the legacy JDBC API, the dynamic libraries are named as
+        follows, where <em class="replaceable"><code>B</code></em> in the library name
+        represents the ABI version:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn.so.<em class="replaceable"><code>B</code></em></code>
+            (Unix)
+          </p></li><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn.<em class="replaceable"><code>B</code></em>.dylib</code>
+            (macOS)
+          </p></li><li class="listitem"><p>
+            <code class="filename">mysqlcppconn-<em class="replaceable"><code>B</code></em>-vs<em class="replaceable"><code>NN</code></em>.dll</code>,
+            with import library
+            <code class="filename">vs<em class="replaceable"><code>NN</code></em>/mysqlcppconn-static.lib</code>
+            (Windows)
+          </p></li></ul></div><p>
+        On Windows, the
+        <code class="literal">vs<em class="replaceable"><code>NN</code></em></code> value in
+        library names depends on the MSVC toolchain version used to
+        build the libraries. (Connector/C++ libraries provided by Oracle use
+        <code class="literal">vs14</code>, and they are compatible with MSVC 2019
+        and 2017.) This convention enables using libraries built with
+        different versions of MSVC on the same system. See also
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-windows-notes" title="5.2.1 Windows Notes">Section 5.2.1, “Windows Notes”</a>.
+      </p><p>
+        To build code that uses X DevAPI or X DevAPI for C, add
+        <code class="option">-lmysqlcppconn8</code> to the linker options. To build
+        code that uses the legacy JDBC API, add
+        <code class="option">-lmysqlcppconn</code>.
+      </p><p>
+        You must also indicate whether to use the 64-bit or 32-bit
+        libraries by specifying the appropriate library directory. Use
+        an <code class="option">-L</code> linker option to specify
+        <code class="literal">$MYSQL_CONCPP_DIR/lib64</code> (64-bit libraries) or
+        <code class="literal">$MYSQL_CONCPP_DIR/lib</code> (32-bit libraries),
+        where <code class="literal">$MYSQL_CPPCONN_DIR</code> is the Connector/C++
+        installation location. On FreeBSD, <code class="filename">/lib64</code>
+        is not used. The library name always ends with
+        <code class="filename">/lib</code>.
+      </p><p>
+        To build a Connector/C++ application that uses X DevAPI, has sources
+        in <code class="filename">app.cc</code>, and links dynamically to the
+        connector library, the <code class="filename">Makefile</code> might look
+        like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -I $(MYSQL_CONCPP_DIR)/include -L $(MYSQL_CONCPP_DIR)/lib64
+LDLIBS = -lmysqlcppconn8
+CXXFLAGS = -std=c++11
+app : app.cc
+</pre><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">g++ -std=c++11 -I .../include -L .../lib64 app.cc -lmysqlcppconn8 -o app
+</pre><p>
+        To build a plain C application that uses X DevAPI for C, has sources
+        in <code class="filename">app.c</code>, and links dynamically to the
+        connector library, the <code class="filename">Makefile</code> might look
+        like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -I $(MYSQL_CONCPP_DIR)/include -L $(MYSQL_CONCPP_DIR)/lib64
+LDLIBS = -lmysqlcppconn8
+app : app.c
+</pre><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">cc -I .../include -L .../lib64 app.c -lmysqlcppconn8 -o app
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          The resulting code, even though it is compiled as plain C,
+          depends on the C++ runtime (typically
+          <code class="literal">libstdc++</code>, though this may differ depending
+          on platform or build tools; see
+          <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-runtime-libraries" title="Runtime Libraries">Runtime Libraries</a>).
+        </p></div><p>
+        To build a plain C++ application that uses the legacy JDBC API,
+        has sources in <code class="filename">app.c</code>, and links dynamically
+        to the connector library, the <code class="filename">Makefile</code>
+        might look like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -I $(MYSQL_CONCPP_DIR)/include -L $(MYSQL_CONCPP_DIR)/lib64
+LDLIBS = -lmysqlcppconn
+app : app.c
+</pre><p>
+        The library option in this case is
+        <code class="option">-lmysqlcppcon</code>, rather than
+        <code class="option">-lmysqlcppcon8</code> as for an X DevAPI or
+        X DevAPI for C application.
+      </p><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">cc -I .../include -L .../lib64 app.c -lmysqlcppconn -o app
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          When running an application that uses the Connector/C++ dynamic
+          library, the library and its runtime dependencies must be
+          found by the dynamic linker. See
+          <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-runtime-libraries" title="Runtime Libraries">Runtime Libraries</a>.
+        </p></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-static-library"></a>Using the Connector/C++ Static Library</h3></div></div></div><p>
+        It is possible to link your application with the Connector/C++ static
+        library. This way there is no runtime dependency on the
+        connector, and the resulting binary can run on systems where
+        Connector/C++ is not installed.
+      </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          Even when linking statically, the resulting code still depends
+          on all runtime dependencies of the Connector/C++ library. For
+          example, if Connector/C++ is built using OpenSSL, the code has a
+          runtime dependency on the OpenSSL libraries. See
+          <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-runtime-libraries" title="Runtime Libraries">Runtime Libraries</a>.
+        </p></div><p>
+        The Connector/C++ static library name depends on the platform. These
+        libraries implement X DevAPI and X DevAPI for C:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn8-static.a</code> (Unix, macOS)
+          </p></li><li class="listitem"><p>
+            <code class="filename">vs<em class="replaceable"><code>NN</code></em>/mysqlcppconn8-static.lib</code>
+            (Windows)
+          </p></li></ul></div><p>
+        For the legacy JDBC API, the static libraries are named as
+        follows:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="filename">libmysqlcppconn-static.a</code> (Unix, macOS)
+          </p></li><li class="listitem"><p>
+            <code class="filename">vs<em class="replaceable"><code>NN</code></em>/mysqlcppconn-static.lib</code>
+            (Windows)
+          </p></li></ul></div><p>
+        On Windows, the
+        <code class="literal">vs<em class="replaceable"><code>NN</code></em></code> value in
+        library names depends on the MSVC toolchain version used to
+        build the libraries. (Connector/C++ libraries provided by Oracle use
+        <code class="literal">vs14</code>, and they are compatible with MSVC 2019
+        and 2017.) This convention enables using libraries built with
+        different versions of MSVC on the same system. See also
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-windows-notes" title="5.2.1 Windows Notes">Section 5.2.1, “Windows Notes”</a>.
+      </p><p>
+        To compile code that you intend to link statically against
+        Connector/C++, define a macro that adjusts API declarations in the
+        header files for usage with the static library. One way to
+        define the macro is by passing a <code class="option">-D</code> option on
+        the compiler invocation command:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            For applications that use X DevAPI, X DevAPI for C, or (as of
+            Connector/C++ 8.0.16) the legacy JDBC API, define the
+            <code class="literal">STATIC_CONCPP</code> macro. All that matters is
+            that you define it; the value does not matter. For example:
+            <code class="option">-DSTATIC_CONCPP</code>
+          </p></li><li class="listitem"><p>
+            Prior to Connector/C++ 8.0.16, for applications that use the legacy
+            JDBC API, define the <code class="literal">CPPCONN_PUBLIC_FUNC</code>
+            macro as an empty string. To ensure this, define the macro
+            as <code class="literal">CPPCONN_PUBLIC_FUNC=</code>, not as
+            <code class="literal">CPPCONN_PUBLIC_FUNC</code>. For example:
+            <code class="option">-DCPPCONN_PUBLIC_FUNC=</code>
+          </p></li></ul></div><p>
+        To build a Connector/C++ application that uses X DevAPI, has sources
+        in <code class="filename">app.cc</code>, and links statically to the
+        connector library, the <code class="filename">Makefile</code> might look
+        like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -DSTATIC_CONCPP -I $(MYSQL_CONCPP_DIR)/include
+LDLIBS = $(MYSQL_CONCPP_DIR)/lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread
+CXXFLAGS = -std=c++11
+app : app.cc
+</pre><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">g++ -std=c++11 -DSTATIC_CONCPP -I .../include app.cc
+  .../lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread -o app
+</pre><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          To avoid having the linker report unresolved symbols, the
+          compile line must include the OpenSSL libraries and the
+          <code class="literal">pthread</code> library on which Connector/C++ code
+          depends.
+        </p><p>
+          OpenSSL libraries are not needed if Connector/C++ is built without
+          them, but Connector/C++ distributions built by Oracle do depend on
+          OpenSSL.
+        </p><p>
+          The exact list of libraries required by Connector/C++ library depends
+          on the platform. For example, on Solaris, the
+          <code class="literal">socket</code>, <code class="literal">rt</code>, and
+          <code class="literal">nsl</code> libraries might be needed.
+        </p></div><p>
+        To build a plain C application that uses X DevAPI for C, has sources
+        in <code class="filename">app.c</code>, and links statically to the
+        connector library, the <code class="filename">Makefile</code> might look
+        like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -DSTATIC_CONCPP -I $(MYSQL_CONCPP_DIR)/include
+LDLIBS = $(MYSQL_CONCPP_DIR)/lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread
+app : app.c
+</pre><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">cc -DSTATIC_CONCPP -I .../include app.c
+  .../lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread -o app
+</pre><p>
+        To build a plain C application that uses the legacy JDBC API,
+        has sources in <code class="filename">app.c</code>, and links statically
+        to the connector library, the <code class="filename">Makefile</code>
+        might look like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -DCPPCONN_PUBLIC_FUNC= -I $(MYSQL_CONCPP_DIR)/include
+LDLIBS = $(MYSQL_CONCPP_DIR)/lib64/libmysqlcppconn-static.a -lssl -lcrypto -lpthread
+app : app.c
+</pre><p>
+        The library option in this case names
+        <code class="option">libmysqlcppcon-static.a</code>, rather than
+        <code class="option">libmysqlcppcon8-static.a</code> as for an X DevAPI or
+        X DevAPI for C application.
+      </p><p>
+        With that <code class="filename">Makefile</code>, the command
+        <span class="command"><strong>make app</strong></span> generates the following compiler
+        invocation:
+      </p><pre class="programlisting">cc -std=c++11 --DCPPCONN_PUBLIC_FUNC= -I .../include app.c
+  .../lib64/libmysqlcppconn-static.a -lssl -lcrypto -lpthread -o app
+</pre><p>
+        When building plain C code, it is important to take care of
+        connector's dependency on the C++ runtime, which is introduced
+        by the connector library even though the code that uses it is
+        plain C:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            One approach is to ensure that a C++ linker is used to build
+            the final code. This approach is taken by the
+            <code class="filename">Makefile</code> shown here:
+          </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -DSTATIC_CONCPP -I $(MYSQL_CONCPP_DIR)/include
+LDLIBS = $(MYSQL_CONCPP_DIR)/lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread
+LINK.o = $(LINK.cc) # use C++ linker
+app : app.o
+</pre><p>
+            With that <code class="filename">Makefile</code>, the build process
+            has two steps: first compile the application source in
+            <code class="filename">app.c</code> using a plain C compiler to
+            produce <code class="filename">app.o</code>, then link the final
+            executable (<code class="filename">app</code>) using the C++ linker,
+            which takes care of the dependency on the C++ runtime. The
+            commands look something like this:
+          </p><pre class="programlisting">cc -DSTATIC_CONCPP -I .../include -c -o app.o app.c
+g++ -DSTATIC_CONCPP -I .../include app.o
+  .../libmysqlcppconn8-static.a -lssl -lcrypto -lpthread -o app
+</pre></li><li class="listitem"><p>
+            Another approach is to use a plain C compiler and linker,
+            but add the <code class="literal">libstdc++</code> C++ runtime library
+            as an explicit option to the linker. This approach is taken
+            by the <code class="filename">Makefile</code> shown here:
+          </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -DSTATIC_CONCPP -I $(MYSQL_CONCPP_DIR)/include
+LDLIBS = $(MYSQL_CONCPP_DIR)/lib64/libmysqlcppconn8-static.a -lssl -lcrypto -lpthread -lstdc++
+app : app.c
+</pre><p>
+            With that <code class="filename">Makefile</code>, the compiler is
+            invoked as follows:
+          </p><pre class="programlisting">cc -DSTATIC_CONCPP -I .../include app.c
+  .../libmysqlcppconn8-static.a -lssl -lcrypto -lpthread -lstdc++ -o app
+</pre></li></ul></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          Even if the application that uses Connector/C++ is written in plain
+          C, the final executable depends on the C++ runtime which must
+          be installed on the target computer on which the application
+          is to run.
+        </p></div></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="connector-cpp-apps-platform-considerations"></a>5.2 Building Connector/C++ Applications: Platform-Specific Considerations</h2></div></div></div><div class="toc"><dl class="toc"><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-windows-notes">5.2.1 Windows Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-macos-notes">5.2.2 macOS Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-solaris-notes">5.2.3 Solaris Notes</a></span></dt></dl></div><p>
+      This section discusses platform-specific considerations to keep in
+      mind when building Connector/C++ applications. For general considerations
+      that apply on a platform-independent basis, see
+      <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.
+    </p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-windows-notes"></a>5.2.1 Windows Notes</h3></div></div></div><a class="indexterm" name="idm46252352329920"></a><a class="indexterm" name="idm46252352328912"></a><p>
+        This section describes aspects of building Connector/C++ applications
+        that are specific to Microsoft Windows. For general
+        application-building information, see
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.
+      </p><p>
+        On Windows, applications can be built in different build
+        configurations, which determine the type of the C++ runtime
+        library that is used by the final executable:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            An application can be built in 32-bit or 64-bit mode.
+          </p></li><li class="listitem"><p>
+            An application can be built in release or debug mode.
+          </p></li><li class="listitem"><p>
+            You can choose between the dynamic runtime library
+            (<code class="literal">/MD</code> linker option) or static runtime
+            library (<code class="literal">/MT</code> linker option). Different
+            versions of the MSVC compiler also use different versions of
+            the runtime library.
+          </p></li></ul></div><p>
+        To build Connector/C++ applications, developers using Windows must
+        satisfy these conditions:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            An acceptable version of Microsoft Visual Studio is
+            required.
+          </p></li><li class="listitem"><p>
+            Applications should use the same build configuration as that
+            used to build Connector/C++. Build configuration includes the build
+            mode (release mode or debug mode) and the linker option (for
+            example, <code class="literal">/MD</code> or <code class="literal">/MDd</code>).
+          </p></li><li class="listitem"><p>
+            Target hosts running client applications must have an
+            acceptable version of the
+            <a class="ulink" href="https://visualstudio.microsoft.com/downloads/" target="_top">Visual C++ Redistributable
+            for Visual Studio</a> installed.
+          </p></li></ul></div><p>
+        For information about acceptable versions of Visual Studio and
+        VC++ Redistributable, see
+        <a class="xref" href="connector-cpp-introduction.html#connector-cpp-prerequisites" title="Platform Support and Prerequisites">Platform Support and Prerequisites</a>.
+      </p><p>
+        The following sections provide additional detail about several
+        aspects of building Connector/C++ applications:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-application-config-match" title="Application Build Configuration Must Match Connector/C++">Application Build Configuration Must Match Connector/C++</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-windows-linking" title="Linking Connector/C++ to Applications">Linking Connector/C++ to Applications</a></p></li><li class="listitem"><p><a class="xref" href="connector-cpp-apps.html#connector-cpp-application-build-visual-studio" title="Building Connector/C++ Applications with Microsoft Visual Studio">Building Connector/C++ Applications with Microsoft Visual Studio</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h4 class="title"><a name="connector-cpp-application-config-match"></a>Application Build Configuration Must Match Connector/C++</h4></div></div></div><p>
+          It is important to use a compatible compiler version to build
+          applications and Connector/C++. It is also important to build
+          applications using the same build configuration as that used
+          to build Connector/C++. That is, applications should use the same
+          build mode and linker option, to ensure that the connector and
+          the application use the same runtime library.
+        </p><p>
+          The following table shows the linker option appropriate for
+          each combination of build mode and runtime library. It also
+          shows for each combination whether a Connector/C++ binary package is
+          available from Oracle. (If not, you must build Connector/C++ from
+          source yourself.)
+        </p><div class="table"><a name="connector-cpp-linker-options-table"></a><p class="title"><b>Table 5.1 Connector/C++ Linker Option Per Build Mode and Runtime Library</b></p><div class="table-contents"><table summary="Linker options to use per build mode and runtime library type combination."><col width="22%"><col width="22%"><col width="22%"><col width="34%"><thead><tr>
+              <th scope="col">Build Mode</th>
+              <th scope="col">Runtime Library</th>
+              <th scope="col">Linker Option</th>
+              <th scope="col">Binary Package Available</th>
+            </tr></thead><tbody><tr>
+              <th scope="row">Release</th>
+              <td>Dynamic</td>
+              <td><code class="literal">/MD</code></td>
+              <td>Yes</td>
+            </tr><tr>
+              <th scope="row">Debug</th>
+              <td>Dynamic</td>
+              <td><code class="literal">/MDd</code></td>
+              <td>Yes</td>
+            </tr><tr>
+              <th scope="row">Release</th>
+              <td>Static</td>
+              <td><code class="literal">/MT</code></td>
+              <td>No (build from source)</td>
+            </tr><tr>
+              <th scope="row">Debug</th>
+              <td>Static</td>
+              <td><code class="literal">/MTd</code></td>
+              <td>No (build from source)</td>
+            </tr></tbody></table></div></div><br class="table-break"><p>
+          Standard Connector/C++ binary packages available from Oracle are
+          built in release mode. If you install such a package, build
+          applications in release mode to match. Oracle packages built
+          in debug mode are available as well. To build applications in
+          debug mode, you must either install an Oracle-built Connector/C++
+          package that was built in debug mode, or build Connector/C++ from
+          source yourself using debug mode.
+        </p><p>
+          Connector/C++ binary packages available from Oracle, whether built in
+          release or debug mode, are intended for use with the dynamic
+          version of the C++ runtime library. To build applications
+          using the static runtime library, you must build Connector/C++
+          yourself from source using the appropriate linker option for
+          the intended build mode.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h4 class="title"><a name="connector-cpp-apps-windows-linking"></a>Linking Connector/C++ to Applications</h4></div></div></div><p>
+          Connector/C++ binary distributions are available as 64-bit or 32-bit
+          packages, which store libraries under a directory named
+          <code class="filename">lib64</code> or <code class="filename">lib</code>,
+          respectively. Package names and certain library file and
+          directory names also include
+          <code class="literal">vs<em class="replaceable"><code>NN</code></em></code>. The
+          <code class="literal">vs<em class="replaceable"><code>NN</code></em></code> value in
+          these names depends on the MSVC toolchain version used to
+          build the libraries. This convention enables using libraries
+          built with different versions of MSVC on the same system.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            The <code class="literal">vs<em class="replaceable"><code>NN</code></em></code> value
+            represents the major version of the MSVC toolchain used to
+            build the libraries. Currently it is
+            <code class="literal">vs14</code>, which is the toolchain used by MSVC
+            2015 through 2019.
+          </p></div><p>
+          Connector/C++ binary packages include libraries built using the
+          dynamic runtime library in either release mode
+          (<code class="literal">/MD</code>) or debug mode
+          (<code class="literal">/MDd</code>). The Connector/C++ libraries are compatible
+          with MSVC 2019 and 2017, and code that uses these libraries
+          can be built with either MSVC 2019 or 2017 using the
+          appropriate linker option (that is, <code class="literal">/MD</code> for
+          release mode or <code class="literal">/MDd</code> for debug mode). To
+          build code with a different linker option
+          (<code class="literal">/MT</code> or <code class="literal">/MTd</code>), first
+          build Connector/C++ from source with that option (see
+          <a class="xref" href="connector-cpp-installation-source.html#connector-cpp-installation-source-cpp" title="4.3 Installing Connector/C++ from Source">Section 4.3, “Installing Connector/C++ from Source”</a>), then
+          build applications using the same option.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            One exception for compiler version compatibility is that to
+            build applications using the static JDBC legacy connector,
+            MSVC 2019 is required; 2017 does not work.
+          </p></div><p>
+          Connector/C++ is available as a dynamic or static library to use with
+          your application. Which library you choose determines the
+          library files needed, and the location of those files within a
+          Connector/C++ package depends on whether the package was built in
+          release or debug mode. Library files are located under the
+          library directory, which, as previously mentioned, is
+          <code class="filename">lib64</code> for 64-bit packages or
+          <code class="filename">lib</code> for 32-bit packages. Denote this
+          directory as <em class="replaceable"><code>LIB</code></em>. The following
+          table shows the directory in which to find library files for
+          each type of library (including import libraries, which are
+          used in conjunction with dynamic libraries).
+        </p><div class="table"><a name="connector-cpp-library-directories-table"></a><p class="title"><b>Table 5.2 Connector/C++ Library File Directories</b></p><div class="table-contents"><table summary="Library file directories under Connector/C++ installation directory."><col width="20%"><col width="40%"><col width="40%"><thead><tr>
+              <th scope="col">Library Type</th>
+              <th scope="col">Library File Directory (Release Build)</th>
+              <th scope="col">Library File Directory (Debug Build)</th>
+            </tr></thead><tbody><tr>
+              <th scope="row">Dynamic Library</th>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em></code></td>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em>/debug</code></td>
+            </tr><tr>
+              <th scope="row">Import Library</th>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em>/vs14</code></td>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em>/vs14/debug</code></td>
+            </tr><tr>
+              <th scope="row">Static Library</th>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em>/vs14</code></td>
+              <td><code class="filename"><em class="replaceable"><code>LIB</code></em>/vs14/debug</code></td>
+            </tr></tbody></table></div></div><br class="table-break"><p>
+          For dynamic linking, the following table indicates which
+          dynamic and import library files to use.
+        </p><div class="table"><a name="connector-cpp-dynamic-libraries-table"></a><p class="title"><b>Table 5.3 Connector/C++ Dynamic and Import Library Files Per Connector</b></p><div class="table-contents"><table summary="Dynamic and import library files for building Connector/C++ applications."><col width="30%"><col width="35%"><col width="35%"><thead><tr>
+              <th scope="col">Connector</th>
+              <th scope="col">Dynamic Library File</th>
+              <th scope="col">Import Library File</th>
+            </tr></thead><tbody><tr>
+              <th scope="row">X DevAPI, X DevAPI for C</th>
+              <td><code class="filename">mysqlcppconn8-2-vs14.dll</code></td>
+              <td><code class="filename">mysqlcppconn8.lib</code></td>
+            </tr><tr>
+              <th scope="row">JDBC</th>
+              <td><code class="filename">mysqlcppconn-7-vs14.dll</code></td>
+              <td><code class="filename">mysqlcppconn.lib</code></td>
+            </tr></tbody></table></div></div><br class="table-break"><p>
+          For the X DevAPI or X DevAPI for C connector, use the dynamic
+          library file named
+          <code class="filename">mysqlcppconn8-2-vs14.dll</code>, together with
+          with the import library file named
+          <code class="filename">mysqlcppconn8.lib</code> from the import library
+          directory. The <code class="literal">2</code> in the dynamic library
+          name is the major ABI version number. (This helps when using
+          compatibility libraries with an old ABI together with new
+          libraries having a different ABI.) The libraries installed on
+          your system may have a different ABI version in their file
+          names.
+        </p><p>
+          For the legacy JDBC connector, use the dynamic library file
+          named <code class="filename">mysqlcppconn-7-vs14.dll</code>, together
+          with the import library file named
+          <code class="filename">mysqlcppconn.lib</code> from the import library
+          directory.
+        </p><p>
+          For static linking, the following table indicates which static
+          library file to use.
+        </p><div class="table"><a name="connector-cpp-static-libraries-table"></a><p class="title"><b>Table 5.4 Connector/C++ Static Library File Per Connector</b></p><div class="table-contents"><table summary="Static library files for building Connector/C++ applications."><col width="50%"><col width="50%"><thead><tr>
+              <th>Connector</th>
+              <th>Static Library File</th>
+            </tr></thead><tbody><tr>
+              <td>X DevAPI, X DevAPI for C</td>
+              <td><code class="filename">mysqlcppconn8-static.lib</code></td>
+            </tr><tr>
+              <td>JDBC</td>
+              <td><code class="filename">mysqlcppconn-static.lib</code></td>
+            </tr></tbody></table></div></div><br class="table-break"><p>
+          For the X DevAPI or X DevAPI for C connector, use the static
+          library file named
+          <code class="filename">mysqlcppconn8-static.lib</code> from the static
+          library directory.
+        </p><p>
+          For the legacy JDBC connector, use the static library file
+          named <code class="filename">mysqlcppconn-static.lib</code> from the
+          static library directory.
+        </p><p>
+          When building code that uses Connector/C++ libraries, use these
+          guidelines for setting build options in the project
+          configuration:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              As an additional include directory, specify
+              <code class="literal">$MYSQL_CPPCONN_DIR/include</code>.
+            </p></li><li class="listitem"><p>
+              As an additional library directory, specify the directory
+              containing the libraries the application must link to, as
+              indicated in
+              <a class="xref" href="connector-cpp-apps.html#connector-cpp-library-directories-table" title="Table 5.2 Connector/C++ Library File Directories">Table 5.2, “Connector/C++ Library File Directories”</a>.
+              For example, to specify the import or static library
+              directory for building in release mode, use
+              <code class="literal">$MYSQL_CONCPP_DIR/lib64/vs14</code> (for
+              64-bit libraries) or
+              <code class="literal">$MYSQL_CONCPP_DIR/lib/vs14</code> (for 32-bit
+              libraries). For building in debug mode, change
+              <code class="filename">vs14</code> to
+              <code class="filename">vs14/debug</code>.
+            </p></li><li class="listitem"><p>
+              To use a dynamic library file (<code class="filename">.dll</code>
+              extension), link your application with a
+              <code class="filename">.lib</code> import library:
+              <code class="filename">mysqlcppconn8.lib</code> to the linker
+              options, or <code class="filename">mysqlcppconn.lib</code> for
+              legacy code.
+            </p></li><li class="listitem"><p>
+              To use a static library file (<code class="filename">.lib</code>
+              extension), link your application with the library:
+              <code class="filename">mysqlcppconn8-static.lib</code>, or
+              <code class="filename">mysqlcppconn-static.lib</code> for legacy
+              code.
+            </p></li></ul></div><p>
+          For static linking, the application must also be linked with
+          import libraries for the required OpenSSL libraries. If the
+          connector was installed from a binary package provided by
+          Oracle, these are present in the <code class="filename">vs14</code>
+          subdirectory under the main library directory
+          (<code class="literal">$MYSQL_CONCPP_DIR/lib64</code> or
+          <code class="literal">$MYSQL_CONCPP_DIR/lib</code>), and the
+          corresponding OpenSSL <code class="filename">.dll</code> libraries are
+          present in the main library directory.
+        </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            A Windows application that uses the connector dynamic
+            library must be able to locate it at runtime, as well as its
+            dependencies such as OpenSSL. The common way of arranging
+            this is to copy all the required DLLs to the same location
+            as the application executable.
+          </p></div></div><div class="simplesect"><div class="titlepage"><div><div><h4 class="title"><a name="connector-cpp-application-build-visual-studio"></a>Building Connector/C++ Applications with Microsoft Visual Studio</h4></div></div></div><p>
+          To build a Connector/C++ application with Microsoft Visual Studio,
+          follow this procedure:
+        </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+              Start a new Visual C++ project in Visual Studio.
+            </p></li><li class="listitem"><p>
+              Set the required include paths.
+            </p><p>
+              From the main menu, select <span class="guimenu">Project</span>,
+              <span class="guimenu">Properties</span>. This can also be accessed
+              using the hot key <span class="guibutton">ALT</span> +
+              <span class="guibutton">F7</span>. Under <span class="guilabel">Configuration
+              Properties</span>, open the tree view. Select
+              <span class="guimenu">C/C++</span>, <span class="guilabel">General</span> in
+              the tree view.
+            </p><p>
+              In the <span class="guilabel">Additional Include Directories</span>
+              text field:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+                  Add the <code class="filename">include/</code> directory of
+                  Connector/C++. This directory should be located within the
+                  Connector/C++ installation directory.
+                </p></li><li class="listitem"><p>
+                  If Boost is required to build the application, also
+                  add the Boost library root directory. (See
+                  <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.)
+                </p></li></ul></div></li><li class="listitem"><p>
+              Set the library locations.
+            </p><p>
+              In the tree view, open <span class="guilabel">Linker</span>,
+              <span class="guilabel">General</span>, <span class="guilabel">Additional Library
+              Directories</span>.
+            </p><p>
+              In the <span class="guilabel">Additional Library Directories</span>
+              text field, add the Connector/C++ import or static library
+              directory as specified in
+              <a class="xref" href="connector-cpp-apps.html#connector-cpp-library-directories-table" title="Table 5.2 Connector/C++ Library File Directories">Table 5.2, “Connector/C++ Library File Directories”</a>.
+              Set appropriate paths for release and debug builds.
+            </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+                For building in debug mode, the Connector/C++ debug package
+                must be installed.
+              </p></div></li><li class="listitem"><p>
+              Set the connector library to use.
+            </p><p>
+              Open <span class="guilabel">Linker</span>,
+              <span class="guilabel">Input</span> in the <span class="guilabel">Property
+              Pages</span> dialog.
+            </p><p>
+              For building with the Connector/C++ dynamic library, enter the
+              import library name:
+              <code class="filename">mysqlcppconn8.lib</code>, or
+              <code class="filename">mysqlcppconn.lib</code> for legacy
+              applications.
+            </p><p>
+              For building with the Connector/C++ static library, enter the
+              static library name:
+              <code class="filename">mysqlcppconn8-static.lib</code>, or
+              <code class="filename">mysqlcppconn-static.lib</code> for legacy
+              applications.
+            </p></li><li class="listitem"><p>
+              Define macros for static linking.
+            </p><p>
+              To compile code that is linked statically with the
+              connector library, you must define a macro that adjusts
+              API declarations in the header files for usage with the
+              static library. By default, the macro is undefined to
+              declare functions to be compatible with an application
+              that calls a DLL.
+            </p><p>
+              In the <span class="guilabel">Project</span>,
+              <span class="guilabel">Properties</span> tree view, under
+              <span class="guilabel">C++</span>,
+              <span class="guilabel">Preprocessor</span>, enter the appropriate
+              macro into the <span class="guimenu">Preprocessor Definitions</span>
+              text field:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+                  For applications that use X DevAPI, X DevAPI for C, or
+                  (as of Connector/C++ 8.0.16) the legacy JDBC API, define the
+                  <code class="literal">STATIC_CONCPP</code> macro. All that
+                  matters is that you define it; the value does not
+                  matter. For example: <code class="option">-DSTATIC_CONCPP</code>
+                </p></li><li class="listitem"><p>
+                  Prior to Connector/C++ 8.0.16, for applications that use the
+                  legacy JDBC API, define the
+                  <code class="literal">CPPCONN_PUBLIC_FUNC</code> macro as an
+                  empty string. To ensure this, define the macro as
+                  <code class="literal">CPPCONN_PUBLIC_FUNC=</code>, not as
+                  <code class="literal">CPPCONN_PUBLIC_FUNC</code>.
+                </p></li></ul></div></li></ol></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Notes</div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+                Target hosts running the client application must have
+                the <a class="ulink" href="https://visualstudio.microsoft.com/downloads/" target="_top">Visual C++
+                Redistributable for Visual Studio</a> installed. For
+                information about which VC++ Redistributable versions
+                are acceptable, see
+                <a class="xref" href="connector-cpp-introduction.html#connector-cpp-prerequisites" title="Platform Support and Prerequisites">Platform Support and Prerequisites</a>.
+              </p></li><li class="listitem"><p>
+                If your code uses the Connector/C++ dynamic library, it must be
+                present on the target host where the application is run.
+                Copy the appropriate Connector/C++ dynamic library to the same
+                directory as the application executable (see
+                <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-windows-linking" title="Linking Connector/C++ to Applications">Linking Connector/C++ to Applications</a>).
+                Alternatively, extend the <code class="literal">PATH</code>
+                environment variable using <code class="literal">SET
+                PATH=%PATH%;C:\<em class="replaceable"><code>path</code></em>\<em class="replaceable"><code>to</code></em>\<em class="replaceable"><code>cpp</code></em></code>,
+                or copy the dynamic library to the Windows installation
+                directory, typically <code class="filename">C:\windows</code>.
+              </p></li><li class="listitem"><p>
+                If your code uses the Connector/C++ static library, the
+                required OpenSSL libraries must be found on the target
+                host where the application is run. For Connector/C++ binary
+                distributions, the OpenSSL <code class="filename">.dll</code>
+                libraries are present in the main library directory
+                (<code class="literal">$MYSQL_CONCPP_DIR/lib64</code> or
+                <code class="literal">$MYSQL_CONCPP_DIR/lib</code>). Copy them to
+                the same location as the application executable or to
+                some directory listed in the system
+                <code class="literal">PATH</code>.
+              </p></li></ul></div></div></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-macos-notes"></a>5.2.2 macOS Notes</h3></div></div></div><p>
+        This section describes aspects of building Connector/C++ applications
+        that are specific to macOS. For general application-building
+        information, see
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.
+      </p><p>
+        The binary distribution of Connector/C++ for macOS is compiled using
+        the macOS native <span class="command"><strong>clang</strong></span> compiler. For that
+        reason, an application that uses Connector/C++ should be built with the
+        same <span class="command"><strong>clang</strong></span> compiler.
+      </p><p>
+        The <span class="command"><strong>clang</strong></span> compiler can use two different
+        implementations of the C++ runtime library: either the native
+        <code class="literal">libc++</code> or the GNU
+        <code class="literal">libstdc++</code> library. It is important that an
+        application uses the same runtime implementation as Connector/C++ that
+        is, the native <code class="literal">libc++</code>. To ensure that, the
+        <code class="option">-stdlib=libc++</code> option should be passed to the
+        compiler and the linker invocations.
+      </p><p>
+        To build a Connector/C++ application that uses X DevAPI, has sources
+        in <code class="filename">app.cc</code>, and links dynamically to the
+        connector library, the <code class="filename">Makefile</code> for
+        building on macOS might look like this:
+      </p><pre class="programlisting">MYSQL_CONCPP_DIR = <em class="replaceable"><code>Connector/C++ installation location</code></em>
+CPPFLAGS = -I $(MYSQL_CONCPP_DIR)/include -L $(MYSQL_CONCPP_DIR)/lib64
+LDLIBS = -lmysqlcppconn8
+CXX = clang++ -stdlib=libc++
+CXXFLAGS = -std=c++11
+app : app.cc
+</pre><p>
+        Binary packages for macOS include OpenSSL libraries that are
+        required by code linked with the connector. These libraries are
+        installed in the same location as the connector libraries and
+        should be found there by the dynamic linker.
+      </p></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="connector-cpp-apps-solaris-notes"></a>5.2.3 Solaris Notes</h3></div></div></div><p>
+        This section describes aspects of building Connector/C++ applications
+        that are specific to Solaris. For general application-building
+        information, see
+        <a class="xref" href="connector-cpp-apps.html#connector-cpp-apps-general-considerations" title="5.1 Building Connector/C++ Applications: General Considerations">Section 5.1, “Building Connector/C++ Applications: General Considerations”</a>.
+      </p><p>
+        As of Connector/C++ 8.0.13, it is possible to build Connector/C++ applications
+        on Solaris. This requires the SunPro 5.15 or higher compiler
+        (from Developer Studio 12.6). Earlier versions and building with
+        GCC are not supported.
+      </p><p>
+        To use a Connector/C++ package provided by Oracle, application code
+        must be built with SunPro 5.15 or higher under the following
+        options: <code class="literal">-m64 -std=c++11</code>. The C++ runtime
+        libraries and atomics library used should be the defaults
+        (<code class="literal">-library=stdcpp, -xatomics=studio</code>).
+      </p><div class="important" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Important</div><p>
+          The connector library and any code that uses it depends on the
+          GCC runtime libraries shipped with Oracle Developer Studio
+          12.6, which must be installed before you run the application.
+          See the
+          <a class="ulink" href="https://www.oracle.com/technetwork/server-storage/developerstudio/downloads/index.html" target="_top">download
+          options</a> for Oracle Developer Studio. The installation
+          package enables you to install the runtime libraries only
+          instead of the full Oracle Developer Studio; see instructions
+          in
+          <a class="ulink" href="https://docs.oracle.com/cd/E77782_01/html/E77785/gozsu.html" target="_top">Installing
+          Only the Runtime Libraries on Oracle Solaris 11</a>.
+        </p></div><p>
+        Target hosts running client applications must have the runtime
+        libraries from Developer Studio 12.6 installed.
+      </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="connector-cpp-installation-source.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="connector-cpp-issues.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 4 Installing Connector/C++ from Source </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 6 Connector/C++ Known Issues</td></tr></table></div><div class="copyright-footer"></div></body></html>

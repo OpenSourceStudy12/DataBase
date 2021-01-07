@@ -1,0 +1,286 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 25 C API Prepared CALL Statement Support</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-prepared-statement-date-handling.html" title="Chapter 24 C API Prepared Statement Handling of Date and Time Values"><link rel="next" href="c-api-prepared-statement-problems.html" title="Chapter 26 C API Prepared Statement Problems"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 25 C API Prepared CALL Statement Support</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-prepared-statement-date-handling.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-prepared-statement-problems.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-prepared-call-statements"></a>Chapter 25 C API Prepared CALL Statement Support</h1></div></div></div><p>
+      This section describes prepared-statement support in the C API for
+      stored procedures executed using
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements:
+    </p><p>
+      Stored procedures executed using prepared
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements can be used in the
+      following ways:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          A stored procedure can produce any number of result sets. The
+          number of columns and the data types of the columns need not
+          be the same for all result sets.
+        </p></li><li class="listitem"><p>
+          The final values of <code class="literal">OUT</code> and
+          <code class="literal">INOUT</code> parameters are available to the
+          calling application after the procedure returns. These
+          parameters are returned as an extra single-row result set
+          following any result sets produced by the procedure itself.
+          The row contains the values of the <code class="literal">OUT</code> and
+          <code class="literal">INOUT</code> parameters in the order in which they
+          are declared in the procedure parameter list.
+        </p><p>
+          For information about the effect of unhandled conditions on
+          procedure parameters, see
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/conditions-and-parameters.html" target="_top">Condition Handling and OUT or INOUT Parameters</a>.
+        </p></li></ul></div><p>
+      The following discussion shows how to use these capabilities
+      through the C API for prepared statements. To use prepared
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements through the
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/prepare.html" target="_top"><code class="literal">PREPARE</code></a> and
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/execute.html" target="_top"><code class="literal">EXECUTE</code></a> statements, see
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top">CALL Statement</a>.
+    </p><p>
+      An application that executes a prepared
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statement should use a loop
+      that fetches a result and then invokes
+      <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-next-result" title="11.17 mysql_stmt_next_result()"><code class="literal">mysql_stmt_next_result()</code></a> to
+      determine whether there are more results. The results consist of
+      any result sets produced by the stored procedure followed by a
+      final status value that indicates whether the procedure terminated
+      successfully.
+    </p><p>
+      If the procedure has <code class="literal">OUT</code> or
+      <code class="literal">INOUT</code> parameters, the result set preceding the
+      final status value contains their values. To determine whether a
+      result set contains parameter values, test whether the
+      <code class="literal">SERVER_PS_OUT_PARAMS</code> bit is set in the
+      <code class="literal">server_status</code> member of the
+      <code class="literal">MYSQL</code> connection handler:
+    </p><pre class="programlisting">mysql-&gt;server_status &amp; SERVER_PS_OUT_PARAMS
+</pre><p>
+      The following example uses a prepared
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statement to execute a stored
+      procedure that produces multiple result sets and that provides
+      parameter values back to the caller by means of
+      <code class="literal">OUT</code> and <code class="literal">INOUT</code> parameters.
+      The procedure takes parameters of all three types
+      (<code class="literal">IN</code>, <code class="literal">OUT</code>,
+      <code class="literal">INOUT</code>), displays their initial values, assigns
+      new values, displays the updated values, and returns. The expected
+      return information from the procedure therefore consists of
+      multiple result sets and a final status:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          One result set from a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>
+          that displays the initial parameter values:
+          <code class="literal">10</code>, <code class="literal">NULL</code>,
+          <code class="literal">30</code>. (The <code class="literal">OUT</code> parameter
+          is assigned a value by the caller, but this assignment is
+          expected to be ineffective: <code class="literal">OUT</code> parameters
+          are seen as <code class="literal">NULL</code> within a procedure until
+          assigned a value within the procedure.)
+        </p></li><li class="listitem"><p>
+          One result set from a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>
+          that displays the modified parameter values:
+          <code class="literal">100</code>, <code class="literal">200</code>,
+          <code class="literal">300</code>.
+        </p></li><li class="listitem"><p>
+          One result set containing the final <code class="literal">OUT</code> and
+          <code class="literal">INOUT</code> parameter values:
+          <code class="literal">200</code>, <code class="literal">300</code>.
+        </p></li><li class="listitem"><p>
+          A final status packet.
+        </p></li></ul></div><p>
+      The code to execute the procedure:
+    </p><pre class="programlisting">MYSQL_STMT *stmt;
+MYSQL_BIND ps_params[3];  /* input parameter buffers */
+int        int_data[3];   /* input/output values */
+bool       is_null[3];    /* output value nullability */
+int        status;
+
+/* set up stored procedure */
+status = mysql_query(mysql, "DROP PROCEDURE IF EXISTS p1");
+test_error(mysql, status);
+
+status = mysql_query(mysql,
+  "CREATE PROCEDURE p1("
+  "  IN p_in INT, "
+  "  OUT p_out INT, "
+  "  INOUT p_inout INT) "
+  "BEGIN "
+  "  SELECT p_in, p_out, p_inout; "
+  "  SET p_in = 100, p_out = 200, p_inout = 300; "
+  "  SELECT p_in, p_out, p_inout; "
+  "END");
+test_error(mysql, status);
+
+/* initialize and prepare CALL statement with parameter placeholders */
+stmt = mysql_stmt_init(mysql);
+if (!stmt)
+{
+  printf("Could not initialize statement\n");
+  exit(1);
+}
+status = mysql_stmt_prepare(stmt, "CALL p1(?, ?, ?)", 16);
+test_stmt_error(stmt, status);
+
+/* initialize parameters: p_in, p_out, p_inout (all INT) */
+memset(ps_params, 0, sizeof (ps_params));
+
+ps_params[0].buffer_type = MYSQL_TYPE_LONG;
+ps_params[0].buffer = (char *) &amp;int_data[0];
+ps_params[0].length = 0;
+ps_params[0].is_null = 0;
+
+ps_params[1].buffer_type = MYSQL_TYPE_LONG;
+ps_params[1].buffer = (char *) &amp;int_data[1];
+ps_params[1].length = 0;
+ps_params[1].is_null = 0;
+
+ps_params[2].buffer_type = MYSQL_TYPE_LONG;
+ps_params[2].buffer = (char *) &amp;int_data[2];
+ps_params[2].length = 0;
+ps_params[2].is_null = 0;
+
+/* bind parameters */
+status = mysql_stmt_bind_param(stmt, ps_params);
+test_stmt_error(stmt, status);
+
+/* assign values to parameters and execute statement */
+int_data[0]= 10;  /* p_in */
+int_data[1]= 20;  /* p_out */
+int_data[2]= 30;  /* p_inout */
+
+status = mysql_stmt_execute(stmt);
+test_stmt_error(stmt, status);
+
+/* process results until there are no more */
+do {
+  int i;
+  int num_fields;       /* number of columns in result */
+  MYSQL_FIELD *fields;  /* for result set metadata */
+  MYSQL_BIND *rs_bind;  /* for output buffers */
+
+  /* the column count is &gt; 0 if there is a result set */
+  /* 0 if the result is only the final status packet */
+  num_fields = mysql_stmt_field_count(stmt);
+
+  if (num_fields &gt; 0)
+  {
+    /* there is a result set to fetch */
+    printf("Number of columns in result: %d\n", (int) num_fields);
+
+    /* what kind of result set is this? */
+    printf("Data: ");
+    if(mysql-&gt;server_status &amp; SERVER_PS_OUT_PARAMS)
+      printf("this result set contains OUT/INOUT parameters\n");
+    else
+      printf("this result set is produced by the procedure\n");
+
+    MYSQL_RES *rs_metadata = mysql_stmt_result_metadata(stmt);
+    test_stmt_error(stmt, rs_metadata == NULL);
+
+    fields = mysql_fetch_fields(rs_metadata);
+
+    rs_bind = (MYSQL_BIND *) malloc(sizeof (MYSQL_BIND) * num_fields);
+    if (!rs_bind)
+    {
+      printf("Cannot allocate output buffers\n");
+      exit(1);
+    }
+    memset(rs_bind, 0, sizeof (MYSQL_BIND) * num_fields);
+
+    /* set up and bind result set output buffers */
+    for (i = 0; i &lt; num_fields; ++i)
+    {
+      rs_bind[i].buffer_type = fields[i].type;
+      rs_bind[i].is_null = &amp;is_null[i];
+
+      switch (fields[i].type)
+      {
+        case MYSQL_TYPE_LONG:
+          rs_bind[i].buffer = (char *) &amp;(int_data[i]);
+          rs_bind[i].buffer_length = sizeof (int_data);
+          break;
+
+        default:
+          fprintf(stderr, "ERROR: unexpected type: %d.\n", fields[i].type);
+          exit(1);
+      }
+    }
+
+    status = mysql_stmt_bind_result(stmt, rs_bind);
+    test_stmt_error(stmt, status);
+
+    /* fetch and display result set rows */
+    while (1)
+    {
+      status = mysql_stmt_fetch(stmt);
+
+      if (status == 1 || status == MYSQL_NO_DATA)
+        break;
+
+      for (i = 0; i &lt; num_fields; ++i)
+      {
+        switch (rs_bind[i].buffer_type)
+        {
+          case MYSQL_TYPE_LONG:
+            if (*rs_bind[i].is_null)
+              printf(" val[%d] = NULL;", i);
+            else
+              printf(" val[%d] = %ld;",
+                     i, (long) *((int *) rs_bind[i].buffer));
+            break;
+
+          default:
+            printf("  unexpected type (%d)\n",
+              rs_bind[i].buffer_type);
+        }
+      }
+      printf("\n");
+    }
+
+    mysql_free_result(rs_metadata); /* free metadata */
+    free(rs_bind);                  /* free output buffers */
+  }
+  else
+  {
+    /* no columns = final status packet */
+    printf("End of procedure output\n");
+  }
+
+  /* more results? -1 = no, &gt;0 = error, 0 = yes (keep looking) */
+  status = mysql_stmt_next_result(stmt);
+  if (status &gt; 0)
+    test_stmt_error(stmt, status);
+} while (status == 0);
+
+mysql_stmt_close(stmt);
+</pre><p>
+      Execution of the procedure should produce the following output:
+    </p><pre class="programlisting">Number of columns in result: 3
+Data: this result set is produced by the procedure
+ val[0] = 10; val[1] = NULL; val[2] = 30;
+Number of columns in result: 3
+Data: this result set is produced by the procedure
+ val[0] = 100; val[1] = 200; val[2] = 300;
+Number of columns in result: 2
+Data: this result set contains OUT/INOUT parameters
+ val[0] = 200; val[1] = 300;
+End of procedure output
+</pre><p>
+      The code uses two utility routines,
+      <code class="literal">test_error()</code> and
+      <code class="literal">test_stmt_error()</code>, to check for errors and
+      terminate after printing diagnostic information if an error
+      occurred:
+    </p><pre class="programlisting">static void test_error(MYSQL *mysql, int status)
+{
+  if (status)
+  {
+    fprintf(stderr, "Error: %s (errno: %d)\n",
+            mysql_error(mysql), mysql_errno(mysql));
+    exit(1);
+  }
+}
+
+static void test_stmt_error(MYSQL_STMT *stmt, int status)
+{
+  if (status)
+  {
+    fprintf(stderr, "Error: %s (errno: %d)\n",
+            mysql_stmt_error(stmt), mysql_stmt_errno(stmt));
+    exit(1);
+  }
+}
+</pre></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-prepared-statement-date-handling.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-prepared-statement-problems.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 24 C API Prepared Statement Handling of Date and Time Values </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 26 C API Prepared Statement Problems</td></tr></table></div><div class="copyright-footer"></div></body></html>

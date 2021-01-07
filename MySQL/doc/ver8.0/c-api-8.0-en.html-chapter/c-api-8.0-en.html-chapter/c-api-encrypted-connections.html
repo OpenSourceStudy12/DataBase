@@ -1,0 +1,124 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 22 C API Support for Encrypted Connections</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-binary-log-functions.html" title="Chapter 21 C API Binary Log Function Descriptions"><link rel="next" href="c-api-multiple-queries.html" title="Chapter 23 C API Multiple Statement Execution Support"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 22 C API Support for Encrypted Connections</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-binary-log-functions.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-multiple-queries.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-encrypted-connections"></a>Chapter 22 C API Support for Encrypted Connections</h1></div></div></div><p>
+      This section describes how C applications use the C API
+      capabilities for encrypted connections. By default, MySQL programs
+      attempt to connect using encryption if the server supports
+      encrypted connections, falling back to an unencrypted connection
+      if an encrypted connection cannot be established (see
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/using-encrypted-connections.html" target="_top">Configuring MySQL to Use Encrypted Connections</a>). For applications
+      that require control beyond the default behavior over how
+      encrypted connections are established, the C API provides these
+      capabilities:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          The <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> function
+          enables applications to set the appropriate SSL/TLS options
+          before calling
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>. For
+          example, to require the use of an encrypted connection, see
+          <a class="xref" href="c-api-encrypted-connections.html#c-api-enforcing-encrypted-connection" title="Enforcing an Encrypted Connection">Enforcing an Encrypted Connection</a>.
+        </p></li><li class="listitem"><p>
+          The <a class="link" href="c-api-functions.html#mysql-get-ssl-cipher" title="7.35 mysql_get_ssl_cipher()"><code class="literal">mysql_get_ssl_cipher()</code></a>
+          function enables applications to determine, after a connection
+          has been established, whether the connection uses encryption.
+          A <code class="literal">NULL</code> return value indicates that
+          encryption is not being used. A non-<code class="literal">NULL</code>
+          return value indicates an encrypted connection and names the
+          encryption cipher. See <a class="xref" href="c-api-functions.html#mysql-get-ssl-cipher" title="7.35 mysql_get_ssl_cipher()">Section 7.35, “mysql_get_ssl_cipher()”</a>.
+        </p></li></ul></div><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><a class="xref" href="c-api-encrypted-connections.html#c-api-encrypted-connection-options" title="C API Options for Encrypted Connections">C API Options for Encrypted Connections</a></p></li><li class="listitem"><p><a class="xref" href="c-api-encrypted-connections.html#c-api-enforcing-encrypted-connection" title="Enforcing an Encrypted Connection">Enforcing an Encrypted Connection</a></p></li><li class="listitem"><p><a class="xref" href="c-api-encrypted-connections.html#c-api-secure-encrypted-connection" title="Improving Security of Encrypted Connections">Improving Security of Encrypted Connections</a></p></li></ul></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-encrypted-connection-options"></a>C API Options for Encrypted Connections</h2></div></div></div><p>
+        <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> provides the
+        following options for control over use of encrypted connections.
+        For option details, see <a class="xref" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()">Section 7.51, “mysql_options()”</a>.
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CA</code>: The path name of the
+            Certificate Authority (CA) certificate file. This option, if
+            used, must specify the same certificate used by the server.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CAPATH</code>: The path name of
+            the directory that contains trusted SSL CA certificate
+            files.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CERT</code>: The path name of the
+            client public key certificate file.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CIPHER</code>: The list of
+            encryption ciphers the client permits for connections that
+            use TLS protocols up through TLSv1.2.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CRL</code>: The path name of the
+            file containing certificate revocation lists.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_CRLPATH</code>: The path name of
+            the directory that contains certificate revocation list
+            files.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_KEY</code>: The path name of the
+            client private key file.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_SSL_MODE</code>: The connection
+            security state.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_TLS_CIPHERSUITES</code>: The list of
+            encryption ciphersuites the client permits for connections
+            that use TLSv1.3.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_OPT_TLS_VERSION</code>: The encryption
+            protocols the client permits.
+          </p></li></ul></div><p>
+        <a class="link" href="c-api-functions.html#mysql-ssl-set" title="7.79 mysql_ssl_set()"><code class="literal">mysql_ssl_set()</code></a> can be used as a
+        convenience routine that is equivalent to a set of
+        <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> calls that
+        specify certificate and key files, encryption ciphers, and so
+        forth. See <a class="xref" href="c-api-functions.html#mysql-ssl-set" title="7.79 mysql_ssl_set()">Section 7.79, “mysql_ssl_set()”</a>.
+      </p></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-enforcing-encrypted-connection"></a>Enforcing an Encrypted Connection</h2></div></div></div><p>
+        <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> options for
+        information such as SSL certificate and key files are used to
+        establish an encrypted connection if such connections are
+        available, but do not enforce any requirement that the
+        connection obtained be encrypted. To require an encrypted
+        connection, use the following technique:
+      </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+            Call <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> as
+            necessary supply the appropriate SSL parameters (certificate
+            and key files, encryption ciphers, and so forth).
+          </p></li><li class="listitem"><p>
+            Call <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to pass
+            the <code class="literal">MYSQL_OPT_SSL_MODE</code> option with a
+            value of <code class="literal">SSL_MODE_REQUIRED</code> or one of the
+            more-restrictive option values.
+          </p></li><li class="listitem"><p>
+            Call <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> to
+            connect to the server. The call fails if an encrypted
+            connection cannot be obtained; exit with an error.
+          </p></li></ol></div></div><div class="simplesect"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-secure-encrypted-connection"></a>Improving Security of Encrypted Connections</h2></div></div></div><p>
+        For additional security relative to that provided by the default
+        encryption, clients can supply a CA certificate matching the one
+        used by the server and enable host name identity verification.
+        In this way, the server and client place their trust in the same
+        CA certificate and the client verifies that the host to which it
+        connected is the one intended:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            To specify the CA certificate, call
+            <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to pass the
+            <code class="literal">MYSQL_OPT_SSL_CA</code> (or
+            <code class="literal">MYSQL_OPT_SSL_CAPATH</code>) option, and call
+            <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to pass the
+            <code class="literal">MYSQL_OPT_SSL_MODE</code> option with a value of
+            <code class="literal">SSL_MODE_VERIFY_CA</code>.
+          </p></li><li class="listitem"><p>
+            To enable host name identity verification as well, call
+            <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to pass the
+            <code class="literal">MYSQL_OPT_SSL_MODE</code> option with a value of
+            <code class="literal">SSL_MODE_VERIFY_IDENTITY</code> rather than
+            <code class="literal">SSL_MODE_VERIFY_CA</code>.
+          </p></li></ul></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+          Host name identity verification with
+          <code class="literal">SSL_MODE_VERIFY_IDENTITY</code> does not work with
+          self-signed certificates created automatically by the server,
+          or manually using <span class="command"><strong>mysql_ssl_rsa_setup</strong></span> (see
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/creating-ssl-rsa-files-using-mysql.html" target="_top">Creating SSL and RSA Certificates and Keys using MySQL</a>). Such
+          self-signed certificates do not contain the server name as the
+          Common Name value.
+        </p><p>
+          Host name identity verification also does not work with
+          certificates that specify the Common Name using wildcards
+          because that name is compared verbatim to the server name.
+        </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-binary-log-functions.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-multiple-queries.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 21 C API Binary Log Function Descriptions </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 23 C API Multiple Statement Execution Support</td></tr></table></div><div class="copyright-footer"></div></body></html>

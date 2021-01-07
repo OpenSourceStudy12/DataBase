@@ -1,0 +1,159 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 29 C API Common Issues</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-auto-reconnect.html" title="Chapter 28 C API Automatic Reconnection Control"><link rel="next" href="ix01.html" title="Index"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 29 C API Common Issues</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-auto-reconnect.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-common-issues"></a>Chapter 29 C API Common Issues</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-common-issues.html#null-mysql-store-result">29.1 Why mysql_store_result() Sometimes Returns NULL After mysql_query()
+        Returns Success</a></span></dt><dt><span class="section"><a href="c-api-common-issues.html#query-results">29.2 What Results You Can Get from a Query</a></span></dt><dt><span class="section"><a href="c-api-common-issues.html#getting-unique-id">29.3 How to Get the Unique ID for the Last Inserted Row</a></span></dt></dl></div><a class="indexterm" name="idm46079466267696"></a><a class="indexterm" name="idm46079466266208"></a><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="null-mysql-store-result"></a>29.1 Why mysql_store_result() Sometimes Returns NULL After mysql_query()
+        Returns Success</h2></div></div></div><a class="indexterm" name="idm46079466263504"></a><a class="indexterm" name="idm46079466262464"></a><p>
+        It is possible for
+        <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> to return
+        <code class="literal">NULL</code> following a successful call to
+        <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a>. When this
+        happens, it means one of the following conditions occurred:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            There was a <code class="literal">malloc()</code> failure (for
+            example, if the result set was too large).
+          </p></li><li class="listitem"><p>
+            The data could not be read (an error occurred on the
+            connection).
+          </p></li><li class="listitem"><p>
+            The query returned no data (for example, it was an
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>, or
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>).
+          </p></li></ul></div><p>
+        You can always check whether the statement should have produced
+        a nonempty result by calling
+        <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a>. If
+        <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> returns
+        zero, the result is empty and the last query was a statement
+        that does not return values (for example, an
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> or a
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>). If
+        <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> returns a
+        nonzero value, the statement should have produced a nonempty
+        result. See the description of the
+        <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> function for
+        an example.
+      </p><p>
+        You can test for an error by calling
+        <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> or
+        <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a>.
+      </p></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="query-results"></a>29.2 What Results You Can Get from a Query</h2></div></div></div><a class="indexterm" name="idm46079466238288"></a><a class="indexterm" name="idm46079466237248"></a><a class="indexterm" name="idm46079466236176"></a><a class="indexterm" name="idm46079466235104"></a><p>
+        In addition to the result set returned by a query, you can also
+        get the following information:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <a class="link" href="c-api-functions.html#mysql-affected-rows" title="7.1 mysql_affected_rows()"><code class="literal">mysql_affected_rows()</code></a>
+            returns the number of rows affected by the last query when
+            doing an <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>, or
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>.
+          </p><p>
+            For a fast re-create, use <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/truncate-table.html" target="_top"><code class="literal">TRUNCATE
+            TABLE</code></a>.
+          </p></li><li class="listitem"><p>
+            <a class="link" href="c-api-functions.html#mysql-num-rows" title="7.50 mysql_num_rows()"><code class="literal">mysql_num_rows()</code></a> returns the
+            number of rows in a result set. With
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>,
+            <a class="link" href="c-api-functions.html#mysql-num-rows" title="7.50 mysql_num_rows()"><code class="literal">mysql_num_rows()</code></a> may be
+            called as soon as
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+            returns. With
+            <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>,
+            <a class="link" href="c-api-functions.html#mysql-num-rows" title="7.50 mysql_num_rows()"><code class="literal">mysql_num_rows()</code></a> may be
+            called only after you have fetched all the rows with
+            <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>.
+          </p></li><li class="listitem"><p>
+            <a class="link" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()"><code class="literal">mysql_insert_id()</code></a> returns
+            the ID generated by the last query that inserted a row into
+            a table with an <code class="literal">AUTO_INCREMENT</code> index. See
+            <a class="xref" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()">Section 7.39, “mysql_insert_id()”</a>.
+          </p></li><li class="listitem"><p>
+            Some queries (<a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/load-data.html" target="_top"><code class="literal">LOAD DATA</code></a>,
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert-select.html" target="_top"><code class="literal">INSERT INTO
+            ... SELECT</code></a>, <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>)
+            return additional information. The result is returned by
+            <a class="link" href="c-api-functions.html#mysql-info" title="7.37 mysql_info()"><code class="literal">mysql_info()</code></a>. See the
+            description for <a class="link" href="c-api-functions.html#mysql-info" title="7.37 mysql_info()"><code class="literal">mysql_info()</code></a>
+            for the format of the string that it returns.
+            <a class="link" href="c-api-functions.html#mysql-info" title="7.37 mysql_info()"><code class="literal">mysql_info()</code></a> returns a
+            <code class="literal">NULL</code> pointer if there is no additional
+            information.
+          </p></li></ul></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="getting-unique-id"></a>29.3 How to Get the Unique ID for the Last Inserted Row</h2></div></div></div><a class="indexterm" name="idm46079466202704"></a><a class="indexterm" name="idm46079466201664"></a><a class="indexterm" name="idm46079466200592"></a><a class="indexterm" name="idm46079466199520"></a><a class="indexterm" name="idm46079466198032"></a><a class="indexterm" name="idm46079466196576"></a><p>
+        If you insert a record into a table that contains an
+        <code class="literal">AUTO_INCREMENT</code> column, you can obtain the
+        value stored into that column by calling the
+        <a class="link" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()"><code class="literal">mysql_insert_id()</code></a> function.
+      </p><p>
+        You can check from your C applications whether a value was
+        stored in an <code class="literal">AUTO_INCREMENT</code> column by
+        executing the following code (which assumes that you've checked
+        that the statement succeeded). It determines whether the query
+        was an <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> with an
+        <code class="literal">AUTO_INCREMENT</code> index:
+      </p><pre class="programlisting">if ((result = mysql_store_result(&amp;mysql)) == 0 &amp;&amp;
+    mysql_field_count(&amp;mysql) == 0 &amp;&amp;
+    mysql_insert_id(&amp;mysql) != 0)
+{
+    used_id = mysql_insert_id(&amp;mysql);
+}
+</pre><p>
+        When a new <code class="literal">AUTO_INCREMENT</code> value has been
+        generated, you can also obtain it by executing a <code class="literal">SELECT
+        LAST_INSERT_ID()</code> statement with
+        <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> and retrieving the
+        value from the result set returned by the statement.
+      </p><p>
+        When inserting multiple values, the last automatically
+        incremented value is returned.
+      </p><p>
+        For <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a>, the most
+        recently generated ID is maintained in the server on a
+        per-connection basis. It is not changed by another client. It is
+        not even changed if you update another
+        <code class="literal">AUTO_INCREMENT</code> column with a nonmagic value
+        (that is, a value that is not <code class="literal">NULL</code> and not
+        <code class="literal">0</code>). Using
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a> and
+        <code class="literal">AUTO_INCREMENT</code> columns simultaneously from
+        multiple clients is perfectly valid. Each client will receive
+        the last inserted ID for the last statement
+        <span class="emphasis"><em>that</em></span> client executed.
+      </p><p>
+        If you want to use the ID that was generated for one table and
+        insert it into a second table, you can use SQL statements like
+        this:
+      </p><pre class="programlisting">INSERT INTO foo (auto,text)
+    VALUES(NULL,'text');         # generate ID by inserting NULL
+INSERT INTO foo2 (id,text)
+    VALUES(LAST_INSERT_ID(),'text');  # use ID in second table
+</pre><p>
+        <a class="link" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()"><code class="literal">mysql_insert_id()</code></a> returns the
+        value stored into an <code class="literal">AUTO_INCREMENT</code> column,
+        whether that value is automatically generated by storing
+        <code class="literal">NULL</code> or <code class="literal">0</code> or was specified
+        as an explicit value.
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a> returns only
+        automatically generated <code class="literal">AUTO_INCREMENT</code>
+        values. If you store an explicit value other than
+        <code class="literal">NULL</code> or <code class="literal">0</code>, it does not
+        affect the value returned by
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a>.
+      </p><p>
+        For more information on obtaining the last ID in an
+        <code class="literal">AUTO_INCREMENT</code> column:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            For information on
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a>, which can
+            be used within an SQL statement, see
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html" target="_top">Information Functions</a>.
+          </p></li><li class="listitem"><p>
+            For information on
+            <a class="link" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()"><code class="literal">mysql_insert_id()</code></a>, the
+            function you use from within the C API, see
+            <a class="xref" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()">Section 7.39, “mysql_insert_id()”</a>.
+          </p></li><li class="listitem"><p>
+            For information on obtaining the auto-incremented value when
+            using Connector/J, see
+            <a class="ulink" href="https://dev.mysql.com/doc/connector-j/8.0/en/connector-j-usagenotes-last-insert-id.html" target="_top">Retrieving <code class="literal">AUTO_INCREMENT</code> Column Values through JDBC</a>.
+          </p></li><li class="listitem"><p>
+            For information on obtaining the auto-incremented value when
+            using Connector/ODBC, see
+            <a class="ulink" href="https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-usagenotes-functionality-last-insert-id.html" target="_top">Obtaining Auto-Increment Values</a>.
+          </p></li></ul></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-auto-reconnect.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ix01.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 28 C API Automatic Reconnection Control </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Index</td></tr></table></div><div class="copyright-footer"></div></body></html>

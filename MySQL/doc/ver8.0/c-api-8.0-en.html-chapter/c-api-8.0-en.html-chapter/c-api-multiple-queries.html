@@ -1,0 +1,189 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 23 C API Multiple Statement Execution Support</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-encrypted-connections.html" title="Chapter 22 C API Support for Encrypted Connections"><link rel="next" href="c-api-prepared-statement-date-handling.html" title="Chapter 24 C API Prepared Statement Handling of Date and Time Values"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 23 C API Multiple Statement Execution Support</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-encrypted-connections.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-prepared-statement-date-handling.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-multiple-queries"></a>Chapter 23 C API Multiple Statement Execution Support</h1></div></div></div><p>
+      By default, <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> and
+      <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a> interpret their
+      statement string argument as a single statement to be executed,
+      and you process the result according to whether the statement
+      produces a result set (a set of rows, as for
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>) or an affected-rows count
+      (as for <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>, and so forth).
+    </p><p>
+      MySQL also supports the execution of a string containing multiple
+      statements separated by semicolon (<code class="literal">;</code>)
+      characters. This capability is enabled by special options that are
+      specified either when you connect to the server with
+      <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> or after
+      connecting by calling
+      <a class="link" href="c-api-functions.html#mysql-set-server-option" title="7.76 mysql_set_server_option()"><code class="literal">mysql_set_server_option()</code></a>.
+    </p><p>
+      Executing a multiple-statement string can produce multiple result
+      sets or row-count indicators. Processing these results involves a
+      different approach than for the single-statement case: After
+      handling the result from the first statement, it is necessary to
+      check whether more results exist and process them in turn if so.
+      To support multiple-result processing, the C API includes the
+      <a class="link" href="c-api-functions.html#mysql-more-results" title="7.47 mysql_more_results()"><code class="literal">mysql_more_results()</code></a> and
+      <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a> functions.
+      These functions are used at the end of a loop that iterates as
+      long as more results are available. <span class="emphasis"><em>Failure to process
+      the result this way may result in a dropped connection to the
+      server.</em></span>
+    </p><p>
+      Multiple-result processing also is required if you execute
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements for stored
+      procedures. Results from a stored procedure have these
+      characteristics:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          Statements within the procedure may produce result sets (for
+          example, if it executes <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>
+          statements). These result sets are returned in the order that
+          they are produced as the procedure executes.
+        </p><p>
+          In general, the caller cannot know how many result sets a
+          procedure will return. Procedure execution may depend on loops
+          or conditional statements that cause the execution path to
+          differ from one call to the next. Therefore, you must be
+          prepared to retrieve multiple results.
+        </p></li><li class="listitem"><p>
+          The final result from the procedure is a status result that
+          includes no result set. The status indicates whether the
+          procedure succeeded or an error occurred.
+        </p></li></ul></div><p>
+      The multiple statement and result capabilities can be used only
+      with <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> or
+      <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>. They cannot be
+      used with the prepared statement interface. Prepared statement
+      handlers are defined to work only with strings that contain a
+      single statement. See <a class="xref" href="c-api-prepared-statements.html" title="Chapter 8 C API Prepared Statements">Chapter 8, <i>C API Prepared Statements</i></a>.
+    </p><p>
+      To enable multiple-statement execution and result processing, the
+      following options may be used:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          The <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>
+          function has a <code class="literal">flags</code> argument for which two
+          option values are relevant:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <code class="literal">CLIENT_MULTI_RESULTS</code> enables the client
+              program to process multiple results. This option
+              <span class="emphasis"><em>must</em></span> be enabled if you execute
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/call.html" target="_top"><code class="literal">CALL</code></a> statements for stored
+              procedures that produce result sets. Otherwise, such
+              procedures result in an error <code class="literal">Error 1312 (0A000):
+              PROCEDURE <em class="replaceable"><code>proc_name</code></em> can't
+              return a result set in the given context</code>.
+              <code class="literal">CLIENT_MULTI_RESULTS</code> is enabled by
+              default.
+            </p></li><li class="listitem"><p>
+              <code class="literal">CLIENT_MULTI_STATEMENTS</code> enables
+              <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> and
+              <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a> to
+              execute statement strings containing multiple statements
+              separated by semicolons. This option also enables
+              <code class="literal">CLIENT_MULTI_RESULTS</code> implicitly, so a
+              <code class="literal">flags</code> argument of
+              <code class="literal">CLIENT_MULTI_STATEMENTS</code> to
+              <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> is
+              equivalent to an argument of
+              <code class="literal">CLIENT_MULTI_STATEMENTS |
+              CLIENT_MULTI_RESULTS</code>. That is,
+              <code class="literal">CLIENT_MULTI_STATEMENTS</code> is sufficient
+              to enable multiple-statement execution and all
+              multiple-result processing.
+            </p></li></ul></div></li><li class="listitem"><p>
+          After the connection to the server has been established, you
+          can use the
+          <a class="link" href="c-api-functions.html#mysql-set-server-option" title="7.76 mysql_set_server_option()"><code class="literal">mysql_set_server_option()</code></a>
+          function to enable or disable multiple-statement execution by
+          passing it an argument of
+          <code class="literal">MYSQL_OPTION_MULTI_STATEMENTS_ON</code> or
+          <code class="literal">MYSQL_OPTION_MULTI_STATEMENTS_OFF</code>. Enabling
+          multiple-statement execution with this function also enables
+          processing of <span class="quote">“<span class="quote">simple</span>”</span> results for a
+          multiple-statement string where each statement produces a
+          single result, but is <span class="emphasis"><em>not</em></span> sufficient to
+          permit processing of stored procedures that produce result
+          sets.
+        </p></li></ul></div><p>
+      The following procedure outlines a suggested strategy for handling
+      multiple statements:
+    </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+          Pass <code class="literal">CLIENT_MULTI_STATEMENTS</code> to
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>, to fully
+          enable multiple-statement execution and multiple-result
+          processing.
+        </p></li><li class="listitem"><p>
+          After calling <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a> and
+          verifying that it succeeds, enter a loop within which you
+          process statement results.
+        </p></li><li class="listitem"><p>
+          For each iteration of the loop, handle the current statement
+          result, retrieving either a result set or an affected-rows
+          count. If an error occurs, exit the loop.
+        </p></li><li class="listitem"><p>
+          At the end of the loop, call
+          <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a> to check
+          whether another result exists and initiate retrieval for it if
+          so. If no more results are available, exit the loop.
+        </p></li></ol></div><p>
+      One possible implementation of the preceding strategy is shown
+      following. The final part of the loop can be reduced to a simple
+      test of whether
+      <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a> returns
+      nonzero. The code as written distinguishes between no more results
+      and an error, which enables a message to be printed for the latter
+      occurrence.
+    </p><pre class="programlisting">/* connect to server with the CLIENT_MULTI_STATEMENTS option */
+if (mysql_real_connect (mysql, host_name, user_name, password,
+    db_name, port_num, socket_name, CLIENT_MULTI_STATEMENTS) == NULL)
+{
+  printf("mysql_real_connect() failed\n");
+  mysql_close(mysql);
+  exit(1);
+}
+
+/* execute multiple statements */
+status = mysql_query(mysql,
+                     "DROP TABLE IF EXISTS test_table;\
+                      CREATE TABLE test_table(id INT);\
+                      INSERT INTO test_table VALUES(10);\
+                      UPDATE test_table SET id=20 WHERE id=10;\
+                      SELECT * FROM test_table;\
+                      DROP TABLE test_table");
+if (status)
+{
+  printf("Could not execute statement(s)");
+  mysql_close(mysql);
+  exit(0);
+}
+
+/* process each statement result */
+do {
+  /* did current statement return data? */
+  result = mysql_store_result(mysql);
+  if (result)
+  {
+    /* yes; process rows and free the result set */
+    process_result_set(mysql, result);
+    mysql_free_result(result);
+  }
+  else          /* no result set or error */
+  {
+    if (mysql_field_count(mysql) == 0)
+    {
+      printf("%lld rows affected\n",
+            mysql_affected_rows(mysql));
+    }
+    else  /* some error occurred */
+    {
+      printf("Could not retrieve result set\n");
+      break;
+    }
+  }
+  /* more results? -1 = no, &gt;0 = error, 0 = yes (keep looping) */
+  if ((status = mysql_next_result(mysql)) &gt; 0)
+    printf("Could not execute statement\n");
+} while (status == 0);
+
+mysql_close(mysql);
+</pre></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-encrypted-connections.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-prepared-statement-date-handling.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 22 C API Support for Encrypted Connections </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 24 C API Prepared Statement Handling of Date and Time Values</td></tr></table></div><div class="copyright-footer"></div></body></html>

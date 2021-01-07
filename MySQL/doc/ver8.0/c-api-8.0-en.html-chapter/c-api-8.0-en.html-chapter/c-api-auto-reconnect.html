@@ -1,0 +1,88 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 28 C API Automatic Reconnection Control</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-optional-metadata.html" title="Chapter 27 C API Optional Result Set Metadata"><link rel="next" href="c-api-common-issues.html" title="Chapter 29 C API Common Issues"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 28 C API Automatic Reconnection Control</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-optional-metadata.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-common-issues.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-auto-reconnect"></a>Chapter 28 C API Automatic Reconnection Control</h1></div></div></div><a class="indexterm" name="idm46079466310272"></a><p>
+      The MySQL client library can perform an automatic reconnection to
+      the server if it finds that the connection is down when you
+      attempt to send a statement to the server to be executed. If
+      auto-reconnect is enabled, the library tries once to reconnect to
+      the server and send the statement again.
+    </p><p>
+      Auto-reconnect is disabled by default.
+    </p><p>
+      If it is important for your application to know that the
+      connection has been dropped (so that it can exit or take action to
+      adjust for the loss of state information), be sure that
+      auto-reconnect is disabled. To ensure this, call
+      <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> with the
+      <code class="literal">MYSQL_OPT_RECONNECT</code> option:
+    </p><pre class="programlisting">bool reconnect = 0;
+mysql_options(&amp;mysql, MYSQL_OPT_RECONNECT, &amp;reconnect);
+</pre><p>
+      If the connection has gone down, the effect of
+      <a class="link" href="c-api-functions.html#mysql-ping" title="7.53 mysql_ping()"><code class="literal">mysql_ping()</code></a> depends on the
+      auto-reconnect state. If auto-reconnect is enabled,
+      <a class="link" href="c-api-functions.html#mysql-ping" title="7.53 mysql_ping()"><code class="literal">mysql_ping()</code></a> performs a reconnect.
+      Otherwise, it returns an error.
+    </p><p>
+      Some client programs might provide the capability of controlling
+      automatic reconnection. For example, <span class="command"><strong>mysql</strong></span>
+      reconnects by default, but the
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/mysql-command-options.html#option_mysql_reconnect" target="_top"><code class="option">--skip-reconnect</code></a>
+      option can be used to suppress this behavior.
+    </p><p>
+      If an automatic reconnection does occur (for example, as a result
+      of calling <a class="link" href="c-api-functions.html#mysql-ping" title="7.53 mysql_ping()"><code class="literal">mysql_ping()</code></a>), there is
+      no explicit indication of it. To check for reconnection, call
+      <a class="link" href="c-api-functions.html#mysql-thread-id" title="7.82 mysql_thread_id()"><code class="literal">mysql_thread_id()</code></a> to get the
+      original connection identifier before calling
+      <a class="link" href="c-api-functions.html#mysql-ping" title="7.53 mysql_ping()"><code class="literal">mysql_ping()</code></a>, then call
+      <a class="link" href="c-api-functions.html#mysql-thread-id" title="7.82 mysql_thread_id()"><code class="literal">mysql_thread_id()</code></a> again to see
+      whether the identifier changed.
+    </p><p>
+      Automatic reconnection can be convenient because you need not
+      implement your own reconnect code, but if a reconnection does
+      occur, several aspects of the connection state are reset on the
+      server side and your application will not be notified.
+    </p><p>
+      Reconnection affects the connection-related state as follows:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          Rolls back any active transactions and resets autocommit mode.
+        </p></li><li class="listitem"><p>
+          Releases all table locks.
+        </p></li><li class="listitem"><p>
+          Closes (and drops) all <code class="literal">TEMPORARY</code> tables.
+        </p></li><li class="listitem"><p>
+          Reinitializes session system variables to the values of the
+          corresponding global system variables, including system
+          variables that are set implicitly by statements such as
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/set-names.html" target="_top"><code class="literal">SET NAMES</code></a>.
+        </p></li><li class="listitem"><p>
+          Loses user-defined variable settings.
+        </p></li><li class="listitem"><p>
+          Releases prepared statements.
+        </p></li><li class="listitem"><p>
+          Closes <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/handler.html" target="_top"><code class="literal">HANDLER</code></a> variables.
+        </p></li><li class="listitem"><p>
+          Resets the value of
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_last-insert-id" target="_top"><code class="literal">LAST_INSERT_ID()</code></a> to 0.
+        </p></li><li class="listitem"><p>
+          Releases locks acquired with
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/locking-functions.html#function_get-lock" target="_top"><code class="literal">GET_LOCK()</code></a>.
+        </p></li><li class="listitem"><p>
+          Loses the association of the client with the Performance
+          Schema <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/performance-schema-threads-table.html" target="_top"><code class="literal">threads</code></a> table row that
+          determines connection thread instrumentation. If the client
+          reconnects after a disconnect, the session is associated with
+          a new row in the <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/performance-schema-threads-table.html" target="_top"><code class="literal">threads</code></a> table
+          and the thread monitoring state may be different. See
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/performance-schema-threads-table.html" target="_top">The threads Table</a>.
+        </p></li></ul></div><p>
+      If reconnection occurs, any SQL statement specified by calling
+      <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> with the
+      <code class="literal">MYSQL_INIT_COMMAND</code> option is re-executed.
+    </p><p>
+      If the connection drops, it is possible that the session
+      associated with the connection on the server side will still be
+      running if the server has not yet detected that the client is no
+      longer connected. In this case, any locks held by the original
+      connection still belong to that session, so you may want to kill
+      it by calling <a class="link" href="c-api-functions.html#mysql-kill" title="7.40 mysql_kill()"><code class="literal">mysql_kill()</code></a>.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-optional-metadata.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-common-issues.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 27 C API Optional Result Set Metadata </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 29 C API Common Issues</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,291 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 15 C API Asynchronous Function Descriptions</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-asynchronous-function-overview.html" title="Chapter 14 C API Asynchronous Function Overview"><link rel="next" href="c-api-thread-functions.html" title="Chapter 16 C API Threaded Function Descriptions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 15 C API Asynchronous Function Descriptions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-asynchronous-function-overview.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-thread-functions.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-asynchronous-functions"></a>Chapter 15 C API Asynchronous Function Descriptions</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking">15.1 mysql_fetch_row_nonblocking()</a></span></dt><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-free-result-nonblocking">15.2 mysql_free_result_nonblocking()</a></span></dt><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking">15.3 mysql_next_result_nonblocking()</a></span></dt><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-real-connect-nonblocking">15.4 mysql_real_connect_nonblocking()</a></span></dt><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-real-query-nonblocking">15.5 mysql_real_query_nonblocking()</a></span></dt><dt><span class="section"><a href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking">15.6 mysql_store_result_nonblocking()</a></span></dt></dl></div><p>
+      To interact asynchronously with the MySQL server, use the
+      functions described in the following sections. For descriptions of
+      their synchronous counterparts, see
+      <a class="xref" href="c-api-functions.html" title="Chapter 7 C API Function Descriptions">Chapter 7, <i>C API Function Descriptions</i></a>.
+    </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-fetch-row-nonblocking"></a>15.1 mysql_fetch_row_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079467143776"></a><pre class="programlisting">enum net_async_status
+mysql_fetch_row_nonblocking(MYSQL_RES *result,
+                            MYSQL_ROW *row)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-fetch-row-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking" title="15.1 mysql_fetch_row_nonblocking()"><code class="literal">mysql_fetch_row_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking" title="15.1 mysql_fetch_row_nonblocking()"><code class="literal">mysql_fetch_row_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>. For details
+          about the latter, see <a class="xref" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()">Section 7.22, “mysql_fetch_row()”</a>. The
+          two functions differ as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a> returns
+              a <code class="literal">MYSQL_ROW</code> value containing the next
+              row, or <code class="literal">NULL</code>. The meaning of a
+              <code class="literal">NULL</code> return depends on which function
+              was called preceding
+              <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                  When used after
+                  <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+                  or
+                  <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>,
+                  <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>
+                  returns <code class="literal">NULL</code> if there are no more
+                  rows to retrieve.
+                </p></li><li class="listitem"><p>
+                  When used after
+                  <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>,
+                  <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>
+                  returns <code class="literal">NULL</code> if there are no more
+                  rows to retrieve or an error occurred.
+                </p></li></ul></div></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking" title="15.1 mysql_fetch_row_nonblocking()"><code class="literal">mysql_fetch_row_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator and takes a second <code class="literal">row</code>
+              argument that provides a pointer to a
+              <code class="literal">MYSQL_ROW</code> value. When the return status
+              is <code class="literal">NET_ASYNC_COMPLETE</code>, the
+              <code class="literal">row</code> argument is a pointer to a
+              <code class="literal">MYSQL_ROW</code> value containing the next
+              row, or <code class="literal">NULL</code>. The meaning of
+              <code class="literal">NULL</code> depends on which function was
+              called preceding
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking" title="15.1 mysql_fetch_row_nonblocking()"><code class="literal">mysql_fetch_row_nonblocking()</code></a>:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+                  When used after
+                  <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+                  or
+                  <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>,
+                  the <code class="literal">row</code> argument is
+                  <code class="literal">NULL</code> if there are no more rows to
+                  retrieve.
+                </p></li><li class="listitem"><p>
+                  When used after
+                  <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>,
+                  the <code class="literal">row</code> argument is
+                  <code class="literal">NULL</code> if there are no more rows to
+                  retrieve or an error occurred.
+                </p></li></ul></div></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-fetch-row-nonblocking" title="15.1 mysql_fetch_row_nonblocking()"><code class="literal">mysql_fetch_row_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-fetch-row-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-fetch-row-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-free-result-nonblocking"></a>15.2 mysql_free_result_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079467089136"></a><pre class="programlisting">enum net_async_status
+mysql_free_result_nonblocking(MYSQL_RES *result)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-free-result-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-free-result-nonblocking" title="15.2 mysql_free_result_nonblocking()"><code class="literal">mysql_free_result_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-free-result-nonblocking" title="15.2 mysql_free_result_nonblocking()"><code class="literal">mysql_free_result_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>. For
+          details about the latter, see
+          <a class="xref" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()">Section 7.26, “mysql_free_result()”</a>. The two functions differ
+          as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a> does
+              not return a value.
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-free-result-nonblocking" title="15.2 mysql_free_result_nonblocking()"><code class="literal">mysql_free_result_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator.
+            </p></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-free-result-nonblocking" title="15.2 mysql_free_result_nonblocking()"><code class="literal">mysql_free_result_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-free-result-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-free-result-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-next-result-nonblocking"></a>15.3 mysql_next_result_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079467063264"></a><pre class="programlisting">enum net_async_status
+mysql_next_result_nonblocking(MYSQL *mysql)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-next-result-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking" title="15.3 mysql_next_result_nonblocking()"><code class="literal">mysql_next_result_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking" title="15.3 mysql_next_result_nonblocking()"><code class="literal">mysql_next_result_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a>. For
+          details about the latter, see
+          <a class="xref" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()">Section 7.48, “mysql_next_result()”</a>. The two functions differ
+          as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a>
+              returns an integer status indicator.
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking" title="15.3 mysql_next_result_nonblocking()"><code class="literal">mysql_next_result_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator.
+            </p></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-next-result-nonblocking" title="15.3 mysql_next_result_nonblocking()"><code class="literal">mysql_next_result_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-next-result-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_COMPLETE_NO_MORE_RESULTS</code> return
+          status indicates there are no more results available. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-next-result-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-real-connect-nonblocking"></a>15.4 mysql_real_connect_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079467036528"></a><pre class="programlisting">enum net_async_status
+mysql_real_connect_nonblocking(MYSQL *mysql,
+                               const char *host,
+                               const char *user,
+                               const char *passwd,
+                               const char *db,
+                               unsigned int port,
+                               const char *unix_socket,
+                               unsigned long
+                               client_flag)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-connect-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-real-connect-nonblocking" title="15.4 mysql_real_connect_nonblocking()"><code class="literal">mysql_real_connect_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-real-connect-nonblocking" title="15.4 mysql_real_connect_nonblocking()"><code class="literal">mysql_real_connect_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>. For
+          details about the latter, see
+          <a class="xref" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()">Section 7.55, “mysql_real_connect()”</a>. The two functions differ
+          as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>
+              returns a connection handler or <code class="literal">NULL</code>.
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-real-connect-nonblocking" title="15.4 mysql_real_connect_nonblocking()"><code class="literal">mysql_real_connect_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator.
+            </p></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-real-connect-nonblocking" title="15.4 mysql_real_connect_nonblocking()"><code class="literal">mysql_real_connect_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-connect-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-connect-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-real-query-nonblocking"></a>15.5 mysql_real_query_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079467010032"></a><pre class="programlisting">enum net_async_status
+mysql_real_query_nonblocking(MYSQL *mysql,
+                             const char *stmt_str,
+                             unsigned long length)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-query-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-real-query-nonblocking" title="15.5 mysql_real_query_nonblocking()"><code class="literal">mysql_real_query_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-real-query-nonblocking" title="15.5 mysql_real_query_nonblocking()"><code class="literal">mysql_real_query_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>. For
+          details about the latter, see
+          <a class="xref" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()">Section 7.59, “mysql_real_query()”</a>. The two functions differ
+          as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a> returns
+              an integer status indicator.
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-real-query-nonblocking" title="15.5 mysql_real_query_nonblocking()"><code class="literal">mysql_real_query_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator.
+            </p></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-real-query-nonblocking" title="15.5 mysql_real_query_nonblocking()"><code class="literal">mysql_real_query_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-query-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-real-query-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-store-result-nonblocking"></a>15.6 mysql_store_result_nonblocking()</h2></div></div></div><a class="indexterm" name="idm46079466984112"></a><pre class="programlisting">enum net_async_status
+mysql_store_result_nonblocking(MYSQL *mysql,
+                               MYSQL_RES **result)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-store-result-nonblocking-description"></a>Description</h3></div></div></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><div class="admon-title">Note</div><p>
+            <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>
+            is an asynchronous function. It is the counterpart of the
+            <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+            synchronous function, for use by applications that require
+            asynchronous communication with the server. For general
+            information about writing asynchronous C API applications,
+            see <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+          </p></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>
+          is used similarly to
+          <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>. For
+          details about the latter, see
+          <a class="xref" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()">Section 7.81, “mysql_store_result()”</a>. The two functions differ
+          as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>
+              returns a pointer to a <code class="literal">MYSQL_RESULT</code>
+              value that contains the result set, or
+              <code class="literal">NULL</code> if there is no result set or an
+              error occurred.
+            </p></li><li class="listitem"><p>
+              <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>
+              returns an <code class="literal">enum net_async_status</code> status
+              indicator and takes a second <code class="literal">result</code>
+              argument that is the address of a pointer to a
+              <code class="literal">MYSQL_RESULT</code> into which to store the
+              result set. When the return status is
+              <code class="literal">NET_ASYNC_COMPLETE</code>, the
+              <code class="literal">result</code> argument is
+              <code class="literal">NULL</code> if there is no result set or an
+              error occurred.
+            </p></li></ul></div><p>
+          <a class="link" href="c-api-asynchronous-functions.html#mysql-store-result-nonblocking" title="15.6 mysql_store_result_nonblocking()"><code class="literal">mysql_store_result_nonblocking()</code></a>
+          was added in MySQL 8.0.16.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-store-result-nonblocking-return-values"></a>Return Values</h3></div></div></div><p>
+          Returns an <code class="literal">enum net_async_status</code> value. See
+          the description in
+          <a class="xref" href="c-api-asynchronous-data-structures.html" title="Chapter 13 C API Asynchronous Interface Data Structures">Chapter 13, <i>C API Asynchronous Interface Data Structures</i></a>. A
+          <code class="literal">NET_ASYNC_ERROR</code> return status indicates an
+          error.
+        </p><p>
+          When the return status is
+          <code class="literal">NET_ASYNC_COMPLETE</code>, the
+          <code class="literal">result</code> argument is <code class="literal">NULL</code>
+          if there is no result set or an error occurred. To determine
+          whether an error occurred, check whether
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> returns a
+          nonempty string, <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a>
+          returns nonzero, or
+          <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> returns
+          zero.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-store-result-nonblocking-example"></a>Example</h3></div></div></div><p>
+          See <a class="xref" href="c-api-asynchronous-interface.html" title="Chapter 12 C API Asynchronous Interface">Chapter 12, <i>C API Asynchronous Interface</i></a>.
+        </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-asynchronous-function-overview.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-thread-functions.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 14 C API Asynchronous Function Overview </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 16 C API Threaded Function Descriptions</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,507 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 6 C API Function Overview</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures"><link rel="next" href="c-api-functions.html" title="Chapter 7 C API Function Descriptions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 6 C API Function Overview</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-data-structures.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-functions.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-function-overview"></a>Chapter 6 C API Function Overview</h1></div></div></div><a class="indexterm" name="idm46079472077120"></a><a class="indexterm" name="idm46079472075728"></a><p>
+      The following list summarizes the functions available in the C
+      API. For greater detail, see the descriptions in
+      <a class="xref" href="c-api-functions.html" title="Chapter 7 C API Function Descriptions">Chapter 7, <i>C API Function Descriptions</i></a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-affected-rows" title="7.1 mysql_affected_rows()"><code class="literal">mysql_affected_rows()</code></a>: Returns
+          the number of rows changed/deleted/inserted by the last
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>, or
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a> query.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-autocommit" title="7.2 mysql_autocommit()"><code class="literal">mysql_autocommit()</code></a>: Toggles
+          autocommit mode on/off.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-bind-param" title="7.3 mysql_bind_param()"><code class="literal">mysql_bind_param()</code></a>: Defines
+          query attributes for the next statement executed.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-change-user" title="7.4 mysql_change_user()"><code class="literal">mysql_change_user()</code></a>: Changes
+          the user and database on an open connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-character-set-name" title="7.5 mysql_character_set_name()"><code class="literal">mysql_character_set_name()</code></a>:
+          Returns the default character set name for the current
+          connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-plugin-functions.html#mysql-client-find-plugin" title="17.1 mysql_client_find_plugin()"><code class="literal">mysql_client_find_plugin()</code></a>:
+          Returns a pointer to a plugin.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-plugin-functions.html#mysql-client-register-plugin" title="17.2 mysql_client_register_plugin()"><code class="literal">mysql_client_register_plugin()</code></a>:
+          Registers a plugin.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-close" title="7.6 mysql_close()"><code class="literal">mysql_close()</code></a>: Closes a server
+          connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-commit" title="7.7 mysql_commit()"><code class="literal">mysql_commit()</code></a>: Commits the
+          transaction.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-connect" title="7.8 mysql_connect()"><code class="literal">mysql_connect()</code></a>: Connects to a
+          MySQL server. This function is deprecated; use
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> instead.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-create-db" title="7.9 mysql_create_db()"><code class="literal">mysql_create_db()</code></a>: Creates a
+          database. This function is deprecated; use the SQL statement
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/create-database.html" target="_top"><code class="literal">CREATE DATABASE</code></a> instead.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-data-seek" title="7.10 mysql_data_seek()"><code class="literal">mysql_data_seek()</code></a>: Seeks to an
+          arbitrary row number in a query result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-debug" title="7.11 mysql_debug()"><code class="literal">mysql_debug()</code></a>: Does a
+          <code class="literal">DBUG_PUSH</code> with the given string.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-drop-db" title="7.12 mysql_drop_db()"><code class="literal">mysql_drop_db()</code></a>: Drops a
+          database. This function is deprecated; use the SQL statement
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/drop-database.html" target="_top"><code class="literal">DROP DATABASE</code></a> instead.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-dump-debug-info" title="7.13 mysql_dump_debug_info()"><code class="literal">mysql_dump_debug_info()</code></a>:
+          Causes the server to write debug information to the log.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-eof" title="7.14 mysql_eof()"><code class="literal">mysql_eof()</code></a>: Determines
+          whether the last row of a result set has been read. This
+          function is deprecated; use
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> instead.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a>: Returns the
+          error number for the most recently invoked MySQL function.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a>: Returns the
+          error message for the most recently invoked MySQL function.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-escape-string" title="7.17 mysql_escape_string()"><code class="literal">mysql_escape_string()</code></a>: Escapes
+          special characters in a string for use in an SQL statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>: Returns
+          the type of the next table field.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-fetch-field-direct" title="7.19 mysql_fetch_field_direct()"><code class="literal">mysql_fetch_field_direct()</code></a>:
+          Returns the type of a table field, given a field number.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-fetch-fields" title="7.20 mysql_fetch_fields()"><code class="literal">mysql_fetch_fields()</code></a>: Returns
+          an array of all field structures.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-fetch-lengths" title="7.21 mysql_fetch_lengths()"><code class="literal">mysql_fetch_lengths()</code></a>: Returns
+          the lengths of all columns in the current row.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>: Fetches the
+          next row from the result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a>: Returns
+          the number of result columns for the most recent statement.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-field-seek" title="7.24 mysql_field_seek()"><code class="literal">mysql_field_seek()</code></a>: Puts the
+          column cursor on a specified column.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-field-tell" title="7.25 mysql_field_tell()"><code class="literal">mysql_field_tell()</code></a>: Returns
+          the position of the field cursor used for the last
+          <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a>: Frees
+          memory used by a result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-character-set-info" title="7.27 mysql_get_character_set_info()"><code class="literal">mysql_get_character_set_info()</code></a>:
+          Returns information about default character set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-client-info" title="7.28 mysql_get_client_info()"><code class="literal">mysql_get_client_info()</code></a>:
+          Returns client version information as a string.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-client-version" title="7.29 mysql_get_client_version()"><code class="literal">mysql_get_client_version()</code></a>:
+          Returns client version information as an integer.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-host-info" title="7.30 mysql_get_host_info()"><code class="literal">mysql_get_host_info()</code></a>: Returns
+          a string describing the connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-option" title="7.31 mysql_get_option()"><code class="literal">mysql_get_option()</code></a>: Returns
+          the value of a <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a>
+          option.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-proto-info" title="7.32 mysql_get_proto_info()"><code class="literal">mysql_get_proto_info()</code></a>:
+          Returns the protocol version used by the connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-server-info" title="7.33 mysql_get_server_info()"><code class="literal">mysql_get_server_info()</code></a>:
+          Returns the server version number.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-server-version" title="7.34 mysql_get_server_version()"><code class="literal">mysql_get_server_version()</code></a>:
+          Returns the server version number as an integer.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-get-ssl-cipher" title="7.35 mysql_get_ssl_cipher()"><code class="literal">mysql_get_ssl_cipher()</code></a>:
+          Returns the current SSL cipher.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-hex-string" title="7.36 mysql_hex_string()"><code class="literal">mysql_hex_string()</code></a>: Encodes a
+          string in hexadecimal format.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-info" title="7.37 mysql_info()"><code class="literal">mysql_info()</code></a>: Returns
+          information about the most recently executed query.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>: Gets or
+          initializes a <code class="literal">MYSQL</code> structure.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-insert-id" title="7.39 mysql_insert_id()"><code class="literal">mysql_insert_id()</code></a>: Returns the
+          ID generated for an <code class="literal">AUTO_INCREMENT</code> column
+          by the previous query.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-kill" title="7.40 mysql_kill()"><code class="literal">mysql_kill()</code></a>: Kills a given
+          thread.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-library-end" title="7.41 mysql_library_end()"><code class="literal">mysql_library_end()</code></a>: Finalizes
+          the MySQL C API library.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>:
+          Initializes the MySQL C API library.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-list-dbs" title="7.43 mysql_list_dbs()"><code class="literal">mysql_list_dbs()</code></a>: Returns
+          database names matching a simple regular expression.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-list-fields" title="7.44 mysql_list_fields()"><code class="literal">mysql_list_fields()</code></a>: Returns
+          field names matching a simple regular expression.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-list-processes" title="7.45 mysql_list_processes()"><code class="literal">mysql_list_processes()</code></a>:
+          Returns a list of the current server threads.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-list-tables" title="7.46 mysql_list_tables()"><code class="literal">mysql_list_tables()</code></a>: Returns
+          table names matching a simple regular expression.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()"><code class="literal">mysql_load_plugin()</code></a>: Loads a
+          plugin.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin-v" title="17.4 mysql_load_plugin_v()"><code class="literal">mysql_load_plugin_v()</code></a>: Loads a
+          plugin.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-more-results" title="7.47 mysql_more_results()"><code class="literal">mysql_more_results()</code></a>: Checks
+          whether any more results exist.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-next-result" title="7.48 mysql_next_result()"><code class="literal">mysql_next_result()</code></a>:
+          Returns/initiates the next result in multiple-result
+          executions.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-num-fields" title="7.49 mysql_num_fields()"><code class="literal">mysql_num_fields()</code></a>: Returns
+          the number of columns in a result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-num-rows" title="7.50 mysql_num_rows()"><code class="literal">mysql_num_rows()</code></a>: Returns the
+          number of rows in a result set.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a>: Sets connect
+          options for connection-establishment functions such as
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-options4" title="7.52 mysql_options4()"><code class="literal">mysql_options4()</code></a>: Sets connect
+          options for connection-establishment functions such as
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-ping" title="7.53 mysql_ping()"><code class="literal">mysql_ping()</code></a>: Checks whether
+          the connection to the server is working, reconnecting as
+          necessary.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-plugin-functions.html#mysql-plugin-options" title="17.5 mysql_plugin_options()"><code class="literal">mysql_plugin_options()</code></a>: Sets a
+          plugin option.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a>: Executes an SQL
+          query specified as a null-terminated string.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>: Connects
+          to a MySQL server.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-real-connect-dns-srv" title="7.56 mysql_real_connect_dns_srv()"><code class="literal">mysql_real_connect_dns_srv()</code></a>:
+          Connects to a MySQL server using a DNS SRV record.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-real-escape-string" title="7.57 mysql_real_escape_string()"><code class="literal">mysql_real_escape_string()</code></a>:
+          Escapes special characters in a string for use in an SQL
+          statement, taking into account the current character set of
+          the connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-real-escape-string-quote" title="7.58 mysql_real_escape_string_quote()"><code class="literal">mysql_real_escape_string_quote()</code></a>:
+          Escapes special characters in a string for use in an SQL
+          statement, taking into account the current character set of
+          the connection and the quoting context.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>: Executes
+          an SQL query specified as a counted string.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-refresh" title="7.60 mysql_refresh()"><code class="literal">mysql_refresh()</code></a>: Flushes or
+          resets tables and caches.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-reload" title="7.61 mysql_reload()"><code class="literal">mysql_reload()</code></a>: Tells the
+          server to reload the grant tables.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-reset-connection" title="7.62 mysql_reset_connection()"><code class="literal">mysql_reset_connection()</code></a>:
+          Resets the connection to clear session state.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-reset-server-public-key" title="7.63 mysql_reset_server_public_key()"><code class="literal">mysql_reset_server_public_key()</code></a>:
+          Clears a cached RSA public key from the client library.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-result-metadata" title="7.64 mysql_result_metadata()"><code class="literal">mysql_result_metadata()</code></a>:
+          Whether a result set has metadata.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-rollback" title="7.65 mysql_rollback()"><code class="literal">mysql_rollback()</code></a>: Rolls back
+          the transaction.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-row-seek" title="7.66 mysql_row_seek()"><code class="literal">mysql_row_seek()</code></a>: Seeks to a
+          row offset in a result set, using value returned from
+          <a class="link" href="c-api-functions.html#mysql-row-tell" title="7.67 mysql_row_tell()"><code class="literal">mysql_row_tell()</code></a>.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-row-tell" title="7.67 mysql_row_tell()"><code class="literal">mysql_row_tell()</code></a>: Returns the
+          row cursor position.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-select-db" title="7.68 mysql_select_db()"><code class="literal">mysql_select_db()</code></a>: Selects a
+          database.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-server-end" title="7.69 mysql_server_end()"><code class="literal">mysql_server_end()</code></a>: Finalizes
+          the MySQL C API library.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-server-init" title="7.70 mysql_server_init()"><code class="literal">mysql_server_init()</code></a>:
+          Initializes the MySQL C API library.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-session-track-get-first" title="7.71 mysql_session_track_get_first()"><code class="literal">mysql_session_track_get_first()</code></a>:
+          Gets the first part of session state-change information.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-session-track-get-next" title="7.72 mysql_session_track_get_next()"><code class="literal">mysql_session_track_get_next()</code></a>:
+          Gets the next part of session state-change information.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-set-character-set" title="7.73 mysql_set_character_set()"><code class="literal">mysql_set_character_set()</code></a>:
+          Sets the default character set for the current connection.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-set-local-infile-default" title="7.74 mysql_set_local_infile_default()"><code class="literal">mysql_set_local_infile_default()</code></a>:
+          Sets the <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/load-data.html" target="_top"><code class="literal">LOAD DATA
+          LOCAL</code></a> handler callbacks to their default values.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-set-local-infile-handler" title="7.75 mysql_set_local_infile_handler()"><code class="literal">mysql_set_local_infile_handler()</code></a>:
+          Installs application-specific
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/load-data.html" target="_top"><code class="literal">LOAD DATA
+          LOCAL</code></a> handler callbacks.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-set-server-option" title="7.76 mysql_set_server_option()"><code class="literal">mysql_set_server_option()</code></a>:
+          Sets an option for the connection (like
+          <code class="literal">multi-statements</code>).
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-sqlstate" title="7.78 mysql_sqlstate()"><code class="literal">mysql_sqlstate()</code></a>: Returns the
+          SQLSTATE error code for the last error.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-shutdown" title="7.77 mysql_shutdown()"><code class="literal">mysql_shutdown()</code></a>: Shuts down
+          the database server.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-ssl-set" title="7.79 mysql_ssl_set()"><code class="literal">mysql_ssl_set()</code></a>: Prepares to
+          establish an SSL connection to the server.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-stat" title="7.80 mysql_stat()"><code class="literal">mysql_stat()</code></a>: Returns the
+          server status as a string.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>:
+          Retrieves a complete result set to the client.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-thread-functions.html#mysql-thread-end" title="16.1 mysql_thread_end()"><code class="literal">mysql_thread_end()</code></a>: Finalizes
+          a thread handler.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-thread-id" title="7.82 mysql_thread_id()"><code class="literal">mysql_thread_id()</code></a>: Returns the
+          current thread ID.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-thread-functions.html#mysql-thread-init" title="16.2 mysql_thread_init()"><code class="literal">mysql_thread_init()</code></a>:
+          Initializes a thread handler.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-thread-functions.html#mysql-thread-safe" title="16.3 mysql_thread_safe()"><code class="literal">mysql_thread_safe()</code></a>: Returns 1
+          if the clients are compiled as thread-safe.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>: Initiates
+          a row-by-row result set retrieval.
+        </p></li><li class="listitem"><p>
+          <a class="link" href="c-api-functions.html#mysql-warning-count" title="7.84 mysql_warning_count()"><code class="literal">mysql_warning_count()</code></a>: Returns
+          the warning count for the previous SQL statement.
+        </p></li></ul></div><p>
+      Application programs should use this general outline for
+      interacting with MySQL:
+    </p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>
+          Initialize the MySQL client library by calling
+          <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>.
+        </p></li><li class="listitem"><p>
+          Initialize a connection handler by calling
+          <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a> and connect to
+          the server by calling a connection-establishment function such
+          as <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a>.
+        </p></li><li class="listitem"><p>
+          Issue SQL statements and process their results. (The following
+          discussion provides more information about how to do this.)
+        </p></li><li class="listitem"><p>
+          Close the connection to the MySQL server by calling
+          <a class="link" href="c-api-functions.html#mysql-close" title="7.6 mysql_close()"><code class="literal">mysql_close()</code></a>.
+        </p></li><li class="listitem"><p>
+          End use of the MySQL client library by calling
+          <a class="link" href="c-api-functions.html#mysql-library-end" title="7.41 mysql_library_end()"><code class="literal">mysql_library_end()</code></a>.
+        </p></li></ol></div><p>
+      The purpose of calling
+      <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a> and
+      <a class="link" href="c-api-functions.html#mysql-library-end" title="7.41 mysql_library_end()"><code class="literal">mysql_library_end()</code></a> is to provide
+      proper initialization and finalization of the MySQL client
+      library. For applications that are linked with the client library,
+      they provide improved memory management. If you do not call
+      <a class="link" href="c-api-functions.html#mysql-library-end" title="7.41 mysql_library_end()"><code class="literal">mysql_library_end()</code></a>, a block of
+      memory remains allocated. (This does not increase the amount of
+      memory used by the application, but some memory leak detectors
+      will complain about it.)
+    </p><p>
+      In a nonmultithreaded environment, the call to
+      <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a> may be
+      omitted, because <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a> will
+      invoke it automatically as necessary. However,
+      <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a> is not
+      thread-safe in a multithreaded environment, and thus neither is
+      <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>, which calls
+      <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>. You must
+      either call <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>
+      prior to spawning any threads, or else use a mutex to protect the
+      call, whether you invoke
+      <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a> or indirectly
+      through <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a>. This should
+      be done prior to any other client library call.
+    </p><p>
+      To connect to the server, call
+      <a class="link" href="c-api-functions.html#mysql-init" title="7.38 mysql_init()"><code class="literal">mysql_init()</code></a> to initialize a
+      connection handler, then call a connection-establishment function
+      such as <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> with
+      that handler (along with other information such as the host name,
+      user name, and password). When you are done with the connection,
+      call <a class="link" href="c-api-functions.html#mysql-close" title="7.6 mysql_close()"><code class="literal">mysql_close()</code></a> to terminate
+      it. Do not use the handler after it has been closed.
+    </p><p>
+      Upon connection,
+      <a class="link" href="c-api-functions.html#mysql-real-connect" title="7.55 mysql_real_connect()"><code class="literal">mysql_real_connect()</code></a> sets the
+      <code class="literal">reconnect</code> flag (part of the
+      <code class="literal">MYSQL</code> structure) to a value of
+      <code class="literal">0</code>. You can use the
+      <code class="literal">MYSQL_OPT_RECONNECT</code> option to
+      <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to control
+      reconnection behavior. Setting the flag to <code class="literal">1</code>
+      cause the client to attempt reconnecting to the server before
+      giving up if a statement cannot be performed because of a lost
+      connection.
+    </p><p>
+      While a connection is active, the client may send SQL statements
+      to the server using <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a>
+      or <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>. The
+      difference between the two is that
+      <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> expects the query to
+      be specified as a null-terminated string whereas
+      <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a> expects a
+      counted string. If the string contains binary data (which may
+      include null bytes), you must use
+      <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>.
+    </p><p>
+      For each non-<a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> query (for
+      example, <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>), you can find out how many
+      rows were changed (affected) by calling
+      <a class="link" href="c-api-functions.html#mysql-affected-rows" title="7.1 mysql_affected_rows()"><code class="literal">mysql_affected_rows()</code></a>.
+    </p><p>
+      For <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> queries, you retrieve
+      the selected rows as a result set. (Note that some statements are
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>-like in that they return
+      rows. These include <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/show.html" target="_top"><code class="literal">SHOW</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/describe.html" target="_top"><code class="literal">DESCRIBE</code></a>, and
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/explain.html" target="_top"><code class="literal">EXPLAIN</code></a>. Treat these statements the
+      same way as <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> statements.)
+    </p><p>
+      There are two ways for a client to process result sets. One way is
+      to retrieve the entire result set all at once by calling
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>. This
+      function acquires from the server all the rows returned by the
+      query and stores them in the client. The second way is for the
+      client to initiate a row-by-row result set retrieval by calling
+      <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>. This function
+      initializes the retrieval, but does not actually get any rows from
+      the server.
+    </p><p>
+      In both cases, you access rows by calling
+      <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a>. With
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a>,
+      <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a> accesses rows
+      that have previously been fetched from the server. With
+      <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>,
+      <a class="link" href="c-api-functions.html#mysql-fetch-row" title="7.22 mysql_fetch_row()"><code class="literal">mysql_fetch_row()</code></a> actually
+      retrieves the row from the server. Information about the size of
+      the data in each row is available by calling
+      <a class="link" href="c-api-functions.html#mysql-fetch-lengths" title="7.21 mysql_fetch_lengths()"><code class="literal">mysql_fetch_lengths()</code></a>.
+    </p><p>
+      After you are done with a result set, call
+      <a class="link" href="c-api-functions.html#mysql-free-result" title="7.26 mysql_free_result()"><code class="literal">mysql_free_result()</code></a> to free the
+      memory used for it.
+    </p><p>
+      The two retrieval mechanisms are complementary. Choose the
+      approach that is most appropriate for each client application. In
+      practice, clients tend to use
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> more
+      commonly.
+    </p><p>
+      An advantage of
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> is that
+      because the rows have all been fetched to the client, you not only
+      can access rows sequentially, you can move back and forth in the
+      result set using <a class="link" href="c-api-functions.html#mysql-data-seek" title="7.10 mysql_data_seek()"><code class="literal">mysql_data_seek()</code></a>
+      or <a class="link" href="c-api-functions.html#mysql-row-seek" title="7.66 mysql_row_seek()"><code class="literal">mysql_row_seek()</code></a> to change the
+      current row position within the result set. You can also find out
+      how many rows there are by calling
+      <a class="link" href="c-api-functions.html#mysql-num-rows" title="7.50 mysql_num_rows()"><code class="literal">mysql_num_rows()</code></a>. On the other
+      hand, the memory requirements for
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> may be very
+      high for large result sets and you are more likely to encounter
+      out-of-memory conditions.
+    </p><p>
+      An advantage of <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a>
+      is that the client requires less memory for the result set because
+      it maintains only one row at a time (and because there is less
+      allocation overhead,
+      <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a> can be faster).
+      Disadvantages are that you must process each row quickly to avoid
+      tying up the server, you do not have random access to rows within
+      the result set (you can only access rows sequentially), and the
+      number of rows in the result set is unknown until you have
+      retrieved them all. Furthermore, you <span class="emphasis"><em>must</em></span>
+      retrieve all the rows even if you determine in mid-retrieval that
+      you've found the information you were looking for.
+    </p><p>
+      The API makes it possible for clients to respond appropriately to
+      statements (retrieving rows only as necessary) without knowing
+      whether the statement is a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a>.
+      You can do this by calling
+      <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> after each
+      <a class="link" href="c-api-functions.html#mysql-query" title="7.54 mysql_query()"><code class="literal">mysql_query()</code></a> (or
+      <a class="link" href="c-api-functions.html#mysql-real-query" title="7.59 mysql_real_query()"><code class="literal">mysql_real_query()</code></a>). If the result
+      set call succeeds, the statement was a
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> and you can read the rows.
+      If the result set call fails, call
+      <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> to determine
+      whether a result was actually to be expected. If
+      <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> returns zero,
+      the statement returned no data (indicating that it was an
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/insert.html" target="_top"><code class="literal">INSERT</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/update.html" target="_top"><code class="literal">UPDATE</code></a>,
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/delete.html" target="_top"><code class="literal">DELETE</code></a>, and so forth), and was not
+      expected to return rows. If
+      <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> is nonzero,
+      the statement should have returned rows, but did not. This
+      indicates that the statement was a
+      <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/select.html" target="_top"><code class="literal">SELECT</code></a> that failed. See the
+      description for
+      <a class="link" href="c-api-functions.html#mysql-field-count" title="7.23 mysql_field_count()"><code class="literal">mysql_field_count()</code></a> for an example
+      of how this can be done.
+    </p><p>
+      Both <a class="link" href="c-api-functions.html#mysql-store-result" title="7.81 mysql_store_result()"><code class="literal">mysql_store_result()</code></a> and
+      <a class="link" href="c-api-functions.html#mysql-use-result" title="7.83 mysql_use_result()"><code class="literal">mysql_use_result()</code></a> enable you to
+      obtain information about the fields that make up the result set
+      (the number of fields, their names and types, and so forth). You
+      can access field information sequentially within the row by
+      calling <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>
+      repeatedly, or by field number within the row by calling
+      <a class="link" href="c-api-functions.html#mysql-fetch-field-direct" title="7.19 mysql_fetch_field_direct()"><code class="literal">mysql_fetch_field_direct()</code></a>. The
+      current field cursor position may be changed by calling
+      <a class="link" href="c-api-functions.html#mysql-field-seek" title="7.24 mysql_field_seek()"><code class="literal">mysql_field_seek()</code></a>. Setting the
+      field cursor affects subsequent calls to
+      <a class="link" href="c-api-functions.html#mysql-fetch-field" title="7.18 mysql_fetch_field()"><code class="literal">mysql_fetch_field()</code></a>. You can also
+      get information for fields all at once by calling
+      <a class="link" href="c-api-functions.html#mysql-fetch-fields" title="7.20 mysql_fetch_fields()"><code class="literal">mysql_fetch_fields()</code></a>.
+    </p><p>
+      For detecting and reporting errors, MySQL provides access to error
+      information by means of the
+      <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> and
+      <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> functions. These
+      return the error code or error message for the most recently
+      invoked function that can succeed or fail, enabling you to
+      determine when an error occurred and what it was.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-data-structures.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-functions.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 5 C API Data Structures </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 7 C API Function Descriptions</td></tr></table></div><div class="copyright-footer"></div></body></html>

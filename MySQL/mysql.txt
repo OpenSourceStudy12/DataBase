@@ -1,0 +1,20 @@
+一 mysql 知识
+1. mysql sql对标准sql的扩展
+mysql 扩展可能对其他sql server 不可用，使用 "/*! MySQL-specific code */" 注释扩展内容，mysql server 会正常解析，其他sql server 会忽略
+1.1 默认string 用 " 或 ' 表示，但在  ANSI_QUOTES 模式只能用 ' 表示
+1.2 
+2. mysql different from standard sql
+2.1 select ... into table_name <==> insert into table_name ... select ...
+2.2 
+3. foreign key 约束
+3.1 restrict
+主表记录不能直接删除，要先删除从表记录
+3.2 no action
+如果子表中有关联记录，主表不允许对主表delete/update
+3.3 cascade
+delete或update主表记录时，从表关联的记录也会delete/update
+3.4 set null
+如果从表关联字段可以设为null, delete/update主表记录时，从表相关记录外键设为null
+3.5 set default
+update/delete 主表时，从表外键设为 default 值
+3.6 系统默认 no action 约束

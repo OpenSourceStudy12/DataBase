@@ -1,0 +1,207 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 17 C API Client Plugin Functions</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-thread-functions.html" title="Chapter 16 C API Threaded Function Descriptions"><link rel="next" href="c-api-binary-log-interface.html" title="Chapter 18 C API Binary Log Interface"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 17 C API Client Plugin Functions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-thread-functions.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-binary-log-interface.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-plugin-functions"></a>Chapter 17 C API Client Plugin Functions</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-plugin-functions.html#mysql-client-find-plugin">17.1 mysql_client_find_plugin()</a></span></dt><dt><span class="section"><a href="c-api-plugin-functions.html#mysql-client-register-plugin">17.2 mysql_client_register_plugin()</a></span></dt><dt><span class="section"><a href="c-api-plugin-functions.html#mysql-load-plugin">17.3 mysql_load_plugin()</a></span></dt><dt><span class="section"><a href="c-api-plugin-functions.html#mysql-load-plugin-v">17.4 mysql_load_plugin_v()</a></span></dt><dt><span class="section"><a href="c-api-plugin-functions.html#mysql-plugin-options">17.5 mysql_plugin_options()</a></span></dt></dl></div><p>
+      This section describes functions used for the client-side plugin
+      API. They enable management of client plugins. For a description
+      of the <code class="literal">st_mysql_client_plugin</code> structure used by
+      these functions, see <a class="ulink" href="https://dev.mysql.com/doc/extending-mysql/8.0/en/client-plugin-descriptors.html" target="_top">Client Plugin Descriptors</a>.
+    </p><p>
+      It is unlikely that a client program needs to call the functions
+      in this section. For example, a client that supports the use of
+      authentication plugins normally causes a plugin to be loaded by
+      calling <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> to set the
+      <code class="literal">MYSQL_DEFAULT_AUTH</code> and
+      <code class="literal">MYSQL_PLUGIN_DIR</code> options:
+    </p><pre class="programlisting">char *plugin_dir = "<em class="replaceable"><code>path_to_plugin_dir</code></em>";
+char *default_auth = "<em class="replaceable"><code>plugin_name</code></em>";
+
+/* ... process command-line options ... */
+
+mysql_options(&amp;mysql, MYSQL_PLUGIN_DIR, plugin_dir);
+mysql_options(&amp;mysql, MYSQL_DEFAULT_AUTH, default_auth);
+</pre><p>
+      Typically, the program will also accept
+      <code class="option">--plugin-dir</code> and <code class="option">--default-auth</code>
+      options that enable users to override the default values.
+    </p><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-client-find-plugin"></a>17.1 mysql_client_find_plugin()</h2></div></div></div><a class="indexterm" name="idm46079466893792"></a><pre class="programlisting">struct st_mysql_client_plugin *
+mysql_client_find_plugin(MYSQL *mysql,
+                         const char *name,
+                         int type)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-find-plugin-description"></a>Description</h3></div></div></div><p>
+          Returns a pointer to a loaded plugin, loading the plugin first
+          if necessary. An error occurs if the type is invalid or the
+          plugin cannot be found or loaded.
+        </p><p>
+          Specify the arguments as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <code class="literal">mysql</code>: A pointer to a
+              <code class="literal">MYSQL</code> structure. The plugin API does
+              not require a connection to a MySQL server, but this
+              structure must be properly initialized. The structure is
+              used to obtain connection-related information.
+            </p></li><li class="listitem"><p>
+              <code class="literal">name</code>: The plugin name.
+            </p></li><li class="listitem"><p>
+              <code class="literal">type</code>: The plugin type.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-find-plugin-return-values"></a>Return Values</h3></div></div></div><p>
+          A pointer to the plugin for success. <code class="literal">NULL</code>
+          if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-find-plugin-errors"></a>Errors</h3></div></div></div><p>
+          To check for errors, call the
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> function. See
+          <a class="xref" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()">Section 7.16, “mysql_error()”</a>, and
+          <a class="xref" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()">Section 7.15, “mysql_errno()”</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-find-plugin-example"></a>Example</h3></div></div></div><pre class="programlisting">MYSQL mysql;
+struct st_mysql_client_plugin *p;
+
+if ((p = mysql_client_find_plugin(&amp;mysql, "myplugin",
+                                  MYSQL_CLIENT_AUTHENTICATION_PLUGIN, 0)))
+{
+  printf("Plugin version: %d.%d.%d\n", p-&gt;version[0], p-&gt;version[1], p-&gt;version[2]);
+}
+</pre></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-client-register-plugin"></a>17.2 mysql_client_register_plugin()</h2></div></div></div><a class="indexterm" name="idm46079466871344"></a><pre class="programlisting">struct st_mysql_client_plugin *
+mysql_client_register_plugin(MYSQL *mysql,
+                             struct st_mysql_client_plugin *plugin)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-register-plugin-description"></a>Description</h3></div></div></div><p>
+          Adds a plugin structure to the list of loaded plugins. An
+          error occurs if the plugin is already loaded.
+        </p><p>
+          Specify the arguments as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <code class="literal">mysql</code>: A pointer to a
+              <code class="literal">MYSQL</code> structure. The plugin API does
+              not require a connection to a MySQL server, but this
+              structure must be properly initialized. The structure is
+              used to obtain connection-related information.
+            </p></li><li class="listitem"><p>
+              <code class="literal">plugin</code>: A pointer to the plugin
+              structure.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-register-plugin-return-values"></a>Return Values</h3></div></div></div><p>
+          A pointer to the plugin for success. <code class="literal">NULL</code>
+          if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-client-register-plugin-errors"></a>Errors</h3></div></div></div><p>
+          To check for errors, call the
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> function. See
+          <a class="xref" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()">Section 7.16, “mysql_error()”</a>, and
+          <a class="xref" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()">Section 7.15, “mysql_errno()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-load-plugin"></a>17.3 mysql_load_plugin()</h2></div></div></div><a class="indexterm" name="idm46079466853200"></a><pre class="programlisting">struct st_mysql_client_plugin *
+mysql_load_plugin(MYSQL *mysql,
+                  const char *name,
+                  int type,
+                  int argc,
+                  ...)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-description"></a>Description</h3></div></div></div><p>
+          Loads a MySQL client plugin, specified by name and type. An
+          error occurs if the type is invalid or the plugin cannot be
+          loaded.
+        </p><p>
+          It is not possible to load multiple plugins of the same type.
+          An error occurs if you try to load a plugin of a type already
+          loaded.
+        </p><p>
+          Specify the arguments as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <code class="literal">mysql</code>: A pointer to a
+              <code class="literal">MYSQL</code> structure. The plugin API does
+              not require a connection to a MySQL server, but this
+              structure must be properly initialized. The structure is
+              used to obtain connection-related information.
+            </p></li><li class="listitem"><p>
+              <code class="literal">name</code>: The name of the plugin to load.
+            </p></li><li class="listitem"><p>
+              <code class="literal">type</code>: The type of plugin to load, or
+              −1 to disable type checking. If type is not
+              −1, only plugins matching the type are considered
+              for loading.
+            </p></li><li class="listitem"><p>
+              <code class="literal">argc</code>: The number of following arguments
+              (0 if there are none). Interpretation of any following
+              arguments depends on the plugin type.
+            </p></li></ul></div><a class="indexterm" name="idm46079466840400"></a><a class="indexterm" name="idm46079466839312"></a><p>
+          Another way to cause plugins to be loaded is to set the
+          <code class="literal">LIBMYSQL_PLUGINS</code> environment variable to a
+          list of semicolon-separated plugin names. For example:
+        </p><pre class="programlisting">export LIBMYSQL_PLUGINS="myplugin1;myplugin2"
+</pre><p>
+          Plugins named by <code class="literal">LIBMYSQL_PLUGINS</code> are
+          loaded when the client program calls
+          <a class="link" href="c-api-functions.html#mysql-library-init" title="7.42 mysql_library_init()"><code class="literal">mysql_library_init()</code></a>. No error
+          is reported if problems occur loading these plugins.
+        </p><a class="indexterm" name="idm46079466833056"></a><a class="indexterm" name="idm46079466831952"></a><p>
+          The <code class="literal">LIBMYSQL_PLUGIN_DIR</code> environment
+          variable can be set to the path name of the directory in which
+          to look for client plugins. This variable is used in two ways:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              During client plugin preloading, the value of the
+              <code class="option">--plugin-dir</code> option is not available, so
+              client plugin loading fails unless the plugins are located
+              in the hardwired default directory. If the plugins are
+              located elsewhere, <code class="literal">LIBMYSQL_PLUGIN_DIR</code>
+              environment variable can be set to the proper directory to
+              enable plugin preloading to succeed.
+            </p></li><li class="listitem"><p>
+              For explicit client plugin loading, the
+              <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()"><code class="literal">mysql_load_plugin()</code></a> and
+              <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin-v" title="17.4 mysql_load_plugin_v()"><code class="literal">mysql_load_plugin_v()</code></a> C
+              API functions use the
+              <code class="literal">LIBMYSQL_PLUGIN_DIR</code> value if it exists
+              and the <code class="option">--plugin-dir</code> option was not
+              given. If <code class="option">--plugin-dir</code> is given,
+              <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()"><code class="literal">mysql_load_plugin()</code></a> and
+              <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin-v" title="17.4 mysql_load_plugin_v()"><code class="literal">mysql_load_plugin_v()</code></a>
+              ignore <code class="literal">LIBMYSQL_PLUGIN_DIR</code>.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-return-values"></a>Return Values</h3></div></div></div><p>
+          A pointer to the plugin if it was loaded successfully.
+          <code class="literal">NULL</code> if an error occurred.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-errors"></a>Errors</h3></div></div></div><p>
+          To check for errors, call the
+          <a class="link" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()"><code class="literal">mysql_error()</code></a> or
+          <a class="link" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()"><code class="literal">mysql_errno()</code></a> function. See
+          <a class="xref" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()">Section 7.16, “mysql_error()”</a>, and
+          <a class="xref" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()">Section 7.15, “mysql_errno()”</a>.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-example"></a>Example</h3></div></div></div><pre class="programlisting">MYSQL mysql;
+
+if(!mysql_load_plugin(&amp;mysql, "myplugin",
+                      MYSQL_CLIENT_AUTHENTICATION_PLUGIN, 0))
+{
+    fprintf(stderr, "Error: %s\n", mysql_error(&amp;mysql));
+    exit(-1);
+}
+</pre></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-see-also"></a>See Also</h3></div></div></div><p>
+          See also <a class="xref" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()">Section 17.3, “mysql_load_plugin()”</a>,
+          <a class="xref" href="c-api-functions.html#mysql-error" title="7.16 mysql_error()">Section 7.16, “mysql_error()”</a>, <a class="xref" href="c-api-functions.html#mysql-errno" title="7.15 mysql_errno()">Section 7.15, “mysql_errno()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-load-plugin-v"></a>17.4 mysql_load_plugin_v()</h2></div></div></div><a class="indexterm" name="idm46079466802560"></a><pre class="programlisting">struct st_mysql_client_plugin *
+mysql_load_plugin_v(MYSQL *mysql,
+                    const char *name,
+                    int type,
+                    int argc,
+                    va_list args)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-v-description"></a>Description</h3></div></div></div><p>
+          This function is equivalent to
+          <a class="link" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()"><code class="literal">mysql_load_plugin()</code></a>, but it
+          accepts a <code class="literal">va_list</code> instead of a variable
+          list of arguments.
+        </p></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-load-plugin-v-see-also"></a>See Also</h3></div></div></div><p>
+          See also <a class="xref" href="c-api-plugin-functions.html#mysql-load-plugin" title="17.3 mysql_load_plugin()">Section 17.3, “mysql_load_plugin()”</a>.
+        </p></div></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="mysql-plugin-options"></a>17.5 mysql_plugin_options()</h2></div></div></div><a class="indexterm" name="idm46079466793136"></a><pre class="programlisting">int
+mysql_plugin_options(struct st_mysql_client_plugin *plugin,
+                     const char *option,
+                     const void *value)
+</pre><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-plugin-options-description"></a>Description</h3></div></div></div><p>
+          Passes an option type and value to a plugin. This function can
+          be called multiple times to set several options. If the plugin
+          does not have an option handler, an error occurs.
+        </p><p>
+          Specify the arguments as follows:
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+              <code class="literal">plugin</code>: A pointer to the plugin
+              structure.
+            </p></li><li class="listitem"><p>
+              <code class="literal">option</code>: The option to be set.
+            </p></li><li class="listitem"><p>
+              <code class="literal">value</code>: A pointer to the option value.
+            </p></li></ul></div></div><div class="simplesect"><div class="titlepage"><div><div><h3 class="title"><a name="mysql-plugin-options-return-values"></a>Return Values</h3></div></div></div><p>
+          Zero for success, 1 if an error occurred. If the plugin has an
+          option handler, that handler should also return zero for
+          success and 1 if an error occurred.
+        </p></div></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-thread-functions.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-binary-log-interface.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 16 C API Threaded Function Descriptions </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 18 C API Binary Log Interface</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,44 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>MySQL Connector/C++ 8.0 Developer Guide</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL Connector/C++ 8.0 Developer Guide"><link rel="next" href="preface.html" title="Preface and Legal Notices"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">MySQL Connector/C++ 8.0 Developer Guide</th></tr><tr><td width="20%" align="left"> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="preface.html">Next</a></td></tr></table><hr></div><div lang="en" class="book"><div class="titlepage"><div><div><h1 class="title"><a name="connector-cpp"></a>MySQL Connector/C++ 8.0 Developer Guide</h1></div><div><div class="abstract"><p class="title"><b>Abstract</b></p><p>
+        This manual describes how to install and configure MySQL Connector/C++ 8.0,
+        which provides C++ and plain C interfaces for communicating with
+        MySQL servers, and how to use Connector/C++ to develop database
+        applications.
+      </p><p>
+        Connector/C++ 8.0 is highly recommended for use with MySQL Server 8.0
+        and 5.7. Please upgrade to Connector/C++ 8.0.
+      </p><p>
+        For notes detailing the changes in each release of Connector/C++, see
+        <a class="ulink" href="https://dev.mysql.com/doc/relnotes/connector-cpp/en/" target="_top">MySQL Connector/C++
+        Release Notes</a>.
+      </p><p>
+        For legal information, see the <a class="link" href="preface.html#legalnotice" title="Legal Notices">Legal
+        Notices</a>.
+      </p><p>
+    For help with using MySQL, please visit the
+    <a class="ulink" href="http://forums.mysql.com" target="_top">MySQL Forums</a>, where you
+    can discuss your issues with other MySQL users.
+
+  </p><p><b>Licensing information. </b>
+          This product may include third-party software, used under
+          license. If you are using a <span class="emphasis"><em>Commercial</em></span>
+          release of MySQL Connector/C++, see the
+          <a class="ulink" href="https://downloads.mysql.com/docs/licenses/connector-cpp-8.0-com-en.pdf" target="_top">MySQL Connector/C++
+          Commercial Release License Information User Manual</a> for licensing information,
+          including licensing information relating to third-party
+          software that may be included in this Commercial release. If
+          you are using a <span class="emphasis"><em>Community</em></span> release of
+          MySQL Connector/C++, see the
+          <a class="ulink" href="https://downloads.mysql.com/docs/licenses/connector-cpp-8.0-gpl-en.pdf" target="_top">MySQL Connector/C++
+          Community Release License Information User Manual</a> for licensing information,
+          including licensing information relating to third-party
+          software that may be included in this Community release.
+        </p><p>
+        Document generated on:
+
+        2020-12-22
+
+
+
+        (revision: 68395)
+      </p></div></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="preface"><a href="preface.html">Preface and Legal Notices</a></span></dt><dt><span class="chapter"><a href="connector-cpp-introduction.html">1 Introduction to Connector/C++</a></span></dt><dt><span class="chapter"><a href="connector-cpp-downloading.html">2 Obtaining Connector/C++</a></span></dt><dt><span class="chapter"><a href="connector-cpp-installation-binary.html">3 Installing Connector/C++ from a Binary Distribution</a></span></dt><dt><span class="chapter"><a href="connector-cpp-installation-source.html">4 Installing Connector/C++ from Source</a></span></dt><dd><dl><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-prerequisites">4.1 Source Installation System Prerequisites</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-distribution">4.2 Obtaining and Unpacking a Connector/C++ Source Distribution</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-installation-source-cpp">4.3 Installing Connector/C++ from Source</a></span></dt><dt><span class="section"><a href="connector-cpp-installation-source.html#connector-cpp-source-configuration-options">4.4 Connector/C++ Source-Configuration Options</a></span></dt></dl></dd><dt><span class="chapter"><a href="connector-cpp-apps.html">5 Building Connector/C++ Applications</a></span></dt><dd><dl><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-general-considerations">5.1 Building Connector/C++ Applications: General Considerations</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-platform-considerations">5.2 Building Connector/C++ Applications: Platform-Specific Considerations</a></span></dt><dd><dl><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-windows-notes">5.2.1 Windows Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-macos-notes">5.2.2 macOS Notes</a></span></dt><dt><span class="section"><a href="connector-cpp-apps.html#connector-cpp-apps-solaris-notes">5.2.3 Solaris Notes</a></span></dt></dl></dd></dl></dd><dt><span class="chapter"><a href="connector-cpp-issues.html">6 Connector/C++ Known Issues</a></span></dt><dt><span class="chapter"><a href="connector-cpp-support.html">7 Connector/C++ Support</a></span></dt><dt><span class="index"><a href="ix01.html">Index</a></span></dt></dl></div><div class="list-of-tables"><p><b>List of Tables</b></p><dl><dt>4.1 <a href="connector-cpp-installation-source.html#idm46252352730608">Connector/C++ Source-Configuration Option
+      Reference</a></dt><dt>5.1 <a href="connector-cpp-apps.html#connector-cpp-linker-options-table">Connector/C++ Linker Option Per Build Mode and Runtime Library</a></dt><dt>5.2 <a href="connector-cpp-apps.html#connector-cpp-library-directories-table">Connector/C++ Library File Directories</a></dt><dt>5.3 <a href="connector-cpp-apps.html#connector-cpp-dynamic-libraries-table">Connector/C++ Dynamic and Import Library Files Per Connector</a></dt><dt>5.4 <a href="connector-cpp-apps.html#connector-cpp-static-libraries-table">Connector/C++ Static Library File Per Connector</a></dt></dl></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="preface.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> Preface and Legal Notices</td></tr></table></div><div class="copyright-footer"></div></body></html>

@@ -1,0 +1,675 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Chapter 9 C API Prepared Statement Data Structures</title><link rel="stylesheet" type="text/css" href="mvl.css"><meta name="generator" content="DocBook XSL Stylesheets V1.79.1"><link rel="home" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="up" href="index.html" title="MySQL 8.0 C API Developer Guide"><link rel="prev" href="c-api-prepared-statements.html" title="Chapter 8 C API Prepared Statements"><link rel="next" href="c-api-prepared-statement-function-overview.html" title="Chapter 10 C API Prepared Statement Function Overview"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Chapter 9 C API Prepared Statement Data Structures</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="c-api-prepared-statements.html">Previous</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="c-api-prepared-statement-function-overview.html">Next</a></td></tr></table><hr></div><div class="chapter"><div class="titlepage"><div><div><h1 class="title"><a name="c-api-prepared-statement-data-structures"></a>Chapter 9 C API Prepared Statement Data Structures</h1></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="section"><a href="c-api-prepared-statement-data-structures.html#c-api-prepared-statement-type-codes">9.1 C API Prepared Statement Type Codes</a></span></dt><dt><span class="section"><a href="c-api-prepared-statement-data-structures.html#c-api-prepared-statement-type-conversions">9.2 C API Prepared Statement Type Conversions</a></span></dt></dl></div><a class="indexterm" name="idm46079468797744"></a><a class="indexterm" name="idm46079468796240"></a><p>
+      Prepared statements use several data structures:
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          To obtain a statement handler, pass a <code class="literal">MYSQL</code>
+          connection handler to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>, which
+          returns a pointer to a <code class="literal">MYSQL_STMT</code> data
+          structure. This structure is used for further operations with
+          the statement. To specify the statement to prepare, pass the
+          <code class="literal">MYSQL_STMT</code> pointer and the statement string
+          to <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>.
+        </p></li><li class="listitem"><p>
+          To provide input parameters for a prepared statement, set up
+          <code class="literal">MYSQL_BIND</code> structures and pass them to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a>. To
+          receive output column values, set up
+          <code class="literal">MYSQL_BIND</code> structures and pass them to
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>.
+        </p><p>
+          <code class="literal">MYSQL_BIND</code> structures are also used with
+          <a class="link" href="c-api-functions.html#mysql-bind-param" title="7.3 mysql_bind_param()"><code class="literal">mysql_bind_param()</code></a>, which
+          enables defining attributes that apply to the next query sent
+          to the server.
+        </p></li><li class="listitem"><p>
+          The <code class="literal">MYSQL_TIME</code> structure is used to
+          transfer temporal data in both directions.
+        </p></li></ul></div><p>
+      The following discussion describes the prepared statement data
+      types in detail. For examples that show how to use them, see
+      <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()">Section 11.10, “mysql_stmt_execute()”</a>, and
+      <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>.
+    </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+          <a class="indexterm" name="idm46079468776096"></a>
+
+          <code class="literal">MYSQL_STMT</code>
+        </p><p>
+          This structure is a handler for a prepared statement. A
+          handler is created by calling
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-init" title="11.15 mysql_stmt_init()"><code class="literal">mysql_stmt_init()</code></a>, which
+          returns a pointer to a <code class="literal">MYSQL_STMT</code>. The
+          handler is used for all subsequent operations with the
+          statement until you close it with
+          <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-close" title="11.6 mysql_stmt_close()"><code class="literal">mysql_stmt_close()</code></a>, at which
+          point the handler becomes invalid and should no longer be
+          used.
+        </p><p>
+          The <code class="literal">MYSQL_STMT</code> structure has no members
+          intended for application use. Applications should not try to
+          copy a <code class="literal">MYSQL_STMT</code> structure. There is no
+          guarantee that such a copy will be usable.
+        </p><p>
+          Multiple statement handlers can be associated with a single
+          connection. The limit on the number of handlers depends on the
+          available system resources.
+        </p></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079468766976"></a>
+
+          <code class="literal">MYSQL_BIND</code>
+        </p><p>
+          This structure is used both for statement input (data values
+          sent to the server) and output (result values returned from
+          the server):
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              For input, use <code class="literal">MYSQL_BIND</code> structures
+              with <a class="link" href="c-api-functions.html#mysql-bind-param" title="7.3 mysql_bind_param()"><code class="literal">mysql_bind_param()</code></a> to
+              define attributes for a query. (In the following
+              discussion, treat any mention of statement parameters for
+              prepared statements as also applying to query attributes.)
+            </p></li><li class="listitem"><p>
+              For output, use <code class="literal">MYSQL_BIND</code> structures
+              with
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>
+              to bind buffers to result set columns, for use in fetching
+              rows with
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>.
+            </p></li></ul></div><p>
+          To use a <code class="literal">MYSQL_BIND</code> structure, zero its
+          contents to initialize it, then set its members appropriately.
+          For example, to declare and initialize an array of three
+          <code class="literal">MYSQL_BIND</code> structures, use this code:
+        </p><pre class="programlisting">MYSQL_BIND bind[3];
+memset(bind, 0, sizeof(bind));
+</pre><p>
+          The <code class="literal">MYSQL_BIND</code> structure contains the
+          following members for use by application programs. For several
+          of the members, the manner of use depends on whether the
+          structure is used for input or output.
+        </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: circle; "><li class="listitem"><p>
+              <code class="literal">enum enum_field_types buffer_type</code>
+            </p><p>
+              The type of the buffer. This member indicates the data
+              type of the C language variable bound to a statement
+              parameter or result set column. For input,
+              <code class="literal">buffer_type</code> indicates the type of the
+              variable containing the value to be sent to the server.
+              For output, it indicates the type of the variable into
+              which a value received from the server should be stored.
+              For permissible <code class="literal">buffer_type</code> values, see
+              <a class="xref" href="c-api-prepared-statement-data-structures.html#c-api-prepared-statement-type-codes" title="9.1 C API Prepared Statement Type Codes">Section 9.1, “C API Prepared Statement Type Codes”</a>.
+            </p></li><li class="listitem"><p>
+              <code class="literal">void *buffer</code>
+            </p><p>
+              A pointer to the buffer to be used for data transfer. This
+              is the address of a C language variable.
+            </p><p>
+              For input, <code class="literal">buffer</code> is a pointer to the
+              variable in which you store the data value for a statement
+              parameter. When you call
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>,
+              MySQL use the value stored in the variable in place of the
+              corresponding parameter marker in the statement (specified
+              with <code class="literal">?</code> in the statement string).
+            </p><p>
+              For output, <code class="literal">buffer</code> is a pointer to the
+              variable in which to return a result set column value.
+              When you call
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>, MySQL
+              stores a column value from the current row of the result
+              set in this variable. You can access the value when the
+              call returns.
+            </p><p>
+              To minimize the need for MySQL to perform type conversions
+              between C language values on the client side and SQL
+              values on the server side, use C variables that have types
+              similar to those of the corresponding SQL values:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                  For numeric data types, <code class="literal">buffer</code>
+                  should point to a variable of the proper numeric C
+                  type. For integer variables (which can be
+                  <code class="literal">char</code> for single-byte values or an
+                  integer type for larger values), you should also
+                  indicate whether the variable has the
+                  <code class="literal">unsigned</code> attribute by setting the
+                  <code class="literal">is_unsigned</code> member, described
+                  later.
+                </p></li><li class="listitem"><p>
+                  For character (nonbinary) and binary string data
+                  types, <code class="literal">buffer</code> should point to a
+                  character buffer.
+                </p></li><li class="listitem"><p>
+                  For date and time data types,
+                  <code class="literal">buffer</code> should point to a
+                  <code class="literal">MYSQL_TIME</code> structure.
+                </p></li></ul></div><p>
+              For guidelines about mapping between C types and SQL types
+              and notes about type conversions, see
+              <a class="xref" href="c-api-prepared-statement-data-structures.html#c-api-prepared-statement-type-codes" title="9.1 C API Prepared Statement Type Codes">Section 9.1, “C API Prepared Statement Type Codes”</a>, and
+              <a class="xref" href="c-api-prepared-statement-data-structures.html#c-api-prepared-statement-type-conversions" title="9.2 C API Prepared Statement Type Conversions">Section 9.2, “C API Prepared Statement Type Conversions”</a>.
+            </p></li><li class="listitem"><p>
+              <code class="literal">unsigned long buffer_length</code>
+            </p><p>
+              The actual size of <code class="literal">*buffer</code> in bytes.
+              This indicates the maximum amount of data that can be
+              stored in the buffer. For character and binary C data, the
+              <code class="literal">buffer_length</code> value specifies the
+              length of <code class="literal">*buffer</code> when used with
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-param" title="11.4 mysql_stmt_bind_param()"><code class="literal">mysql_stmt_bind_param()</code></a> to
+              specify input values, or the maximum number of output data
+              bytes that can be fetched into the buffer when used with
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-bind-result" title="11.5 mysql_stmt_bind_result()"><code class="literal">mysql_stmt_bind_result()</code></a>.
+            </p></li><li class="listitem"><p>
+              <code class="literal">unsigned long *length</code>
+            </p><p>
+              A pointer to an <code class="literal">unsigned long</code> variable
+              that indicates the actual number of bytes of data stored
+              in <code class="literal">*buffer</code>. <code class="literal">length</code>
+              is used for character or binary C data.
+            </p><p>
+              For input parameter data binding, set
+              <code class="literal">*length</code> to indicate the actual length
+              of the parameter value stored in
+              <code class="literal">*buffer</code>. This is used by
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-execute" title="11.10 mysql_stmt_execute()"><code class="literal">mysql_stmt_execute()</code></a>.
+            </p><p>
+              For output value binding, MySQL sets
+              <code class="literal">*length</code> when you call
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a>. The
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> return
+              value determines how to interpret the length:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                  If the return value is 0, <code class="literal">*length</code>
+                  indicates the actual length of the parameter value.
+                </p></li><li class="listitem"><p>
+                  If the return value is
+                  <code class="literal">MYSQL_DATA_TRUNCATED</code>,
+                  <code class="literal">*length</code> indicates the nontruncated
+                  length of the parameter value. In this case, the
+                  minimum of <code class="literal">*length</code> and
+                  <code class="literal">buffer_length</code> indicates the actual
+                  length of the value.
+                </p></li></ul></div><p>
+              <code class="literal">length</code> is ignored for numeric and
+              temporal data types because the
+              <code class="literal">buffer_type</code> value determines the length
+              of the data value.
+            </p><p>
+              If you must determine the length of a returned value
+              before fetching it, see
+              <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()">Section 11.11, “mysql_stmt_fetch()”</a>, for some strategies.
+            </p></li><li class="listitem"><p>
+              <code class="literal">bool *is_null</code>
+            </p><p>
+              This member points to a <code class="literal">bool</code> variable
+              that is true if a value is <code class="literal">NULL</code>, false
+              if it is not <code class="literal">NULL</code>. For input, set
+              <code class="literal">*is_null</code> to true to indicate that you
+              are passing a <code class="literal">NULL</code> value as a statement
+              parameter.
+            </p><p>
+              <code class="literal">is_null</code> is a
+              <span class="emphasis"><em>pointer</em></span> to a boolean scalar, not a
+              boolean scalar, to provide flexibility in how you specify
+              <code class="literal">NULL</code> values:
+            </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: square; "><li class="listitem"><p>
+                  If your data values are always
+                  <code class="literal">NULL</code>, use
+                  <code class="literal">MYSQL_TYPE_NULL</code> as the
+                  <code class="literal">buffer_type</code> value when you bind the
+                  column. The other <code class="literal">MYSQL_BIND</code>
+                  members, including <code class="literal">is_null</code>, do not
+                  matter.
+                </p></li><li class="listitem"><p>
+                  If your data values are always <code class="literal">NOT
+                  NULL</code>, set <code class="literal">is_null = (bool*)
+                  0</code>, and set the other members appropriately
+                  for the variable you are binding.
+                </p></li><li class="listitem"><p>
+                  In all other cases, set the other members
+                  appropriately and set <code class="literal">is_null</code> to
+                  the address of a <code class="literal">bool</code> variable. Set
+                  that variable's value to true or false appropriately
+                  between executions to indicate whether the
+                  corresponding data value is <code class="literal">NULL</code> or
+                  <code class="literal">NOT NULL</code>, respectively.
+                </p></li></ul></div><p>
+              For output, when you fetch a row, MySQL sets the value
+              pointed to by <code class="literal">is_null</code> to true or false
+              according to whether the result set column value returned
+              from the statement is or is not <code class="literal">NULL</code>.
+            </p></li><li class="listitem"><p>
+              <code class="literal">bool is_unsigned</code>
+            </p><p>
+              This member applies for C variables with data types that
+              can be <code class="literal">unsigned</code>
+              (<code class="literal">char</code>, <code class="literal">short int</code>,
+              <code class="literal">int</code>, <code class="literal">long long int</code>).
+              Set <code class="literal">is_unsigned</code> to true if the variable
+              pointed to by <code class="literal">buffer</code> is
+              <code class="literal">unsigned</code> and false otherwise. For
+              example, if you bind a <code class="literal">signed char</code>
+              variable to <code class="literal">buffer</code>, specify a type code
+              of <code class="literal">MYSQL_TYPE_TINY</code> and set
+              <code class="literal">is_unsigned</code> to false. If you bind an
+              <code class="literal">unsigned char</code> instead, the type code is
+              the same but <code class="literal">is_unsigned</code> should be
+              true. (For <code class="literal">char</code>, it is not defined
+              whether it is signed or unsigned, so it is best to be
+              explicit about signedness by using <code class="literal">signed
+              char</code> or <code class="literal">unsigned char</code>.)
+            </p><p>
+              <code class="literal">is_unsigned</code> applies only to the C
+              language variable on the client side. It indicates nothing
+              about the signedness of the corresponding SQL value on the
+              server side. For example, if you use an
+              <code class="literal">int</code> variable to supply a value for a
+              <code class="literal">BIGINT UNSIGNED</code> column,
+              <code class="literal">is_unsigned</code> should be false because
+              <code class="literal">int</code> is a signed type. If you use an
+              <code class="literal">unsigned int</code> variable to supply a value
+              for a <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">BIGINT</code></a> column,
+              <code class="literal">is_unsigned</code> should be true because
+              <code class="literal">unsigned int</code> is an unsigned type. MySQL
+              performs the proper conversion between signed and unsigned
+              values in both directions, although a warning occurs if
+              truncation results.
+            </p></li><li class="listitem"><p>
+              <code class="literal">bool *error</code>
+            </p><p>
+              For output, set this member to point to a
+              <code class="literal">bool</code> variable to have truncation
+              information for the parameter stored there after a row
+              fetching operation. When truncation reporting is enabled,
+              <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> returns
+              <code class="literal">MYSQL_DATA_TRUNCATED</code> and
+              <code class="literal">*error</code> is true in the
+              <code class="literal">MYSQL_BIND</code> structures for parameters in
+              which truncation occurred. Truncation indicates loss of
+              sign or significant digits, or that a string was too long
+              to fit in a column. Truncation reporting is enabled by
+              default, but can be controlled by calling
+              <a class="link" href="c-api-functions.html#mysql-options" title="7.51 mysql_options()"><code class="literal">mysql_options()</code></a> with the
+              <code class="literal">MYSQL_REPORT_DATA_TRUNCATION</code> option.
+            </p></li></ul></div></li><li class="listitem"><p>
+          <a class="indexterm" name="idm46079468648608"></a>
+
+          <code class="literal">MYSQL_TIME</code>
+        </p><p>
+          This structure is used to send and receive
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a>, and
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> data directly to and
+          from the server. Set the <code class="literal">buffer</code> member to
+          point to a <code class="literal">MYSQL_TIME</code> structure, and set
+          the <code class="literal">buffer_type</code> member of a
+          <code class="literal">MYSQL_BIND</code> structure to one of the temporal
+          types (<code class="literal">MYSQL_TYPE_TIME</code>,
+          <code class="literal">MYSQL_TYPE_DATE</code>,
+          <code class="literal">MYSQL_TYPE_DATETIME</code>,
+          <code class="literal">MYSQL_TYPE_TIMESTAMP</code>).
+        </p><p>
+          The <code class="literal">MYSQL_TIME</code> structure contains the
+          members listed in the following table.
+        </p><div class="informaltable"><table summary="Members of the MYSQL_TIME structure and a description of each member."><col width="40%"><col width="60%"><thead><tr>
+              <th>Member</th>
+              <th>Description</th>
+            </tr></thead><tbody><tr>
+              <td><code class="literal">unsigned int year</code></td>
+              <td>The year</td>
+            </tr><tr>
+              <td><code class="literal">unsigned int month</code></td>
+              <td>The month of the year</td>
+            </tr><tr>
+              <td><code class="literal">unsigned int day</code></td>
+              <td>The day of the month</td>
+            </tr><tr>
+              <td><code class="literal">unsigned int hour</code></td>
+              <td>The hour of the day</td>
+            </tr><tr>
+              <td><code class="literal">unsigned int minute</code></td>
+              <td>The minute of the hour</td>
+            </tr><tr>
+              <td><code class="literal">unsigned int second</code></td>
+              <td>The second of the minute</td>
+            </tr><tr>
+              <td><code class="literal">bool neg</code></td>
+              <td>A boolean flag indicating whether the time is negative</td>
+            </tr><tr>
+              <td><code class="literal">unsigned long second_part</code></td>
+              <td>The fractional part of the second in microseconds</td>
+            </tr></tbody></table></div><p>
+          Only those parts of a <code class="literal">MYSQL_TIME</code> structure
+          that apply to a given type of temporal value are used. The
+          <code class="literal">year</code>, <code class="literal">month</code>, and
+          <code class="literal">day</code> elements are used for
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a>, and
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> values. The
+          <code class="literal">hour</code>, <code class="literal">minute</code>, and
+          <code class="literal">second</code> elements are used for
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a>,
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a>, and
+          <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a> values. See
+          <a class="xref" href="c-api-prepared-statement-date-handling.html" title="Chapter 24 C API Prepared Statement Handling of Date and Time Values">Chapter 24, <i>C API Prepared Statement Handling of Date and Time Values</i></a>.
+        </p></li></ul></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-prepared-statement-type-codes"></a>9.1 C API Prepared Statement Type Codes</h2></div></div></div><a class="indexterm" name="idm46079468594112"></a><a class="indexterm" name="idm46079468592608"></a><p>
+        The <code class="literal">buffer_type</code> member of
+        <code class="literal">MYSQL_BIND</code> structures indicates the data type
+        of the C language variable bound to a statement parameter or
+        result set column. For input, <code class="literal">buffer_type</code>
+        indicates the type of the variable containing the value to be
+        sent to the server. For output, it indicates the type of the
+        variable into which a value received from the server should be
+        stored.
+      </p><p>
+        The following table shows the permissible values for the
+        <code class="literal">buffer_type</code> member of
+        <code class="literal">MYSQL_BIND</code> structures for input values sent
+        to the server. The table shows the C variable types that you can
+        use, the corresponding type codes, and the SQL data types for
+        which the supplied value can be used without conversion. Choose
+        the <code class="literal">buffer_type</code> value according to the data
+        type of the C language variable that you are binding. For the
+        integer types, you should also set the
+        <code class="literal">is_unsigned</code> member to indicate whether the
+        variable is signed or unsigned.
+      </p><div class="table"><a name="c-api-prepared-statement-type-codes-input"></a><p class="title"><b>Table 9.1 Permissible Input Data Types for MYSQL_BIND Structures</b></p><div class="table-contents"><table summary="C type input variables, corresponding buffer_type values, and the SQL data types for which the supplied value can be used without conversion."><col width="30%"><col width="35%"><col width="35%"><thead><tr>
+            <th scope="col">Input Variable C Type</th>
+            <th scope="col"><code class="literal">buffer_type</code> Value</th>
+            <th scope="col">SQL Type of Destination Value</th>
+          </tr></thead><tbody><tr>
+            <th scope="row"><code class="literal">signed char</code></th>
+            <td><code class="literal">MYSQL_TYPE_TINY</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">TINYINT</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">short int</code></th>
+            <td><code class="literal">MYSQL_TYPE_SHORT</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">SMALLINT</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">int</code></th>
+            <td><code class="literal">MYSQL_TYPE_LONG</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">INT</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">long long int</code></th>
+            <td><code class="literal">MYSQL_TYPE_LONGLONG</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">BIGINT</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">float</code></th>
+            <td><code class="literal">MYSQL_TYPE_FLOAT</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">FLOAT</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">double</code></th>
+            <td><code class="literal">MYSQL_TYPE_DOUBLE</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">DOUBLE</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">MYSQL_TIME</code></th>
+            <td><code class="literal">MYSQL_TYPE_TIME</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">MYSQL_TIME</code></th>
+            <td><code class="literal">MYSQL_TYPE_DATE</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">MYSQL_TIME</code></th>
+            <td><code class="literal">MYSQL_TYPE_DATETIME</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">MYSQL_TIME</code></th>
+            <td><code class="literal">MYSQL_TYPE_TIMESTAMP</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">char[]</code></th>
+            <td><code class="literal">MYSQL_TYPE_STRING</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">CHAR</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">VARCHAR</code></a></td>
+          </tr><tr>
+            <th scope="row"><code class="literal">char[]</code></th>
+            <td><code class="literal">MYSQL_TYPE_BLOB</code></td>
+            <td><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">BINARY</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">VARBINARY</code></a></td>
+          </tr><tr>
+            <th scope="row"></th>
+            <td><code class="literal">MYSQL_TYPE_NULL</code></td>
+            <td><code class="literal">NULL</code></td>
+          </tr></tbody></table></div></div><br class="table-break"><p>
+        Use <code class="literal">MYSQL_TYPE_NULL</code> as indicated in the
+        description for the <code class="literal">is_null</code> member in
+        <a class="xref" href="c-api-prepared-statement-data-structures.html" title="Chapter 9 C API Prepared Statement Data Structures">Chapter 9, <i>C API Prepared Statement Data Structures</i></a>.
+      </p><p>
+        For input string data, use <code class="literal">MYSQL_TYPE_STRING</code>
+        or <code class="literal">MYSQL_TYPE_BLOB</code> depending on whether the
+        value is a character (nonbinary) or binary string:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            <code class="literal">MYSQL_TYPE_STRING</code> indicates character
+            input string data. The value is assumed to be in the
+            character set indicated by the
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/server-system-variables.html#sysvar_character_set_client" target="_top"><code class="literal">character_set_client</code></a> system
+            variable. If the server stores the value into a column with
+            a different character set, it converts the value to that
+            character set.
+          </p></li><li class="listitem"><p>
+            <code class="literal">MYSQL_TYPE_BLOB</code> indicates binary input
+            string data. The value is treated as having the
+            <code class="literal">binary</code> character set. That is, it is
+            treated as a byte string and no conversion occurs.
+          </p></li></ul></div><p>
+        The following table shows the permissible values for the
+        <code class="literal">buffer_type</code> member of
+        <code class="literal">MYSQL_BIND</code> structures for output values
+        received from the server. The table shows the SQL types of
+        received values, the corresponding type codes that such values
+        have in result set metadata, and the recommended C language data
+        types to bind to the <code class="literal">MYSQL_BIND</code> structure to
+        receive the SQL values without conversion. Choose the
+        <code class="literal">buffer_type</code> value according to the data type
+        of the C language variable that you are binding. For the integer
+        types, you should also set the <code class="literal">is_unsigned</code>
+        member to indicate whether the variable is signed or unsigned.
+      </p><div class="table"><a name="c-api-prepared-statement-type-codes-output"></a><p class="title"><b>Table 9.2 Permissible Output Data Types for MYSQL_BIND Structures</b></p><div class="table-contents"><table summary="SQL types of received values, corresponding buffer_type values, and recommended C data type output variables."><col width="30%"><col width="35%"><col width="35%"><thead><tr>
+            <th scope="col">SQL Type of Received Value</th>
+            <th scope="col"><code class="literal">buffer_type</code> Value</th>
+            <th scope="col">Output Variable C Type</th>
+          </tr></thead><tbody><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">TINYINT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_TINY</code></td>
+            <td><code class="literal">signed char</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">SMALLINT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_SHORT</code></td>
+            <td><code class="literal">short int</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">MEDIUMINT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_INT24</code></td>
+            <td><code class="literal">int</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">INT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_LONG</code></td>
+            <td><code class="literal">int</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">BIGINT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_LONGLONG</code></td>
+            <td><code class="literal">long long int</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">FLOAT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_FLOAT</code></td>
+            <td><code class="literal">float</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">DOUBLE</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_DOUBLE</code></td>
+            <td><code class="literal">double</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">DECIMAL</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_NEWDECIMAL</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/year.html" target="_top"><code class="literal">YEAR</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_SHORT</code></td>
+            <td><code class="literal">short int</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/time.html" target="_top"><code class="literal">TIME</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_TIME</code></td>
+            <td><code class="literal">MYSQL_TIME</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATE</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_DATE</code></td>
+            <td><code class="literal">MYSQL_TIME</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">DATETIME</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_DATETIME</code></td>
+            <td><code class="literal">MYSQL_TIME</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/datetime.html" target="_top"><code class="literal">TIMESTAMP</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_TIMESTAMP</code></td>
+            <td><code class="literal">MYSQL_TIME</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">CHAR</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">BINARY</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_STRING</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">VARCHAR</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">VARBINARY</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_VAR_STRING</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TINYBLOB</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TINYTEXT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_TINY_BLOB</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a>, <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_BLOB</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">MEDIUMBLOB</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">MEDIUMTEXT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_MEDIUM_BLOB</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">LONGBLOB</code></a>,
+              <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">LONGTEXT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_LONG_BLOB</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr><tr>
+            <th scope="row"><a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/bit-type.html" target="_top"><code class="literal">BIT</code></a></th>
+            <td><code class="literal">MYSQL_TYPE_BIT</code></td>
+            <td><code class="literal">char[]</code></td>
+          </tr></tbody></table></div></div><br class="table-break"></div><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="c-api-prepared-statement-type-conversions"></a>9.2 C API Prepared Statement Type Conversions</h2></div></div></div><a class="indexterm" name="idm46079468376112"></a><a class="indexterm" name="idm46079468374608"></a><p>
+        Prepared statements transmit data between the client and server
+        using C language variables on the client side that correspond to
+        SQL values on the server side. If there is a mismatch between
+        the C variable type on the client side and the corresponding SQL
+        value type on the server side, MySQL performs implicit type
+        conversions in both directions.
+      </p><p>
+        MySQL knows the type code for the SQL value on the server side.
+        The <code class="literal">buffer_type</code> value in the
+        <code class="literal">MYSQL_BIND</code> structure indicates the type code
+        of the C variable that holds the value on the client side. The
+        two codes together tell MySQL what conversion must be performed,
+        if any. Here are some examples:
+      </p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p>
+            If you use <code class="literal">MYSQL_TYPE_LONG</code> with an
+            <code class="literal">int</code> variable to pass an integer value to
+            the server that is to be stored into a
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/floating-point-types.html" target="_top"><code class="literal">FLOAT</code></a> column, MySQL converts
+            the value to floating-point format before storing it.
+          </p></li><li class="listitem"><p>
+            If you fetch an SQL <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">MEDIUMINT</code></a>
+            column value, but specify a <code class="literal">buffer_type</code>
+            value of <code class="literal">MYSQL_TYPE_LONGLONG</code> and use a C
+            variable of type <code class="literal">long long int</code> as the
+            destination buffer, MySQL converts the
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/integer-types.html" target="_top"><code class="literal">MEDIUMINT</code></a> value (which
+            requires less than 8 bytes) for storage into the
+            <code class="literal">long long int</code> (an 8-byte variable).
+          </p></li><li class="listitem"><p>
+            If you fetch a numeric column with a value of 255 into a
+            <code class="literal">char[4]</code> character array and specify a
+            <code class="literal">buffer_type</code> value of
+            <code class="literal">MYSQL_TYPE_STRING</code>, the resulting value in
+            the array is a 4-byte string <code class="literal">'255\0'</code>.
+          </p></li><li class="listitem"><p>
+            MySQL returns <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">DECIMAL</code></a> values
+            as the string representation of the original server-side
+            value, which is why the corresponding C type is
+            <code class="literal">char[]</code>. For example,
+            <code class="literal">12.345</code> is returned to the client as
+            <code class="literal">'12.345'</code>. If you specify
+            <code class="literal">MYSQL_TYPE_NEWDECIMAL</code> and bind a string
+            buffer to the <code class="literal">MYSQL_BIND</code> structure,
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> stores
+            the value in the buffer as a string without conversion. If
+            instead you specify a numeric variable and type code,
+            <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-fetch" title="11.11 mysql_stmt_fetch()"><code class="literal">mysql_stmt_fetch()</code></a> converts
+            the string-format <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/fixed-point-types.html" target="_top"><code class="literal">DECIMAL</code></a>
+            value to numeric form.
+          </p></li><li class="listitem"><p>
+            For the <code class="literal">MYSQL_TYPE_BIT</code> type code,
+            <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/bit-type.html" target="_top"><code class="literal">BIT</code></a> values are returned into
+            a string buffer, which is why the corresponding C type is
+            <code class="literal">char[]</code>. The value represents a bit string
+            that requires interpretation on the client side. To return
+            the value as a type that is easier to deal with, you can
+            cause the value to be cast to integer using either of the
+            following types of expressions:
+          </p><pre class="programlisting">SELECT bit_col + 0 FROM t
+SELECT CAST(bit_col AS UNSIGNED) FROM t
+</pre><p>
+            To retrieve the value, bind an integer variable large enough
+            to hold the value and specify the appropriate corresponding
+            integer type code.
+          </p></li></ul></div><p>
+        Before binding variables to the <code class="literal">MYSQL_BIND</code>
+        structures that are to be used for fetching column values, you
+        can check the type codes for each column of the result set. This
+        might be desirable if you want to determine which variable types
+        would be best to use to avoid type conversions. To get the type
+        codes, call
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()"><code class="literal">mysql_stmt_result_metadata()</code></a>
+        after preparing the statement with
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-prepare" title="11.21 mysql_stmt_prepare()"><code class="literal">mysql_stmt_prepare()</code></a>. The
+        metadata provides access to the type codes for the result set as
+        described in <a class="xref" href="c-api-prepared-statement-functions.html#mysql-stmt-result-metadata" title="11.23 mysql_stmt_result_metadata()">Section 11.23, “mysql_stmt_result_metadata()”</a>, and
+        <a class="xref" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures">Chapter 5, <i>C API Data Structures</i></a>.
+      </p><p>
+        To determine whether output string values in a result set
+        returned from the server contain binary or nonbinary data, check
+        whether the <code class="literal">charsetnr</code> value of the result set
+        metadata is 63 (see <a class="xref" href="c-api-data-structures.html" title="Chapter 5 C API Data Structures">Chapter 5, <i>C API Data Structures</i></a>). If
+        so, the character set is <code class="literal">binary</code>, which
+        indicates binary rather than nonbinary data. This enables you to
+        distinguish <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">BINARY</code></a> from
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">CHAR</code></a>,
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/binary-varbinary.html" target="_top"><code class="literal">VARBINARY</code></a> from
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/char.html" target="_top"><code class="literal">VARCHAR</code></a>, and the
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">BLOB</code></a> types from the
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/blob.html" target="_top"><code class="literal">TEXT</code></a> types.
+      </p><p>
+        If you cause the <code class="literal">max_length</code> member of the
+        <code class="literal">MYSQL_FIELD</code> column metadata structures to be
+        set (by calling
+        <a class="link" href="c-api-prepared-statement-functions.html#mysql-stmt-attr-set" title="11.3 mysql_stmt_attr_set()"><code class="literal">mysql_stmt_attr_set()</code></a>), be aware
+        that the <code class="literal">max_length</code> values for the result set
+        indicate the lengths of the longest string representation of the
+        result values, not the lengths of the binary representation.
+        That is, <code class="literal">max_length</code> does not necessarily
+        correspond to the size of the buffers needed to fetch the values
+        with the binary protocol used for prepared statements. Choose
+        the size of the buffers according to the types of the variables
+        into which you fetch the values. For example, a
+        <code class="literal">TINYINT</code> column containing the value -128
+        might have a <code class="literal">max_length</code> value of 4. But the
+        binary representation of any <code class="literal">TINYINT</code> value
+        requires only 1 byte for storage, so you can supply a
+        <code class="literal">signed char</code> variable in which to store the
+        value and set <code class="literal">is_unsigned</code> to indicate that
+        values are signed.
+      </p><p>
+        Metadata changes to tables or views referred to by prepared
+        statements are detected and cause automatic repreparation of the
+        statement when it is next executed. For more information, see
+        <a class="ulink" href="https://dev.mysql.com/doc/refman/8.0/en/statement-caching.html" target="_top">Caching of Prepared Statements and Stored Programs</a>.
+      </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="c-api-prepared-statements.html">Previous</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="c-api-prepared-statement-function-overview.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 8 C API Prepared Statements </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 10 C API Prepared Statement Function Overview</td></tr></table></div><div class="copyright-footer"></div></body></html>
